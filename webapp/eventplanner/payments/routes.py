@@ -77,8 +77,13 @@ def pay():
             #     data['items'])  # the orderItems
             order_amount = calculate_order_amount(
                 session.get("payment_data", None))
+<<<<<<< HEAD
             # order_description = create_order_description(
             #     session.get("payment_data", None))
+=======
+            #order_description = create_order_description(
+             #   session.get("payment_data", None))
+>>>>>>> c59d3e183be7c51b718931c1ce7d32d2f6b25752
 
             # Create new PaymentIntent with a PaymentMethod ID from the client.
             customer = stripe.Customer.create(

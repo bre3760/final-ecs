@@ -49,3 +49,7 @@ function addTicket(parentWrapper) {
 		document.getElementById("book_button").disabled = false;
 	}
 }
+
+function showQR(qrcode) {
+	qrModalImage.setAttribute("src",qrcode);
+}
