@@ -1,0 +1,92 @@
+{% extends "layout.html" %} <!-- to have the base model  -->
+{% block content %} <!-- to specify what is the content to insert into the base page -->
+
+
+<div>
+  <table id="ticketsTable" style="width:100%">
+      <tr>
+          <th>Ticket Id Number.</th>
+          <th>Ticket Type</th>
+          <th>Number of Tickets</th>
+          <th>Price</th>
+          <th>Number of tickets to buy</th>
+          <th>Total price</th>
+      </tr>
+      {% for ticket in event.tickets %}
+
+      <tr>
+          <td>{{ ticket.id }}</td>
+          <td>{{ ticket.ticket_type }}</td>
+          <td>{{ ticket.num_tickets }}</td>
+          <td>{{ ticket.price }}</td>
+      </tr>
+
+      {% endfor %}
+  </table>
+</div>
+
+
+<div>
+  <p>Your total is: 13</p>
+  <p>example: you have choosen ticket for over 65 quantity 1</p>
+  <button  id="myBtn">Book now, pay later</button>
+  <p id="demo"></p>
+  <p id="demo2"></p>
+</div>
+
+<script>
+  var p1 = 5;
+  var p2 = 7;
+  const someData = { 'ticket_id': 3 };
+
+  document.getElementById("myBtn").addEventListener("click", function() {
+    myFunction(p1, p2, someData);
+  });
+
+  function myFunction(a, b, dataFromConst) {
+    var result = a * b;
+    document.getElementById("demo").innerHTML = result;
+
+    document.getElementById("demo2").innerHTML = JSON.stringify(dataFromConst);
+    fetch('/booking/event/', {
+        // Specify the method
+        method: 'POST',
+        // A JSON payload
+        body: JSON.stringify({dataFromConst})
+    }).then(function (response) {
+        return response.text();
+    }).then(function (text) {
+        console.log('POST response: ');
+        // Should be 'OK' if everything was successful
+        console.log(text);
+    });
+  }
+</script>
+
+
+
+<!-- from postman simple post request -->
+<script type="text/javascript">
+
+
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify({"ticket_id":3});
+
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
+    };
+
+    fetch("http://localhost:5000/booking/event/", requestOptions)
+      .then(response => response.text())
+      .then(result => console.log(result))
+      .catch(error => console.log('error', error));
+</script>
+
+
+
+{% endblock content%} <!-- put the name of what block we are ending -->

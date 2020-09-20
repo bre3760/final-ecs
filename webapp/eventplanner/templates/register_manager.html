@@ -5,7 +5,7 @@
 		<div class="col-md-3">
 		</div>
 		<div class="col-md-6">
-			<div class="card" style="border-radius:0 !important;">
+			<div class="card sharp-border">
 				<div class="card-header text-center" style="background-color:white">
 					<h3 class="text-uppercase orange">provider sign up form</h3>
 				</div>
@@ -111,13 +111,6 @@
 								Already signed up?
 								<br>
 								<a class="brown-link text-uppercase" data-toggle="modal" data-target="#myModal" onclick="modalLayout({{ url_for('users.login')}})" href="">log in</a>
-							</small>
-						</div>
-						<div class="float-right text-right">
-							<small class="text-muted">
-								Are you an event provider?
-								<br>
-								<a class="brown-link text-uppercase" href="{{url_for('users.register_manager')}}">Sign up here</a><!--  we passs in the name of the route function -->
 							</small>
 						</div>
 					</div>
