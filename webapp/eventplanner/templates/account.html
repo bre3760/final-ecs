@@ -1,0 +1,47 @@
+<div class="container-fluid">
+	<form method="POST" action="{{ url_for('users.account') }}" enctype = "multipart/form-data">  <!-- important to put the multipart -->
+            {{ form.hidden_tag() }} <!-- we pass in the form instance to this template -->
+            <fieldset class="form-group">
+				<div class="form-group">
+                    <img class="rounded-circle account-img mb-2" src="{{ url_for('static', filename ='profile_pics/' + current_user.image_file ) }}">
+                    {{ form.picture(class = "form-control-file")}}
+                    {% if form.picture.errors%}
+                        {% for error in form.picture.errors %}
+                            <span class="text-danger">{{ error }}</span> </br>
+                        {%endfor%}
+                    {%endif%}
+                </div>
+				
+                <div class="form-group">
+                    {% if form.username.errors %}
+                        {{ form.username(class="form-controlis-invalid sharp-border")}}
+                        <div class="invalid-feedback">
+                            {% for error in form.username.errors %}
+                                <span>{{ error }}</span>
+                            {%endfor%}
+                        </div>
+                    {% else %}
+                        {{ form.username(class="form-control sharp-border")}}  <!-- lg stands for large -->
+                    {%endif%}
+                </div>
+                <div class="form-group">
+                    <!-- here we use the fields of the form we passed in -->
+                    {% if form.email.errors%}
+                        {{ form.email(class="form-controlis-invalid sharp-border")}}
+                        <div class="invalid-feedback">
+                            {% for error in form.email.errors %}
+                                <span>{{ error }}</span>
+                            {%endfor%}
+                        </div>
+                    {% else %}
+                        {{ form.email(class="form-control sharp-border")}}  <!-- lg stands for large -->
+                    {% endif %}  <!-- lg stands for large -->
+                </div>
+				<button class="btn btn-outline-brown" type="button" autocomplete="off" onclick="" disabled></button>
+                
+            </fieldset>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-outline-brown",onclick="accountUpdated()")}} <!-- onclick missing -->
+            </div>
+        </form>
+</div>

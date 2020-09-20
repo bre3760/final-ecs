@@ -1,0 +1,40 @@
+<!-- update event html file -->
+{% extends "layout.html" %} <!-- to have the base model  -->
+{% block content %} <!-- to specify what is the content to insert into the base page -->
+    <!-- form for posting new events -->
+    <div class="content-section">
+        <form method="POST" action="" enctype = "multipart/form-data">
+            {{ form.hidden_tag()}} <!-- we pass in the form instance to this template -->
+            <!-- the hidden tag adds a csrf token aka cross site request forgery token  -->
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">{{ legend }}</legend>
+                <div>
+                    <table>
+                        <tr>
+                            <th>Ticket Number.</th>
+                            <th>Ticket Type</th>
+                            <th>Number of Tickets</th>
+                            <th>Price</th>
+                        </tr>
+                        {% for ticket in form.tickets %}
+
+                        <tr>
+                            <td>{{ ticket.id }}</td>
+                            <td>{{ ticket.ticket_type }}</td>
+                            <td>{{ ticket.num_tickets }}</td>
+                            <td>{{ ticket.price }}</td>
+                        </tr>
+
+                        {% endfor %}
+                    </table>
+                </div>
+
+            </fieldset>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-outline-info")}}
+            </div>
+        </form>
+    </div>
+
+
+{% endblock content%} <!-- put the name of what block we are ending -->

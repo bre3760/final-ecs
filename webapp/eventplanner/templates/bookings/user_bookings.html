@@ -1,0 +1,11 @@
+{% extends "layout.html" %} <!-- to have the base model  -->
+{% block content %} <!-- to specify what is the content to insert into the base page -->
+
+
+{% for booking in all_bookings %}
+    <div class="col-md-4">
+            <img src="{{ url_for('static', filename ='booking_qr_codes/' + booking.image_file ) }}" class="card-img" alt="...">
+    </div>
+{% endfor %}
+
+{% endblock content%} <!-- put the name of what block we are ending -->

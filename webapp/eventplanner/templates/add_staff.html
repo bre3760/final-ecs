@@ -1,0 +1,28 @@
+{% extends "layout.html" %} <!-- to have the base model  -->
+{% block content %} <!-- to specify what is the content to insert into the base page -->
+    <div class="content-section">
+        <form method="POST" action="" enctype = "multipart/form-data">
+            {{ form.hidden_tag()}} <!-- we pass in the form instance to this template -->
+            <!-- the hidden tag adds a csrf token aka cross site request forgery token  -->
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">{{ legend }}</legend>
+                <div class="form-group">
+                    {{ form.staffer_email.label(class="form-control-label")}} <!-- gives us the label of the form -->
+                    {% if form.staffer_email.errors%}
+                        {{ form.staffer_email(class="form-control form-control-lg is-invalid")}}
+                        <div class="invalid-feedback">
+                            {% for error in form.staffer_email.errors %}
+                                <span>{{ error }}</span>
+                            {%endfor%}
+                        </div>
+                    {% else %}
+                        {{ form.staffer_email(class="form-control form-control-lg")}}
+                    {% endif %}
+                </div>
+            </fieldset>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-outline-info")}}
+            </div>
+        </form>
+    </div>
+{% endblock content%}

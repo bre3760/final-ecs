@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- Required meta tags -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<!-- Bootstrap CSS -->
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+		<style>
+			.bg-orange {
+				background-color:#ca5116;
+			}
+
+			.bg-light-orange {
+				background-color:#f9b384;
+			}
+
+			.bg-light-brown {
+				background-color:#f1e3cb;
+			}
+
+			.btn-outline-orange {
+				color: #ca5116;
+				border-color: #ca5116;
+			}
+
+			.btn-orange, .btn-outline-orange:hover {
+				color: white;
+				background-color: #ca5116;
+			}
+
+			.btn-outline-light-orange {
+				color: #f9b384;
+				border-color: #f9b384;
+			}
+
+			.btn-outline-light-orange:hover {
+				color: white;
+				background-color: #f9b384;
+			}
+
+			.btn-outline-brown {
+				color: #581c0c;
+				border-color: #581c0c;
+			}
+
+			.btn-outline-brown:hover {
+				color: white;
+				background-color: #581c0c;
+			}
+
+			.btn-orange:hover {
+				color: white;
+				background-color:#b54914;
+			}
+
+			.orange {
+				color: #ca5116;
+			}
+
+			.light-orange {
+				color: #f9b384;
+			}
+
+			.brown {
+				color: #581c0c;
+			}
+
+			.event-top {
+				height:250px;
+				text-align: center;
+				vertical-align: middle;
+				line-height: 250px;
+			}
+
+			.thumbnail-img {
+				max-width: 200px;
+				max-height: 200px;
+				margin-bottom:10px;
+			}
+
+			.iframe-location {
+				width:100%;
+				max-height:40vh;
+			}
+
+			.brown-link {
+				color: #581c0c;
+				text-decoration:none;
+			}
+
+			.brown-link:hover, .brown-link:active {
+				color: #f9b384;
+				text-decoration:none;
+			}
+
+			.account-collapse{
+				position:fixed;
+				top:0;
+				right:0;
+				height:100%;
+				max-width:300px;
+				width:50%;
+				overflow:auto;
+				display:none;
+			}
+
+			.account-img{
+				max-width:150px;
+				width:100%;
+				object-fit: scale-down;
+				border:2px solid #ca5116;
+			}
+
+			.sharp-border{
+				border-radius:0 !important;
+			}
+
+			.account-link {
+				color: #581c0c;
+				text-decoration:none;
+			}
+
+			.account-link:hover, .account-link:active {
+				color: #73240f;
+				text-decoration:none;
+			}
+
+			.navbar-img {
+				width: 40px;
+				height: 40px;
+				margin-top: -8px;
+				margin-bottom: -8px;
+			}
+
+			.navbar-icon {
+				font-size:2em;
+				margin-top: -8px;
+				margin-bottom: -8px;
+			}
+
+			.pointer{
+				cursor:pointer;
+			}
+		</style>
+
+
+		<!-- For stripe -->
+		<!-- for the stripe button -->
+		<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css"> -->
+		<script src="https://js.stripe.com/v3/"></script>
+		<script src="{{ url_for('static', filename='graphic.js') }}"></script>
+		<script src="{{ url_for('static', filename='func.js') }}"></script>
+		<script defer src="https://use.fontawesome.com/releases/v5.14.0/js/all.js"></script>
+
+		<!-- we are linking to our static folder to the main.css file -->
+
+		{% if title %}
+			<title>Events by Polito - {{title}}</title> <!-- #default title -->
+		{% else %}
+			<title>Events by Polito</title>
+		{% endif %}
+		{% with messages = get_flashed_messages() %}
+			{% if messages %}
+				<ul class="flashes">
+				{% for message in messages %}
+				  <li>{{ message }}</li>
+				{% endfor %}
+				</ul>
+			{% endif %}
+		{% endwith %}
+
+	</head>
+	<body style="background-color:#fcfcfc" onload="onLoad()">
+		<!-- navigation bar start -->
+		<header class="site-header">
+			<nav class="navbar navbar-expand-md navbar-dark bg-orange fixed-top">
+				<a class="navbar-brand mr-4" href="{{ url_for('main.home')}}">Events by Polito</a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse text-right" id="navbarToggle">
+					<div class="navbar-nav mr-auto">
+						<a class="nav-item nav-link" href="{{ url_for('main.about')}}">About</a>
+					</div>
+					<!-- Navbar Right Side -->
+					<div class="navbar-nav ml-auto">
+						{% if current_user.is_authenticated %} <!-- the links displayed if a user is logged in  -->
+							{% for role in current_user.roles %}
+								{% if 'Manager' in role.name %}
+									<!-- <a class="nav-item nav-link" href="{{ url_for('events.new_event')}}">New Event</a>
+									<a class="nav-item nav-link" href="{{ url_for('events.my_events',user_id=current_user.id)}}">My Events</a> -->
+								{% endif %}
+								{% if 'SimpleUser' in role.name %}
+									<!-- In order to see events where i have tickets or booking for -->
+
+								{% endif %}
+							{% endfor %}
+							<a class="nav-item nav-link" href="#" onclick="accountSidebar()"> <!-- href="{{ url_for('users.account')}}" -->
+								<img class="rounded-circle navbar-img" style="background-color:#fcfcfc; border:2px solid #f9b384" src="{{ url_for('static', filename ='profile_pics/' + current_user.image_file ) }}">
+							</a>
+							<!-- <a class="nav-item nav-link" href="{{ url_for('users.logout')}}">Logout</a> -->
+						{% else %}
+							<a class="nav-item nav-link" data-toggle="modal" data-target="#myModal" onclick="modalLayout({{ url_for('users.login')}})" style="cursor:pointer;">Login</button>
+							<a class="nav-item nav-link" href="{{ url_for('users.register')}}">Register</a>
+						{% endif %}
+					</div>
+				</div>
+			</nav>
+		</header>
+
+		<div class="row w-100" style="margin-top:90px;">
+			<div class="col-md-1">
+			</div>
+			<div class="col-md-7">
+              <!-- #unique to each single page -->
+              <!-- creating a block -->
+				{% with messaget = get_flashed_messages(with_categories = True)%}
+					{% if messages %}
+						{% for category, message in messages%}
+							<div class="alert alert-{{ category }}">
+								{{ message }} <!-- print out the message received -->
+							</div>
+						{%endfor%}
+					{%endif%}
+				{%endwith%}
+
+			</div>
+			<div class="col-md-3">
+			</div>
+		</div>
+
+		{% block content %}{% endblock content%}
+
+		<!-- Footer -->
+		<!-- <footer class="page-footer font-small blue pt-4" style="color:white">
+			<div class="container-fluid text-center text-md-left bg-orange">
+				<div class="row" style="margin-top:5px;">
+					<div class="col-md-6 mt-md-0 mt-3">
+						<h5 class="text-uppercase">Footer Content</h5>
+						<p>Here you can use rows and columns to organize your footer content.</p>
+					</div>
+					<hr class="clearfix w-100 d-md-none pb-3">
+					<div class="col-md-3 mb-md-0 mb-3">
+						<h5 class="text-uppercase">Links</h5>
+						<ul class="list-unstyled">
+							<li>
+								<a href="#!">Link 1</a>
+							</li>
+							<li>
+								<a href="#!">Link 2</a>
+							</li>
+							<li>
+								<a href="#!">Link 3</a>
+							</li>
+							<li>
+								<a href="#!">Link 4</a>
+							</li>
+						</ul>
+					</div>
+					<div class="col-md-3 mb-md-0 mb-3">
+						<h5 class="text-uppercase">Links</h5>
+						<ul class="list-unstyled">
+							<li>
+								<a href="#!">Link 1</a>
+							</li>
+							<li>
+								<a href="#!">Link 2</a>
+							</li>
+							<li>
+								<a href="#!">Link 3</a>
+							</li>
+							<li>
+								<a href="#!">Link 4</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</footer> -->
+
+		{% if current_user.is_authenticated %}
+			<div class="bg-light-orange account-collapse text-center brown" style="z-index:100" id="accountCollapse"> 
+				<div class="card-body">
+					<div class="container-fluid text-right" style="margin-top:45px; padding-right:-30px;margin-right:-30px;">
+						<a class="account-link" href="{{ url_for('users.logout')}}"><span class="material-icons" style="font-size:2.5em;" >exit_to_app</span></a>
+					</div>
+					<div id="user_info">
+					</div>
+				</div>
+				<ul class="list-group text-left">
+					<li class="list-group-item bg-light-orange sharp-border" style="border-left:none;">
+						<a class="account-link" href="#" onclick="divLayout('user_info',{{ url_for('users.account')}})">
+							<h6 class="text-uppercase"><span class="material-icons align-text-bottom mr-4">edit</span> Edit your profile</h6>
+						</a>
+					</li>
+					{% for role in current_user.roles %}
+						{% if 'Manager' in role.name %}
+							<li class="list-group-item bg-light-orange sharp-border" style="border-left:none;">
+								<a class="account-link" href="{{ url_for('events.new_event')}}">
+									<h6 class="text-uppercase"><span class="material-icons align-text-bottom mr-4">add_circle</span> Create a new event</h6>
+								</a>
+							</li>
+							<li class="list-group-item bg-light-orange sharp-border" style="border-left:none;">
+								<a class="account-link" href="{{ url_for('events.my_events',user_id=current_user.id)}}">
+									<h6 class="text-uppercase"><span class="material-icons align-text-bottom mr-4">calendar_today</span> Show my events</h6>
+								</a>
+							</li>
+							<!-- <a class="nav-item nav-link" href="{{ url_for('events.new_event')}}">New Event</a>
+							<a class="nav-item nav-link" href="{{ url_for('events.my_events',user_id=current_user.id)}}">My Events</a> -->
+						{% endif %}
+						{% if 'SimpleUser' in role.name %}
+							<li class="list-group-item bg-light-orange sharp-border" style="border-left:none;">
+								<a class="account-link" href="{{ url_for('bookings.display_booking')}}">
+									<h6 class="text-uppercase"><span class="material-icons align-text-bottom mr-4">local_activity</span> Show my bookings</h6>
+								</a>
+							</li>
+						{% endif %}
+					{% endfor %}
+				</ul>
+			</div>
+		{% endif %}
+
+		<div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content" id="myModalContent">
+
+				</div>
+			</div>
+		</div>
+
+      <!-- Optional JavaScript -->
+      <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+      <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+      <script type="text/javascript" src="{{ url_for('static', filename='page.js') }}"></script>
+
+  </body>
+
+
+</html>
+
+

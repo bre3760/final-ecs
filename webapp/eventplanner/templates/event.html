@@ -1,0 +1,128 @@
+{% extends "layout.html" %} <!-- to have the base model  -->
+{% block content %} <!-- to specify what is the content to insert into the base page -->
+	<div class="row w-100">
+		<div class="col-md-1">
+		</div>
+		<div class="col-md-7">
+
+			<div class="card" style="margin-bottom:20px;">
+				<div class="container-fluid event-top text-center">
+					<h1 class="brown" style="margin-bottom:-30px">{{ event.title }}</h1>
+					<img class="thumbnail-img" src="{{ url_for('static', filename ='event_pics/' + event.image_file ) }}">
+					<div class="col-md-10">
+						<div class="float-right">
+
+						</div>
+					</div>
+				</div>
+
+				<div class="card-body text-center">
+					<p class="card-text brown" style="vertical-align:middle"><strong>Event description</strong> </p>
+					<p class="card-text">{{ event.content }}</p>
+
+					<p class="card-text brown" style="vertical-align:middle"><strong>Date and time information</strong> </p>
+					<p class="card-text">{{ event.event_date.strftime('%A %d %B %Y') }}</p>
+					<p class="card-text">From {{ event.time_from.strftime('%H:%M') }} to {{ event.time_to.strftime('%H:%M')}}</p>
+
+					<p class="card-text brown" style="vertical-align:middle"><strong>Location information</strong> </p>
+					<p class="card-text">{{ event.location }}, {{ event.address }}</p>
+					<p class="card-text">{{ event.city }}</p>
+					<iframe class="iframe-location" scrolling="no" marginheight="0" marginwidth="0" frameborder="0" src="https://maps.google.com/maps?key=AIzaSyB8ctkK7iOEBNS870uLCpXQwezRfW9dXeM&width=100%25&amp;height=600&amp;hl=en&amp;q={{event.location}}%20{{event.address}}%20{{event.city}}&amp;t=&amp;z=14&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"></iframe>
+				</div>
+				<div class="card-footer">
+					<small class="text-muted">Provided by: <a class="brown-link" href="{{url_for('users.user_events',username=event.manager.username)}}">{{ event.manager.username }}</a></small>
+				</div>
+			</div>
+
+		</div>
+		<div class="col-md-4">
+			{% if event.manager == current_user %}
+			<div class="card" style="margin-bottom:20px;">
+				<div class="card-body">
+					<h3 class="light-orange">Provider Toolbar</h3>
+					<div class="text-center">
+						<a class="btn btn-outline-light-orange btn-sm mt-1 mb-1 w-75" href="{{url_for('events.update_event', event_id = event.id)}}">Edit event</a>
+						<!-- <a class="btn btn-secondary btn-sm mt-1 mb-1 w-75" href="{{url_for('events.add_staff', event_id = event.id)}}">Add Staff</a>
+						<a class="btn btn-secondary btn-sm mt-1 mb-1 w-75" href="{{url_for('events.update_event_tickets', event_id = event.id)}}">Change Tickets</a>
+						<a class="btn btn-secondary btn-sm mt-1 mb-1 w-75" href="{{url_for('events.add_tickets', event_id = event.id)}}">Add Tickets</a>
+						<a class="btn btn-secondary btn-sm mt-1 mb-1 w-75" href="{{url_for('events.delete_event_tickets', event_id = event.id)}}">Delete Tickets</a> -->
+						<button type="button" class="btn btn-outline-danger btn-sm m-1 w-75" data-toggle="modal" data-target="#deleteModal">Delete Event</button>
+					</div>
+				</div>
+			</div>
+			{%endif%}
+
+			<div class="card">
+				<div class="card-body">
+					<div class="content-section">
+						<h3 class="orange">Tickets</h3>
+						<ul class="list-group list-group-flush">
+							{%for ticket in event.tickets%}
+								<li class="list-group-item">
+									<div class="float-left">
+										<p class="article-content">
+											<strong class="orange"> <span class="ticket_type" id="{{ticket.id}}">{{ ticket.ticket_type }}</span> </strong>
+											<br>
+											Price: <span class="ticket-price">{{ "{:.2f}".format(ticket.price) }}</span> &euro;
+											<br>
+											Available: <span class="ticket-num">{{ ticket.num_tickets }}</span>
+										</p>
+									</div>
+									<div class="float-right" style="margin-top:1em;">
+										<div class="input-group mb-3" style="width:110px">
+											<div class="input-group-prepend">
+												<button class="btn btn-outline-orange sub-ticket" type="button" style="width:37px;" onclick="subTicket(this.parentElement.parentElement)" autocomplete="off" disabled>-</button>
+											</div>
+											<div class="custom-file">
+												<input type="text" class="form-control ticket-value num_booked_tickets" value="0" style="text-align:center" autocomplete="off" readonly>
+											</div>
+											<div class="input-group-append">
+												<button class="btn btn-outline-orange add-ticket" type="button" style="width:37px;" onclick="addTicket(this.parentElement.parentElement)">+</button>
+											</div>
+										</div>
+									</div>
+								</li>
+							{%endfor%}
+						</ul>
+						<div class="float-right" style="margin-top:4px;">
+							<div class="row">
+								<button class="btn btn-orange" type="button" id="purchase_button" autocomplete="off" onclick="booking(this)" disabled>Purchase <span id="purchase-num">0</span> tickets, <span id="purchase-price">0.00&euro;</span></button>
+							</div>
+							<div class="row" style="margin-top:2px;">
+								<button class="btn btn-orange" type="button" id="book_button" autocomplete="off" onclick="booking(this)" disabled>Book <span id="book-num">0</span> tickets, pay at the event</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+  <!-- Modal -->
+	<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="deleteModalLabel"> Delete Event? </h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+        <!-- <div class="modal-body">
+
+        </div> -->
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+<!--           <button type="button" class="btn btn-primary">Save changes</button> -->
+					<form action="{{url_for('events.delete_event', event_id=event.id)}}" method="POST">
+						<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+						<input class="btn btn-danger"type="submit" value="Delete">
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+{% endblock content%} <!-- put the name of what block we are ending -->
