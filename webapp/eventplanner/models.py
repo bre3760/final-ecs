@@ -143,7 +143,7 @@ class Event(db.Model):
 
     # num_tickets = db.Column(db.Integer, nullable=False)
     content = db.Column(db.Text, nullable=False)
-    #content_eng = db.Column(db.Text)
+    content_eng = db.Column(db.Text, nullable=True)
     address = db.Column(db.String(100), nullable=False)
     city = db.Column(db.String(100), nullable=False)
     location = db.Column(db.String(100), nullable=False)
@@ -186,6 +186,7 @@ class Ticket(db.Model):
     ticket_type = db.Column(db.String(30), nullable=False)
     # number of tickets per type
     num_tickets = db.Column(db.Integer, nullable=False)
+    num_bought = db.Column(db.Integer, nullable=False, server_default="0")
     price = db.Column(db.Float, nullable=False)
 
 

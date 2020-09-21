@@ -33,6 +33,7 @@ class EventForm(FlaskForm):
         'End time',  format='%H:%M', validators=[Required()])
 
     content = TextAreaField('Content', validators=[DataRequired()])
+    content_eng = TextAreaField('English Content (Optional)')
     address = StringField('Address', validators=[DataRequired()])
     city = StringField('City', validators=[DataRequired()])
     location = StringField('Location', validators=[DataRequired()])

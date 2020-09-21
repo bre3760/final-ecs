@@ -62,51 +62,66 @@ def create_booking():
                     if int(ticketToBook["booked_num"]) == 0:
                         continue
                     else:
-                        print(ticketToBook)
                         # check if the user is buying more tickets of the same type for the same event
                         eventOfTicketID = Ticket.query.get(
                             ticketToBook["ticket_id"]).event_id
-                        print(eventOfTicketID)
 
                         if UserBookings.query.filter_by(user_id=current_user.id,
                                                         event_id=eventOfTicketID,
                                                         ticket_id=ticketToBook["ticket_id"],
                                                         payment_status=statusOfPayment).first():
-                            print("found already existing")
-                            ExistingBooking = UserBookings.query.filter_by(user_id=current_user.id,
-                                                                           event_id=eventOfTicketID,
-                                                                           ticket_id=ticketToBook["ticket_id"],
-                                                                           payment_status=statusOfPayment).first()
-                            print("before adding")
-                            ExistingBooking.number_booked += int(
-                                ticketToBook["booked_num"])
-                            print("tecnically added?")
-                            db.session.commit()  # ?
+                            if Ticket.query.get(ticketToBook["ticket_id"]):
+                                ticketInQuestion = Ticket.query.get(
+                                    ticketToBook["ticket_id"])
+                                availableToPurchase = ticketInQuestion.num_tickets - \
+                                    int(ticketInQuestion.num_bought)
+                                if availableToPurchase >= ticketToBook["booked_num"]:
+                                    ExistingBooking = UserBookings.query.filter_by(user_id=current_user.id,
+                                                                                   event_id=eventOfTicketID,
+                                                                                   ticket_id=ticketToBook["ticket_id"],
+                                                                                   payment_status=statusOfPayment).first()
+                                    ExistingBooking.number_booked += int(
+                                        ticketToBook["booked_num"])
+                                    ticketInQuestion.num_bought += int(
+                                        ticketToBook["booked_num"])
+                                    db.session.commit()  #
+                                else:
+                                    result = {
+                                        "result": "not enough ticket available"}
+                                    return jsonify(result)
 
                         else:  # the booking combination does not already exist so create a new one
-                            print("not found existing")
                             if Ticket.query.get(ticketToBook["ticket_id"]):
-                                ticketTYPE = Ticket.query.get(
-                                    ticketToBook["ticket_id"]).ticket_type
-                                ticketActualPriceFromDB = Ticket.query.get(
-                                    ticketToBook["ticket_id"]).price
+                                ticketInQuestion = Ticket.query.get(
+                                    ticketToBook["ticket_id"])
+                                availableToPurchase = ticketInQuestion.num_tickets - \
+                                    int(ticketInQuestion.num_bought)
+                                if availableToPurchase >= ticketToBook["booked_num"]:
+                                    ticketTYPE = Ticket.query.get(
+                                        ticketToBook["ticket_id"]).ticket_type
+                                    ticketActualPriceFromDB = Ticket.query.get(
+                                        ticketToBook["ticket_id"]).price
 
-                                dataForQR = {"ticket_id": ticketToBook["ticket_id"],
-                                             "event_id": eventOfTicketID,
-                                             "user_id": current_user.id,
-                                             "status": statusOfPayment}
-                                qr_image = createQR(dataForQR)
+                                    dataForQR = {"ticket_id": ticketToBook["ticket_id"],
+                                                 "event_id": eventOfTicketID,
+                                                 "user_id": current_user.id,
+                                                 "status": statusOfPayment}
+                                    qr_image = createQR(dataForQR)
 
-                                bookingToAdd = UserBookings(user_id=current_user.id,
-                                                            event_id=eventOfTicketID,
-                                                            ticket_id=ticketToBook["ticket_id"],
-                                                            ticket_type=ticketTYPE,
-                                                            number_booked=int(
-                                                                ticketToBook["booked_num"]),
-                                                            number_scanned=0,
-                                                            payment_status=statusOfPayment,
-                                                            image_file=qr_image)
-                                db.session.add(bookingToAdd)
+                                    bookingToAdd = UserBookings(user_id=current_user.id,
+                                                                event_id=eventOfTicketID,
+                                                                ticket_id=ticketToBook["ticket_id"],
+                                                                ticket_type=ticketTYPE,
+                                                                number_booked=int(
+                                                                    ticketToBook["booked_num"]),
+                                                                number_scanned=0,
+                                                                payment_status=statusOfPayment,
+                                                                image_file=qr_image)
+                                    db.session.add(bookingToAdd)
+                                else:
+                                    result = {
+                                        "result": "not enough ticket available"}
+                                    return jsonify(result)
                 db.session.commit()
                 return redirect(url_for('bookings.display_booking'), code=302)
             else:

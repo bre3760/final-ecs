@@ -1,6 +1,9 @@
 {% extends "layout.html" %} <!-- to have the base model  -->
 {% block content %} <!-- to specify what is the content to insert into the base page -->
 
-{{qr_names}}
+
+<img src="{{ url_for('static', filename ='booking_qr_codes/' + 'jj.png' ) }}">
+
+
 
 {% endblock content%} <!-- put the name of what block we are ending -->

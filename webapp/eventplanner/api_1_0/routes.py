@@ -21,7 +21,11 @@ auth = HTTPBasicAuth()
 # In order to remove the CSRF protection that blocked login and new event
 # https://flask-wtf.readthedocs.io/en/stable/csrf.html
 # this is the decorator to use the token
+# try:
 
+# except Exception as e:
+#     result = {"result": "error", "type": str(e)}
+#     return jsonify(result)
 
 def token_required(f):
     @wraps(f)
@@ -240,6 +244,7 @@ def api_new_event(current_user_api):
             time_to = data['time_to']
             time_to_obj = datetime.strptime(time_to, '%H:%M').time()
             content = data['content']
+            content_eng = data['content_eng']
             address = data['address']
             city = data['city']
             location = data['location']
@@ -247,7 +252,7 @@ def api_new_event(current_user_api):
 
             event = Event(title=title, event_type=event_type,
                           event_date=date_object, time_from=time_from_obj, time_to=time_to_obj,
-                          content=content, address=address, city=city, location=location,
+                          content=content,content_eng=content_eng, address=address, city=city, location=location,
                           manager=manager)
 
             for ticket in tickets:
@@ -299,11 +304,6 @@ def api_get_event_tickets(id):
     result = ticket_schema.dump(tickets, many=True)
     return jsonify(result)
 
-###########################################################
-###########################################################
-###########################################################
-###########################################################
-
 
 @api.route("/event/<int:event_id>/delete/tickets/", methods=['POST'])
 @token_required
@@ -338,29 +338,6 @@ def api_delete_event_tickets(current_user_api, event_id):
         result = {"result": "Tickets have been deleted"}
         return jsonify(result)
 
-###########################################################
-###########################################################
-###########################################################
-###########################################################
-
-
-@api.route('/event/<int:event_id>/ticket/', methods=['GET'])
-def api_check_ticket(event_id):
-    event = Event.query.get_or_404(event_id)
-    if current_user_api != event.manager:
-        return forbidden('Insufficient permissions')
-    data = request.get_json()
-    # {"reservation_id":3,"user_id":2,"event_id":1,"ticket_id":3}
-    reservation_id = data["reservation_id"]
-    user_id = data["user_id"]
-    event_id = data["event_id"]
-    ticket_id = data["ticket_id"]
-
-###########################################################
-###########################################################
-###########################################################
-###########################################################
-
 
 @api.route('/update/event/<int:id>/', methods=['PUT'])
 @token_required
@@ -382,6 +359,7 @@ def api_update_event(current_user_api, id):
     time_to = data['time_to']
     time_to_obj = datetime.strptime(time_to, '%H:%M').time()
     content = data['content']
+    content_eng = data['content_eng']
     address = data['address']
     city = data['city']
     location = data['location']
@@ -392,6 +370,7 @@ def api_update_event(current_user_api, id):
     event.time_from = time_from_obj
     event.time_to = time_to_obj
     event.content = content
+    event.content_eng = content_eng
     event.address = address
     event.city = city
     event.location = location
@@ -467,7 +446,6 @@ def api_delete_event(current_user_api, id):
     db.session.delete(event)
     db.session.commit()
     return {'response': 'Event has been deleted'}
-    # what should i actually return ??
 
 
 @api.route("/event/<int:event_id>/add-staff/", methods=['GET', 'POST'])
@@ -660,26 +638,48 @@ def create_booking_api(current_user_api):
                                                 event_id = eventID,\
                                                 ticket_id = ticketToBook["ticket_id"],\
                                                 payment_status = statusOfPayment).first():
-
-                    ExistingBooking = UserBookings.query.filter_by(user_id = userID, event_id = eventID ,ticket_id = ticketToBook["ticket_id"], payment_status = statusOfPayment).first()
-                    ExistingBooking.number_booked += ticketToBook["quantity"]
-                    db.session.commit()
+                    if Ticket.query.get(ticketToBook["ticket_id"]):
+                        ticketInQuestion = Ticket.query.get(
+                            ticketToBook["ticket_id"])
+                        availableToPurchase = ticketInQuestion.num_tickets - int(ticketInQuestion.num_bought)
+                        if availableToPurchase >= ticketToBook["quantity"]:
+                            ExistingBooking = UserBookings.query.filter_by(user_id = userID, event_id = eventID ,ticket_id = ticketToBook["ticket_id"], payment_status = statusOfPayment).first()
+                            ExistingBooking.number_booked += ticketToBook["quantity"]
+                            ticketInQuestion.num_bought += int(ticketToBook["quantity"])
+                            db.session.commit()
+                        else:
+                            result = {"result":"not enough ticket available"}
+                            return jsonify(result)
                 else: # the booking combination does not already exist so create a new one
                     if Ticket.query.get(ticketToBook["ticket_id"]):
-                        ticketTYPE = Ticket.query.get(
-                            ticketToBook["ticket_id"]).ticket_type
-                        ticketActualPriceFromDB = Ticket.query.get(
-                            ticketToBook["ticket_id"]).price
+                        ticketInQuestion = Ticket.query.get(
+                            ticketToBook["ticket_id"])
+                        availableToPurchase = ticketInQuestion.num_tickets - int(ticketInQuestion.num_bought)
+                        if availableToPurchase >= ticketToBook["quantity"]:
+                            ticketTYPE = Ticket.query.get(
+                                ticketToBook["ticket_id"]).ticket_type
+                            ticketActualPriceFromDB = Ticket.query.get(
+                                ticketToBook["ticket_id"]).price
 
-                        bookingToAdd = UserBookings(user_id=userID,
-                                                    event_id=eventID,
-                                                    ticket_id=ticketToBook["ticket_id"],
-                                                    ticket_type=ticketTYPE,
-                                                    number_booked=ticketToBook["quantity"],
-                                                    number_scanned=0,
-                                                    payment_status=statusOfPayment)
+                            dataForQR = {"ticket_id": ticketToBook["ticket_id"],
+                                         "event_id": eventID,
+                                         "user_id": userID,
+                                         "status": statusOfPayment}
+                            qr_image = createQR(dataForQR)
 
-                        db.session.add(bookingToAdd)
+                            bookingToAdd = UserBookings(user_id=userID,
+                                                        event_id=eventID,
+                                                        ticket_id=ticketToBook["ticket_id"],
+                                                        ticket_type=ticketTYPE,
+                                                        number_booked=ticketToBook["quantity"],
+                                                        number_scanned=0,
+                                                        payment_status=statusOfPayment,
+                                                        image_file=qr_image)
+
+                            db.session.add(bookingToAdd)
+                        else:
+                            result = {"result":"not enough ticket available"}
+                            return jsonify(result)
             db.session.commit()
             result = {"result": "booking completed"}
             return jsonify(result)
@@ -747,6 +747,21 @@ def get_user_bookings_api():
     except Exception as e:
         result = {"result": "error", "type": str(e)}
         return jsonify(result)
+
+
+def createQR(data):
+    #data = "https://www.thepythoncode.com"
+    random_hex = secrets.token_hex(16)
+    # output file name
+    filename = random_hex + ".png"
+    # generate qr code
+    img = qrcode.make(data)
+    # save img to a file
+    picture_path = os.path.join(
+        current_app.root_path, 'static/booking_qr_codes/', filename)
+    img.save(picture_path)
+
+    return filename
 
 # @api.route('/user-bookings/', methods=['POST'])
 # @csrf.exempt

@@ -20,7 +20,7 @@ def new_event():
     if form.validate_on_submit():
         event = Event(title=form.title.data, event_type=form.event_type.data,
                       event_date=form.event_date.data, time_from=form.time_from.data, time_to=form.time_to.data,
-                      content=form.content.data, address=form.address.data, city=form.city.data, location=form.location.data,
+                      content=form.content.data, content_eng=form.content_eng.data, address=form.address.data, city=form.city.data, location=form.location.data,
                       manager=current_user)
         for ticket in form.tickets.data:
             new_ticket = Ticket(event_id=event.id, ticket_type=ticket['ticket_type'],
@@ -61,6 +61,7 @@ def update_event(event_id):
         event.time_from = form.time_from.data
         event.time_to = form.time_to.data
         event.content = form.content.data
+        event.content_eng = form.content_eng.data
         event.address = form.address.data
         event.city = form.city.data
         event.location = form.location.data
@@ -79,6 +80,7 @@ def update_event(event_id):
         form.time_from.data = event.time_from
         form.time_to.data = event.time_to
         form.content.data = event.content
+        form.content_eng.data = event.content_eng
         form.address.data = event.address
         form.city.data = event.city
         form.location.data = event.location
@@ -236,93 +238,3 @@ def add_staff(event_id):
             flash('User not found', 'error')
 
     return render_template('add_staff.html', form=form, title='Add Staff')
-
-
-# @users.route("/user/<string:username>")
-# def user_events(username):
-#     page = request.args.get('page', 1, type=int)
-#     user = User.query.filter_by(username=username).first_or_404()
-#     # passing an argument to a template
-#     # we want to paginate them
-#     events = Event.query.filter_by(manager=user)\
-#         .order_by(Event.date_posted.desc())\
-#         .paginate(page=page, per_page=5)
-#     return render_template('user_events.html', events=events, user=user)
-
-
-# ######### API #########
-
-# @events.route('/api/event/new', methods=['POST'])
-# @auth.login_required
-# def api_new_event():
-#     title = request.json['title']
-#     event_type = request.json['event_type']
-#     event_date = request.json['date_and_time']
-#     num_tickets = request.json['num_of_tickets']
-#     content = request.json['content']
-#     address = request.json['address']
-#     city = request.json['city']
-#     new_event = Event(title=title, event_type=event_type,
-#                       event_date=event_date, num_tickets=num_tickets,
-#                       content=content, address=address, city=city,
-#                       manager=current_user)
-
-#     db.session.add(new_event)
-#     db.session.commit()
-#     return event_schema.jsonify(new_event)
-
-# # get all events
-
-
-# @events.route('/api/events', methods=['GET'])
-# def api_get_events():
-#     all_events = Event.query.all()
-#     result = events_schema.dump(all_events, many=True)
-#     return jsonify(result)
-
-# # @events.route('api/events/<event_type>', methods = ['GET'])
-# # def api_get_event_by_type():
-# #     events_by_type = Event.query.filter_by('event_type').all()
-
-# # get single event
-
-
-# @events.route('/api/event/<id>', methods=['GET'])
-# def api_get_event(id):
-#     event = Event.query.get(id)
-#     return events_schema.jsonify(event)
-
-
-# @events.route('/api/update/event/<id>', methods=['PUT'])
-# @login_required
-# def api_update_event(id):
-#     event = Event.query.get(id)
-
-#     title = request.json['title']
-#     event_type = request.json['event_type']
-#     event_date = request.json['date_and_time']
-#     num_tickets = request.json['num_of_tickets']
-#     content = request.json['content']
-#     address = request.json['address']
-#     city = request.json['city']
-
-#     event.title = title
-#     event.event_type = event_type
-#     event.event_date = event_date
-#     event.num_tickets = num_tickets
-#     event.content = content
-#     event.address = address
-#     event.city = city
-
-#     db.session.commit()
-
-#     return events_schema.jsonify(event)
-
-
-# @events.route('/api/delete/event/<id>', methods=['DELETE'])
-# @login_required
-# def api_delete_event(id):
-#     event = Event.query.get(id)
-#     db.session.delete(event)
-#     db.session.commit()
-#     return event_schema.jsonify(event)
