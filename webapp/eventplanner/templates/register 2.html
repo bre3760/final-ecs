@@ -1,0 +1,115 @@
+{% extends "layout.html" %} <!-- to have the base model  -->
+{% block content %} <!-- to specify what is the content to insert into the base page -->
+
+	<div class="row">
+		<div class="col-md-3">
+		</div>
+		<div class="col-md-6">
+			<div class="card sharp-border">
+				<div class="card-header text-center" style="background-color:white">
+					<h3 class="text-uppercase orange">sign up form</h3>
+				</div>
+				<div class="card-body text-center">
+					<form method="POST" action="">
+						{{ form.hidden_tag()}} <!-- we pass in the form instance to this template -->
+						<!-- the hidden tag adds a csrf token aka cross site request forgery token  -->
+						<fieldset class="form-group">
+							<div class="form-group">
+								<div class="input-group mb-3">
+									<div class="input-group-prepend" >
+										<span class="input-group-text"><span class="material-icons">person</span></span>
+									</div>
+									{% if form.username.errors%}
+										{{ form.username(class="form-control form-control-lg is-invalid")}}
+										<div class="invalid-feedback">
+											{% for error in form.username.errors %}
+												<span>{{ error }}</span>
+											{%endfor%}
+										</div>
+									{% else %}
+										{{ form.username(class="form-control form-control-lg",placeholder="Username")}}
+									{%endif%}
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="input-group mb-3">
+									<div class="input-group-prepend" >
+										<span class="input-group-text"><span class="material-icons">alternate_email</span></span>
+									</div>
+									{% if form.email.errors %}
+										{{ form.email(class="form-control form-control-lg is-invalid")}}
+										<div class="invalid-feedback">
+											{% for error in form.email.errors %}
+												<span>{{ error }}</span>
+											{%endfor%}
+										</div>
+									{% else %}
+										{{ form.email(class="form-control form-control-lg",placeholder="Email")}}
+									{% endif %}
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="input-group mb-3">
+									<div class="input-group-prepend" >
+										<span class="input-group-text"><span class="material-icons">lock</span></span>
+									</div>
+									{% if form.password.errors %}
+										{{ form.password(class="form-control form-control-lg is-invalid")}}
+										<div class="invalid-feedback">
+											{% for error in form.password.errors %}
+												<span>{{ error }}</span>
+											{% endfor %}
+										</div>
+									{% else %}
+										{{ form.password(class="form-control form-control-lg",placeholder="Password")}}
+									{% endif %} 
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="input-group mb-3">
+									<div class="input-group-prepend" >
+										<span class="input-group-text"><span class="material-icons">lock</span></span>
+									</div>
+									{% if form.confirm_password.errors %}
+										{{ form.confirm_password(class="form-control form-control-lg is-invalid")}}
+										<div class="invalid-feedback">
+											{% for error in form.confirm_password.errors %}
+												<span>{{ error }}</span>
+											{% endfor %}
+										</div>
+									{% else %}
+										{{ form.confirm_password(class="form-control form-control-lg",placeholder="Confirm password")}}
+									{% endif %}
+								</div>
+							</div>
+						</fieldset>
+
+						<div class="form-group">
+							{{ form.submit(class="btn btn-outline-orange",value="Sign up")}}
+						</div>
+					</form>
+				</div>
+				<div class="card-footer" style="background-color:white">
+					<div class="container-fluid">
+						<div class="float-left">
+							<small class="text-muted">
+								Already signed up?
+								<br>
+								<a class="brown-link text-uppercase" data-toggle="modal" data-target="#myModal" onclick="modalLayout({{ url_for('users.login')}})" href="">log in</a>
+							</small>
+						</div>
+						<div class="float-right text-right">
+							<small class="text-muted">
+								Are you an event provider?
+								<br>
+								<a class="brown-link text-uppercase" href="{{url_for('users.register_manager')}}">Sign up here</a><!--  we passs in the name of the route function -->
+							</small>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-3">
+		</div>
+	</div>
+{% endblock content %} <!-- put the name of what block we are ending -->

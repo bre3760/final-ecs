@@ -120,6 +120,8 @@ def create_booking():
                                                                 number_scanned=0,
                                                                 payment_status=statusOfPayment,
                                                                 image_file=qr_image)
+                                    ticketInQuestion.num_bought += int(
+                                        ticketToBook["booked_num"])
                                     db.session.add(bookingToAdd)
                                 else:
                                     result = {

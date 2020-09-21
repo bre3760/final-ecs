@@ -1,0 +1,55 @@
+{% extends "layout.html" %} <!-- to have the base model  -->
+{% block content %} <!-- to specify what is the content to insert into the base page -->
+
+	<div class="row w-100">
+		<div class="col-md-1">
+		</div>
+		<div class="col-md-7">
+			{% for event in events.items %}
+				<div class="card mb-3" style="max-width: 100%;">
+					<a class="stretched-link" href="{{ url_for('events.event', event_id = event.id)}}"></a>
+					<div class="row no-gutters">
+						<div class="col-md-4">
+							<img src="{{ url_for('static', filename ='event_pics/' + event.image_file ) }}" class="card-img" alt="...">
+						</div>
+						<div class="col-md-8">
+							<div class="card-body">
+								<h3 class="card-title"><strong>{{ event.title }}</strong></h3>
+								<p class="card-text">
+									<span style="font-size:1.4em">{{ event.event_date.strftime('%A %d %B %Y') }}</span>
+									<br>
+									{{ event.location }}, {{ event.city }}
+								</p>
+
+								<p style="font-size:1.2em; margin-top:10%; margin-bottom:0%;color:#ca5116">
+									<strong>Ticket starting from x&euro;</strong>
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			{% endfor %}
+			{% for page_num in events.iter_pages(left_edge=1,right_edge=1, left_current=1, right_current=2) %} <!-- right current includes current -->
+				{% if page_num %}
+					{% if events.page==page_num %}
+						<a class="btn btn-orange mb-4" href="{{ url_for('main.home',page=page_num ) }}" style="backgorund-color:#ca5116">{{ page_num }}</a>
+					{% else %}
+						<a class="btn btn-outline-orange mb-4" href="{{ url_for('main.home',page=page_num ) }}">{{ page_num }}</a>
+					{% endif %}
+				{% else %}
+					...
+				{% endif %}
+			{% endfor %}
+		</div>
+		<div class="col-md-3">
+			<div class="content-section text-center">
+				<h3>Our Sidebar</h3>
+			</div>
+		</div>
+	</div>
+
+
+{% endblock content%} <!-- put the name of what block we are ending -->
+
+
+
