@@ -642,7 +642,7 @@ def create_booking_api(current_user_api):
                         ticketInQuestion = Ticket.query.get(
                             ticketToBook["ticket_id"])
                         availableToPurchase = ticketInQuestion.num_tickets - int(ticketInQuestion.num_bought)
-                        if availableToPurchase >= ticketToBook["quantity"]:
+                        if availableToPurchase >= int(ticketToBook["quantity"]):
                             ExistingBooking = UserBookings.query.filter_by(user_id = userID, event_id = eventID ,ticket_id = ticketToBook["ticket_id"], payment_status = statusOfPayment).first()
                             ExistingBooking.number_booked += ticketToBook["quantity"]
                             ticketInQuestion.num_bought += int(ticketToBook["quantity"])
@@ -655,7 +655,7 @@ def create_booking_api(current_user_api):
                         ticketInQuestion = Ticket.query.get(
                             ticketToBook["ticket_id"])
                         availableToPurchase = ticketInQuestion.num_tickets - int(ticketInQuestion.num_bought)
-                        if availableToPurchase >= ticketToBook["quantity"]:
+                        if availableToPurchase >= int(ticketToBook["quantity"]):
                             ticketTYPE = Ticket.query.get(
                                 ticketToBook["ticket_id"]).ticket_type
                             ticketActualPriceFromDB = Ticket.query.get(

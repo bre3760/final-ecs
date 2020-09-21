@@ -70,12 +70,15 @@ def create_booking():
                                                         event_id=eventOfTicketID,
                                                         ticket_id=ticketToBook["ticket_id"],
                                                         payment_status=statusOfPayment).first():
+
                             if Ticket.query.get(ticketToBook["ticket_id"]):
                                 ticketInQuestion = Ticket.query.get(
                                     ticketToBook["ticket_id"])
                                 availableToPurchase = ticketInQuestion.num_tickets - \
                                     int(ticketInQuestion.num_bought)
-                                if availableToPurchase >= ticketToBook["booked_num"]:
+                                print("available", availableToPurchase)
+                                if availableToPurchase >= int(ticketToBook["booked_num"]):
+                                    print("here")
                                     ExistingBooking = UserBookings.query.filter_by(user_id=current_user.id,
                                                                                    event_id=eventOfTicketID,
                                                                                    ticket_id=ticketToBook["ticket_id"],
@@ -96,7 +99,7 @@ def create_booking():
                                     ticketToBook["ticket_id"])
                                 availableToPurchase = ticketInQuestion.num_tickets - \
                                     int(ticketInQuestion.num_bought)
-                                if availableToPurchase >= ticketToBook["booked_num"]:
+                                if availableToPurchase >= int(ticketToBook["booked_num"]):
                                     ticketTYPE = Ticket.query.get(
                                         ticketToBook["ticket_id"]).ticket_type
                                     ticketActualPriceFromDB = Ticket.query.get(
