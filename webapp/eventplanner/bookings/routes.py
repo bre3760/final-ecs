@@ -9,7 +9,7 @@ from eventplanner.models import User, Role, UserRoles, Event, EventStaff, Ticket
 import qrcode
 from PIL import Image
 import secrets
-
+from datetime import datetime
 # for emails
 # generate_email(subject,emailTo,content,filenames):
 from eventplanner.emails.routes import generate_email
@@ -21,7 +21,7 @@ bookings = Blueprint('bookings', __name__)
 
 
 def createQR(data):
-    #data = "https://www.thepythoncode.com"
+    # data = "https://www.thepythoncode.com"
     random_hex = secrets.token_hex(16)
     # output file name
     filename = random_hex + ".png"
@@ -89,31 +89,39 @@ def create_booking():
                                         ticketToBook["booked_num"])
                                     ticketInQuestion.num_bought += int(
                                         ticketToBook["booked_num"])
-                                    ticketActualPriceFromDB = Ticket.query.get(
-                                        ticketToBook["ticket_id"]).price
+                                    ticketActualPriceFromDB = ticketInQuestion.price
 
-                                    total_for_booking += ticketActualPriceFromDB * ticketInQuestion.num_bought
+                                    total_for_booking += total_for_booking + \
+                                        ticketActualPriceFromDB * \
+                                        int(ticketToBook["booked_num"])
 
+                                    print("partial total", total_for_booking)
                                     if ExistingBooking.image_file == 'default_qr':
                                         dataForQR = {"ticket_id": ticketToBook["ticket_id"],
                                                      "event_id": eventOfTicketID,
                                                      "user_id": current_user.id,
                                                      "status": statusOfPayment}
                                         qr_image = createQR(dataForQR)
-                                        all_qr_names.append(qr_image)
+
                                         ExistingBooking.image_file = qr_image
-
+                                    all_qr_names.append(
+                                        ExistingBooking.image_file)
                                     # for the pdf
-
+                                    print("before data for pdf")
+                                    # try:
                                     dataForPDF = {
-                                        "event-title": eventInQuestion.title,
+                                        "event-title": str(eventInQuestion.title),
                                         "total": total_for_booking,
-                                        "start time": eventInQuestion.time_from,
-                                        "date": eventInQuestion.event_date,
-                                        "location": eventInQuestion.location,
-                                        "info": eventInQuestion.address + ' ' + eventInQuestion.city
+                                        "start time": str(eventInQuestion.time_from.strftime("%H:%M")),
+                                        "date": str(eventInQuestion.event_date.strftime("%Y-%m-%d")),
+                                        "location": str(eventInQuestion.location),
+                                        "info": str(eventInQuestion.address) + ' ' + str(eventInQuestion.city)
                                     }
-                                    all_event_ticket_info.append(dataForPDF)
+                                    print(dataForPDF, "data foe pdf")
+                                    all_event_ticket_info.append(
+                                        dataForPDF)
+                                    # except Exception as e:
+                                    #     print(str(e))
 
                                     db.session.commit()  #
                                 else:
@@ -156,8 +164,8 @@ def create_booking():
                                     dataForPDF = {
                                         "event-title": eventInQuestion.title,
                                         "total": total_for_booking,
-                                        "start time": eventInQuestion.time_from,
-                                        "date": eventInQuestion.event_date,
+                                        "start time": str(eventInQuestion.time_from.strftime("%H:%M")),
+                                        "date": str(eventInQuestion.event_date.strftime("%Y-%m-%d")),
                                         "location": eventInQuestion.location,
                                         "info": eventInQuestion.address + ' ' + eventInQuestion.city
                                     }
@@ -168,9 +176,11 @@ def create_booking():
                                     return jsonify(result)
                 db.session.commit()
                 # pdf generation
+                print(dataForPDF)
                 print("befpre")
-                pdfname = str("ticket_id" + ticketToBook["ticket_id"] + "event_id" +
-                              eventOfTicketID + "user_id" + current_user.id + "status" + statusOfPayment)
+                pdfname = 'testingpdfbooking'
+                print(pdfname, "name of pdf ")
+                print(all_qr_names)
 
                 pdf_receipt = create_pdf_receipt(
                     pdfname, all_qr_names, all_event_ticket_info)
@@ -180,9 +190,8 @@ def create_booking():
                 subject = 'Your receipt'
                 emailTo = 'brendandavidpolidori@gmail.com'
                 content = 'testing emails from bookings'
-                base = os.path.join(current_app.root_path,
-                                    'static/booking-payment-pdf/')
-                filename = base + pdfname
+                filename = pdf_receipt
+                print("filename of pdf", filename)
                 email = generate_email(subject, emailTo, content, filename)
                 print("after email")
                 return redirect(url_for('bookings.display_booking'), code=302)
@@ -196,8 +205,8 @@ def create_booking():
             return jsonify(result)
 
 
-@bookings.route("/display-booking/", methods=['POST', 'GET'])
-@csrf.exempt
+@ bookings.route("/display-booking/", methods=['POST', 'GET'])
+@ csrf.exempt
 def display_booking():
     userbookingsAll = UserBookings.query.filter_by(user_id=current_user.id)
     return render_template('bookings/user_bookings.html', all_bookings=userbookingsAll, user=current_user)

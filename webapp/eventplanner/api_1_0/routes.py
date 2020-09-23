@@ -763,6 +763,13 @@ def createQR(data):
 
     return filename
 
+
+
+
+
+
+
+
 # @api.route('/user-bookings/', methods=['POST'])
 # @csrf.exempt
 # def get_user_bookings_api():

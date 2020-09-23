@@ -1,4 +1,14 @@
+import json
+from flask import (render_template, url_for, flash,
+                   redirect, request, abort, Blueprint, jsonify, current_app, make_response)
+from flask_login import current_user, login_required
+from eventplanner import db, csrf
+from eventplanner.models import User, Role, UserRoles, Event, EventStaff, Ticket, event_schema, events_schema, UserBookings
 
+import qrcode
+from PIL import Image
+import secrets
+from datetime import datetime
 import os
 import reportlab
 from PIL import Image
@@ -128,84 +138,92 @@ from reportlab.lib import colors
 
 def create_pdf_receipt(pdfName, ticketsBooked, ticket_event_info):
     print("pdf gen function")
-    fileName = pdfName + '.pdf'
-    title = 'Your Tickets'
+    print(ticketsBooked)
+    print(ticket_event_info)
+    print("all data inside")
+    try:
 
-    # where the logo is stored
-    picture_path = os.path.join(
-        '/Users/brendanpolidori/Desktop/final-ecs/webapp/eventplanner', 'static/', 'logo_events.jpeg')
-    # where to save the pdf file
-    filepath = os.path.join(
-        '/Users/brendanpolidori/Desktop/final-ecs/webapp/eventplanner', 'static/booking-payment-pdf/', fileName)
-    image = picture_path
-    # name with which to save the pdf file
-    savename = '/Users/brendanpolidori/Desktop/final-ecs/webapp/eventplanner/static/booking-payment-pdf/' + pdfName + '.pdf'
+        fileName = pdfName + '.pdf'
+        title = 'Your Tickets'
 
-    pdf = canvas.Canvas(savename)
-    y_logo = 720
-    x_logo = 250
-    pdf.drawInlineImage(image, x_logo, y_logo, 90, 90)
-    pdf.line(30, y_logo - 10, 570, y_logo - 10)  # y 710
+        # where the logo is stored
+        picture_path = os.path.join(
+            current_app.root_path, 'static/', 'logo_events.jpeg')
+        print(picture_path)
+        # where to save the pdf file
+        # filepath = os.path.join(
+        #     current_app.root_path, '/static/booking-payment-pdf/', fileName)
+        image = picture_path
+        # name with which to save the pdf file
+        savename = os.path.join(current_app.root_path,
+                                'static/booking-payment-pdf/', fileName)
+        print("after paths")
+        pdf = canvas.Canvas(savename)
+        y_logo = 720
+        x_logo = 250
+        pdf.drawInlineImage(image, x_logo, y_logo, 90, 90)
+        pdf.line(30, y_logo - 10, 570, y_logo - 10)  # y 710
 
-    # ###################################
-    # 2) Title
-    from reportlab.pdfbase import pdfmetrics
-    pdf.setFont('Helvetica', 16)
-    y_title = y_logo - 30
-    x_title = 295
-    pdf.drawCentredString(x_title, y_title, title)
-    # ###################################
-    # ticket indormation
-    y_start = 500
-    x_start = 390
-    tickets_booked = ticketsBooked
+        # ###################################
+        # 2) Title
+        from reportlab.pdfbase import pdfmetrics
+        pdf.setFont('Helvetica', 16)
+        y_title = y_logo - 30
+        x_title = 295
+        pdf.drawCentredString(x_title, y_title, title)
+        # ###################################
+        # ticket indormation
+        y_start = 500
+        x_start = 390
+        tickets_booked = ticketsBooked
 
-    def textforticket(x_start, y_start, dict_with_info):
-        textLines = [
-            'Event title: ' + dict_with_info["event-title"],
-            'total price: ' + dict_with_info["total"],
-            'start time: ' + dict_with_info["start time"],
-            'date of event: ' + dict_with_info["date"],
-            'event location: ' + dict_with_info["location"],
-            'additional info: ' + dict_with_info["info"]
-        ]
-        text = pdf.beginText(x_start, y_start)
-        text.setFont("Courier", 12)
-        text.setFillColor(colors.black)
-        for line in textLines:
-            text.textLine(line)
-        pdf.drawText(text)
+        def textforticket(x_start, y_start, dict_with_info):
+            textLines = [
+                'Event title: ' + dict_with_info["event-title"],
+                'total price: ' + str(dict_with_info["total"]),
+                'start time: ' + dict_with_info["start time"],
+                'date of event: ' + dict_with_info["date"],
+                'event location: ' + dict_with_info["location"],
+                'additional info: ' + dict_with_info["info"]
+            ]
+            text = pdf.beginText(x_start, y_start)
+            text.setFont("Courier", 12)
+            text.setFillColor(colors.black)
+            for line in textLines:
+                text.textLine(line)
+            pdf.drawText(text)
 
-    remove_each_iter = 0
-    i = 0
-    j = 0
-    for ticket in tickets_booked:
-        base = os.path.join(
-            '/Users/brendanpolidori/Desktop/final-ecs/webapp/eventplanner', 'static/booking_qr_codes/')
-        abs_path_ticket = base + ticket
-        if i < 3:
-            textforticket(30, y_start - remove_each_iter +
-                          150, ticket_event_info[j])
-            #        x1   y1    x2     y2
-            pdf.line(30, y_start - remove_each_iter + 165,
-                     350, y_start - remove_each_iter + 165)
-            pdf.drawInlineImage(abs_path_ticket, x_start,
-                                y_start - remove_each_iter, 180, 180)
-        else:
-            i = 0
-            remove_each_iter = 0
-            pdf.showPage()
-            pdf.line(30, y_start - remove_each_iter + 165,
-                     350, y_start - remove_each_iter + 165)
-            textforticket(30, y_start - remove_each_iter +
-                          150, ticket_event_info[j])
-            pdf.drawInlineImage(abs_path_ticket, x_start,
-                                y_start - remove_each_iter, 180, 180)
+        remove_each_iter = 0
+        i = 0
+        j = 0
+        for ticket in tickets_booked:
+            base = os.path.join(current_app.root_path,
+                                'static/booking_qr_codes/')
+            abs_path_ticket = base + ticket
+            if i < 3:
+                textforticket(30, y_start - remove_each_iter +
+                              150, ticket_event_info[j])
+                #        x1   y1    x2     y2
+                pdf.line(30, y_start - remove_each_iter + 165,
+                         350, y_start - remove_each_iter + 165)
+                pdf.drawInlineImage(abs_path_ticket, x_start,
+                                    y_start - remove_each_iter, 180, 180)
+            else:
+                i = 0
+                remove_each_iter = 0
+                pdf.showPage()
+                pdf.line(30, y_start - remove_each_iter + 165,
+                         350, y_start - remove_each_iter + 165)
+                textforticket(30, y_start - remove_each_iter +
+                              150, ticket_event_info[j])
+                pdf.drawInlineImage(abs_path_ticket, x_start,
+                                    y_start - remove_each_iter, 180, 180)
 
-        remove_each_iter += 180
-        i = i + 1
-        j = j + 1
+            remove_each_iter += 180
+            i = i + 1
+            j = j + 1
 
-    pdf.save()
-
+        pdf.save()
+    except Exception as e:
+        print(str(e))
     return savename

@@ -26,26 +26,33 @@ EMAIL_PASSWORD = 'WebDevelopment123!'
 
 
 def generate_email(subject, emailTo, content, filename):
-    print("yo")
-    msg = EmailMessage()
-    msg['Subject'] = subject
-    msg['From'] = EMAIL_ADDRESS
-    msg['To'] = emailTo
+    print("filename received", filename)
+    try:
 
-    msg.set_content(content)
+        msg = EmailMessage()
+        msg['Subject'] = subject
+        msg['From'] = EMAIL_ADDRESS
+        msg['To'] = emailTo
 
-    files = filename  # filenames have complete path
-    for file in files:
-        with open(file, 'rb') as f:
-            file_data = f.read()
-            file_name = f.name
+        msg.set_content(content)
 
-    msg.add_attachement(file_data, maintype='application',
-                        subtype='octet-stream', filename=file_name)
+        try:
+            files = filename  # filenames have complete path
+            for file in files:
+                with open(file, 'rb') as f:
+                    file_data = f.read()
+                    file_name = f.name
 
-    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-        smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
-        smtp.send_message(msg)
+            msg.add_attachement(file_data, maintype='application',
+                                subtype='octet-stream', filename=file_name)
+        except Exception as e:
+            print(str(e))
+
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+            smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+            smtp.send_message(msg)
+    except Exception as e:
+        print(str(e))
     return ('sent')
 
 
