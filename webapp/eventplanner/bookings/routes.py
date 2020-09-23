@@ -42,11 +42,12 @@ def create_booking():
     all_qr_names = []
     all_event_ticket_info = []
     total_for_booking = 0
+    total_for_tickets = 0.00
     if request.method == 'POST':
         try:
             # // booked_tickets = [ {ticket_id: 2, booked_num: 2}, {ticket_id: 12, booked_num: 4}]
             data = request.get_json()
-            print("data received is: ", data)
+            # print("data received is: ", data)
             statusOfPayment = "not payed"
 
             # check if booking user is a manager or not
@@ -57,9 +58,10 @@ def create_booking():
                     isManager = True
 
             if isManager is False:
-                print("user is not a manager", userToCheck.id)
+                # print("user is not a manager", userToCheck.id)
 
                 for ticketToBook in data:
+                    total_for_tickets = 0
                     if int(ticketToBook["booked_num"]) == 0:
                         continue
                     else:
@@ -78,9 +80,9 @@ def create_booking():
                                     ticketToBook["ticket_id"])
                                 availableToPurchase = ticketInQuestion.num_tickets - \
                                     int(ticketInQuestion.num_bought)
-                                print("available", availableToPurchase)
+                                # print("available", availableToPurchase)
                                 if availableToPurchase >= int(ticketToBook["booked_num"]):
-                                    print("here")
+                                    # print("here")
                                     ExistingBooking = UserBookings.query.filter_by(user_id=current_user.id,
                                                                                    event_id=eventOfTicketID,
                                                                                    ticket_id=ticketToBook["ticket_id"],
@@ -91,11 +93,10 @@ def create_booking():
                                         ticketToBook["booked_num"])
                                     ticketActualPriceFromDB = ticketInQuestion.price
 
-                                    total_for_booking += total_for_booking + \
-                                        ticketActualPriceFromDB * \
-                                        int(ticketToBook["booked_num"])
+                                    total_for_tickets += ticketActualPriceFromDB * \
+                                        ExistingBooking.number_booked  # number booked by user
 
-                                    print("partial total", total_for_booking)
+                                    # print("partial total", total_for_booking)
                                     if ExistingBooking.image_file == 'default_qr':
                                         dataForQR = {"ticket_id": ticketToBook["ticket_id"],
                                                      "event_id": eventOfTicketID,
@@ -107,17 +108,24 @@ def create_booking():
                                     all_qr_names.append(
                                         ExistingBooking.image_file)
                                     # for the pdf
-                                    print("before data for pdf")
+                                    # print("before data for pdf")
                                     # try:
+                                    if statusOfPayment == 'not payed':
+                                        stat = 'Not Paid'
+                                    else:
+                                        stat = 'Paid'
                                     dataForPDF = {
                                         "event-title": str(eventInQuestion.title),
-                                        "total": total_for_booking,
+                                        "ticket-type": ticketInQuestion.ticket_type,
+                                        "num": str(ExistingBooking.number_booked),
+                                        "status": stat,
+                                        "total":  "{:.2f}".format(total_for_tickets),
                                         "start time": str(eventInQuestion.time_from.strftime("%H:%M")),
                                         "date": str(eventInQuestion.event_date.strftime("%Y-%m-%d")),
                                         "location": str(eventInQuestion.location),
                                         "info": str(eventInQuestion.address) + ' ' + str(eventInQuestion.city)
                                     }
-                                    print(dataForPDF, "data foe pdf")
+                                    # print(dataForPDF, "data foe pdf")
                                     all_event_ticket_info.append(
                                         dataForPDF)
                                     # except Exception as e:
@@ -158,12 +166,18 @@ def create_booking():
                                                                 image_file=qr_image)
                                     ticketInQuestion.num_bought += int(
                                         ticketToBook["booked_num"])
-                                    total_for_booking += ticketActualPriceFromDB * ticketInQuestion.num_bought
-
+                                    total_for_tickets += ticketActualPriceFromDB * ExistingBooking.number_booked
+                                    if statusOfPayment == 'not payed':
+                                        stat = 'Not Paid'
+                                    else:
+                                        stat = 'Paid'
                                     db.session.add(bookingToAdd)
                                     dataForPDF = {
                                         "event-title": eventInQuestion.title,
-                                        "total": total_for_booking,
+                                        "ticket-type": ticketInQuestion.ticket_type,
+                                        "num": str(bookingToAdd.number_booked),
+                                        "status": stat,
+                                        "total": "{:.2f}".format(total_for_tickets),
                                         "start time": str(eventInQuestion.time_from.strftime("%H:%M")),
                                         "date": str(eventInQuestion.event_date.strftime("%Y-%m-%d")),
                                         "location": eventInQuestion.location,
@@ -176,25 +190,26 @@ def create_booking():
                                     return jsonify(result)
                 db.session.commit()
                 # pdf generation
-                print(dataForPDF)
-                print("befpre")
+                # print(dataForPDF)
+                # print("befpre")
                 random_hex = secrets.token_hex(16)
                 pdfname = 'testingpdfbooking'
-                print(pdfname, "name of pdf ")
-                print(all_qr_names)
+                # print(pdfname, "name of pdf ")
+                # print(all_qr_names)
 
                 pdf_receipt = create_pdf_receipt(
                     pdfname, all_qr_names, all_event_ticket_info)
-                print("aftrer pdf")
-                print("before email")
+                # print("aftrer pdf")
+                # print("before email")
                 # send email receipt
                 subject = 'Your receipt'
-                emailTo = 'brendandavidpolidori@gmail.com'
+                # emailTo = 'brendandavidpolidori@gmail.com'
+                emailTo = current_user.email
                 content = 'Thank you for your purchase. Please find your tickets attached'
                 filename = pdf_receipt
-                print("filename of pdf", filename)
+                # print("filename of pdf", filename)
                 email = generate_email(subject, emailTo, content, filename)
-                print("after email")
+                # print("after email")
                 return redirect(url_for('bookings.display_booking'), code=302)
             else:
                 result = {"result": "error",

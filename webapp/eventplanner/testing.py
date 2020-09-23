@@ -234,7 +234,7 @@ textLines = [
 ]
 
 picture_path = os.path.join(
-    '/Users/brendanpolidori/Desktop/final-ecs/webapp/eventplanner', 'static/emails', 'logo_events.jpeg')
+    '/Users/brendanpolidori/Desktop/final-ecs/webapp/eventplanner', 'static/', 'logo_events.jpeg')
 filepath = os.path.join(
     '/Users/brendanpolidori/Desktop/final-ecs/webapp/eventplanner', 'static/emails/', fileName)
 # # image = 'tasmanianDevil.jpg'
@@ -247,13 +247,22 @@ savename = '/Users/brendanpolidori/Desktop/final-ecs/webapp/eventplanner/static/
 # 0) Create document
 
 pdf = canvas.Canvas(savename)
-# drawMyRuler(pdf)
+drawMyRuler(pdf)
 
 # logo
 y_logo = 720
 x_logo = 250
 pdf.drawInlineImage(image, x_logo, y_logo, 90, 90)
 pdf.line(30, y_logo - 10, 570, y_logo - 10)  # y 710
+
+# event by polito info
+pdf.setFont('Helvetica', 16)
+pdf.drawString(30, 790, 'EventsByPolito')
+pdf.setFont('Helvetica', 12)
+pdf.setFillColorRGB(0, 0, 255)
+pdf.drawString(30, 775, 'http://homeserverngg.ddns.net/')
+pdf.setFillColorRGB(0, 0, 0)
+pdf.drawString(30, 760, '1600 Pennsylvania Avenue NW')
 
 
 # ###################################

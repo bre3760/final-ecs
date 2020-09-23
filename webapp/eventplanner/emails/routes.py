@@ -26,7 +26,7 @@ EMAIL_PASSWORD = 'WebDevelopment123!'
 
 
 def generate_email(subject, emailTo, content, filename):
-    print("filename received", filename)
+    # print("filename received", filename)
     try:
 
         msg = EmailMessage()
