@@ -37,14 +37,15 @@ def generate_email(subject, emailTo, content, filename):
         msg.set_content(content)
 
         try:
-            files = filename  # filenames have complete path
-            for file in files:
-                with open(file, 'rb') as f:
-                    file_data = f.read()
-                    file_name = f.name
-
-            msg.add_attachement(file_data, maintype='application',
-                                subtype='octet-stream', filename=file_name)
+            # files = [filename]  # filenames have complete path
+            # for file in files:
+            file = filename
+            with open(file, 'rb') as f:
+                file_data = f.read()
+                file_name = f.name
+            # IMPORTANT CHECK SPELLING OF ATTACHMENT REPORTED BUG
+            msg.add_attachment(file_data, maintype='application',
+                               subtype='octet-stream', filename=file_name)
         except Exception as e:
             print(str(e))
 

@@ -178,6 +178,7 @@ def create_booking():
                 # pdf generation
                 print(dataForPDF)
                 print("befpre")
+                random_hex = secrets.token_hex(16)
                 pdfname = 'testingpdfbooking'
                 print(pdfname, "name of pdf ")
                 print(all_qr_names)
@@ -189,7 +190,7 @@ def create_booking():
                 # send email receipt
                 subject = 'Your receipt'
                 emailTo = 'brendandavidpolidori@gmail.com'
-                content = 'testing emails from bookings'
+                content = 'Thank you for your purchase. Please find your tickets attached'
                 filename = pdf_receipt
                 print("filename of pdf", filename)
                 email = generate_email(subject, emailTo, content, filename)

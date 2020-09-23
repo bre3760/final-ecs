@@ -179,12 +179,12 @@ def create_pdf_receipt(pdfName, ticketsBooked, ticket_event_info):
 
         def textforticket(x_start, y_start, dict_with_info):
             textLines = [
-                'Event title: ' + dict_with_info["event-title"],
-                'total price: ' + str(dict_with_info["total"]),
-                'start time: ' + dict_with_info["start time"],
-                'date of event: ' + dict_with_info["date"],
-                'event location: ' + dict_with_info["location"],
-                'additional info: ' + dict_with_info["info"]
+                'Event Title: ' + dict_with_info["event-title"],
+                'Total price: ' + str(dict_with_info["total"]) + '€',
+                'Start Time: ' + dict_with_info["start time"],
+                'Date of Event: ' + dict_with_info["date"],
+                'Event Location: ' + dict_with_info["location"],
+                'Additional Information: ' + dict_with_info["info"]
             ]
             text = pdf.beginText(x_start, y_start)
             text.setFont("Courier", 12)
