@@ -136,30 +136,38 @@ def after_payment():
             # check if the user is buying more tickets of the same type for the same event
             eventOfTicketID = Ticket.query.get(
                 ticketToBook["ticket_id"]).event_id
-            print(eventOfTicketID)
+            # print(eventOfTicketID)
 
             if UserBookings.query.filter_by(user_id=current_user.id,
                                             event_id=eventOfTicketID,
                                             ticket_id=ticketToBook["ticket_id"],
                                             payment_status=statusOfPayment).first():
                 print("found already existing")
-                ExistingBooking = UserBookings.query.filter_by(user_id=current_user.id,
-                                                               event_id=eventOfTicketID,
-                                                               ticket_id=ticketToBook["ticket_id"],
-                                                               payment_status=statusOfPayment).first()
-                print("before adding")
-                ExistingBooking.number_booked += int(
-                    ticketToBook["booked_num"])
-                print("tecnically added?")
+                ticketInQuestion = Ticket.query.get(ticketToBook["ticket_id"])
+                availableToPurchase = ticketInQuestion.num_tickets - \
+                    int(ticketInQuestion.num_bought)
+                print("available", availableToPurchase)
+                if availableToPurchase >= int(ticketToBook["booked_num"]):
+                    print("here")
+                    ExistingBooking = UserBookings.query.filter_by(user_id=current_user.id,
+                                                                   event_id=eventOfTicketID,
+                                                                   ticket_id=ticketToBook["ticket_id"],
+                                                                   payment_status=statusOfPayment).first()
+                    # print("before adding")
+                    ExistingBooking.number_booked += int(
+                        ticketToBook["booked_num"])
+                    ticketInQuestion.num_bought += int(
+                        ticketToBook["booked_num"])
+                    # print("tecnically added?")
 
-                if ExistingBooking.image_file == 'default_qr':
-                    dataForQR = {"ticket_id": ticketToBook["ticket_id"],
-                                 "event_id": eventOfTicketID,
-                                 "user_id": current_user.id,
-                                 "status": statusOfPayment}
-                    qr_image = createQR(dataForQR)
-                    ExistingBooking.image_file = qr_image
-                db.session.commit()  # ?
+                    if ExistingBooking.image_file == 'default_qr':
+                        dataForQR = {"ticket_id": ticketToBook["ticket_id"],
+                                     "event_id": eventOfTicketID,
+                                     "user_id": current_user.id,
+                                     "status": statusOfPayment}
+                        qr_image = createQR(dataForQR)
+                        ExistingBooking.image_file = qr_image
+                    db.session.commit()  # ?
 
             else:  # the booking combination does not already exist so create a new one
                 print("not found existing")
@@ -184,6 +192,8 @@ def after_payment():
                                                 number_scanned=0,
                                                 payment_status=statusOfPayment,
                                                 image_file=qr_image)
+                    ticketInQuestion.num_bought += int(
+                        ticketToBook["booked_num"])
                     db.session.add(bookingToAdd)
     db.session.commit()
 

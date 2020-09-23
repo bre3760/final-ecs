@@ -1,6 +1,6 @@
 from flask import render_template, request, Blueprint
 from eventplanner.models import Event
-
+import os
 main = Blueprint('main', __name__)
 
 
@@ -17,4 +17,10 @@ def home():
 
 @main.route("/about")
 def about():
+
     return render_template('about.html', title='About')
+
+
+# print(os.path.join(current_app.root_path))
+
+# /Users/brendanpolidori/Desktop/final-ecs/webapp/eventplanner

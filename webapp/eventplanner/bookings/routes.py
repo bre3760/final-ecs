@@ -10,6 +10,11 @@ import qrcode
 from PIL import Image
 import secrets
 
+# for emails
+# generate_email(subject,emailTo,content,filenames):
+from eventplanner.emails.routes import generate_email
+from eventplanner.utilities.pdfGen import create_pdf_receipt
+
 
 # for payments
 bookings = Blueprint('bookings', __name__)
@@ -30,17 +35,13 @@ def createQR(data):
     return filename
 
 
-# @bookings.route("/book/event/<int:event_id>/")
-# def book(event_id):
-#     event = Event.query.get_or_404(event_id)
-#     # return render_template('bookings/book.html', title=event.title, event=event)
-#     return render_template('bookings/frankenstein.html', title=event.title, event=event)
-# https://stackoverflow.com/questions/26954122/how-can-i-pass-arguments-into-redirecturl-for-of-flask/26957478
-
 @bookings.route("/generate-booking/", methods=['POST', 'GET'])
 @csrf.exempt
 @login_required
 def create_booking():
+    all_qr_names = []
+    all_event_ticket_info = []
+    total_for_booking = 0
     if request.method == 'POST':
         try:
             # // booked_tickets = [ {ticket_id: 2, booked_num: 2}, {ticket_id: 12, booked_num: 4}]
@@ -65,7 +66,8 @@ def create_booking():
                         # check if the user is buying more tickets of the same type for the same event
                         eventOfTicketID = Ticket.query.get(
                             ticketToBook["ticket_id"]).event_id
-
+                        eventInQuestion = Event.query.get(
+                            eventOfTicketID)
                         if UserBookings.query.filter_by(user_id=current_user.id,
                                                         event_id=eventOfTicketID,
                                                         ticket_id=ticketToBook["ticket_id"],
@@ -87,6 +89,32 @@ def create_booking():
                                         ticketToBook["booked_num"])
                                     ticketInQuestion.num_bought += int(
                                         ticketToBook["booked_num"])
+                                    ticketActualPriceFromDB = Ticket.query.get(
+                                        ticketToBook["ticket_id"]).price
+
+                                    total_for_booking += ticketActualPriceFromDB * ticketInQuestion.num_bought
+
+                                    if ExistingBooking.image_file == 'default_qr':
+                                        dataForQR = {"ticket_id": ticketToBook["ticket_id"],
+                                                     "event_id": eventOfTicketID,
+                                                     "user_id": current_user.id,
+                                                     "status": statusOfPayment}
+                                        qr_image = createQR(dataForQR)
+                                        all_qr_names.append(qr_image)
+                                        ExistingBooking.image_file = qr_image
+
+                                    # for the pdf
+
+                                    dataForPDF = {
+                                        "event-title": eventInQuestion.title,
+                                        "total": total_for_booking,
+                                        "start time": eventInQuestion.time_from,
+                                        "date": eventInQuestion.event_date,
+                                        "location": eventInQuestion.location,
+                                        "info": eventInQuestion.address + ' ' + eventInQuestion.city
+                                    }
+                                    all_event_ticket_info.append(dataForPDF)
+
                                     db.session.commit()  #
                                 else:
                                     result = {
@@ -110,7 +138,7 @@ def create_booking():
                                                  "user_id": current_user.id,
                                                  "status": statusOfPayment}
                                     qr_image = createQR(dataForQR)
-
+                                    all_qr_names.append(qr_image)
                                     bookingToAdd = UserBookings(user_id=current_user.id,
                                                                 event_id=eventOfTicketID,
                                                                 ticket_id=ticketToBook["ticket_id"],
@@ -122,12 +150,41 @@ def create_booking():
                                                                 image_file=qr_image)
                                     ticketInQuestion.num_bought += int(
                                         ticketToBook["booked_num"])
+                                    total_for_booking += ticketActualPriceFromDB * ticketInQuestion.num_bought
+
                                     db.session.add(bookingToAdd)
+                                    dataForPDF = {
+                                        "event-title": eventInQuestion.title,
+                                        "total": total_for_booking,
+                                        "start time": eventInQuestion.time_from,
+                                        "date": eventInQuestion.event_date,
+                                        "location": eventInQuestion.location,
+                                        "info": eventInQuestion.address + ' ' + eventInQuestion.city
+                                    }
+                                    all_event_ticket_info.append(dataForPDF)
                                 else:
                                     result = {
                                         "result": "not enough ticket available"}
                                     return jsonify(result)
                 db.session.commit()
+                # pdf generation
+                print("befpre")
+                pdfname = str("ticket_id" + ticketToBook["ticket_id"] + "event_id" +
+                              eventOfTicketID + "user_id" + current_user.id + "status" + statusOfPayment)
+
+                pdf_receipt = create_pdf_receipt(
+                    pdfname, all_qr_names, all_event_ticket_info)
+                print("aftrer pdf")
+                print("before email")
+                # send email receipt
+                subject = 'Your receipt'
+                emailTo = 'brendandavidpolidori@gmail.com'
+                content = 'testing emails from bookings'
+                base = os.path.join(current_app.root_path,
+                                    'static/booking-payment-pdf/')
+                filename = base + pdfname
+                email = generate_email(subject, emailTo, content, filename)
+                print("after email")
                 return redirect(url_for('bookings.display_booking'), code=302)
             else:
                 result = {"result": "error",

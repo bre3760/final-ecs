@@ -3,21 +3,21 @@ import os
 
 
 # class Config:
-#      SECRET_KEY = '483757cd797387a0e9855ac1dc2d8aaa'
-#      SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:WebDevelopment123!@localhost/eventsbypolito'
-#      # SECRET_KEY = os.environ.get('SECRET_KEY')
-#      # SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI')
-#      MAIL_SERVER = 'smtp.googlemail.com'
-#      MAIL_PORT = 587
-#      MAIL_USE_TLS = True
-#      # environment variable watch video later
-#      # MAIL_USENAME = os.environ.get('EMAIL_USER')
-#      # MAIL_PASSWORD = os.environ.get('EMAIL_PASS')  # jacopo & WebDevelopment123!
-#      MAIL_USENAME = 'jacopo'
-#      MAIL_PASSWORD = 'WebDevelopment123!'
-#      ADMIN = 'brendandavidpolidori@gmail.com'
+#     SECRET_KEY = '483757cd797387a0e9855ac1dc2d8aaa'
+#     SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:WebDevelopment123!@localhost/eventsbypolito'
+#     # SECRET_KEY = os.environ.get('SECRET_KEY')
+#     # SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI')
+#     MAIL_SERVER = 'smtp.googlemail.com'
+#     MAIL_PORT = 587
+#     MAIL_USE_TLS = True
+#     # environment variable watch video later
+#     # MAIL_USENAME = os.environ.get('EMAIL_USER')
+#     # MAIL_PASSWORD = os.environ.get('EMAIL_PASS')  # jacopo & WebDevelopment123!
+#     EMAIL_ADDRESS = 'eventsbypolito@gmail.com'
+#     EMAIL_PASSWORD = 'WebDevelopment123!'
+#     ADMIN = 'brendandavidpolidori@gmail.com'
 
-#
+# #
 class Config:
     SECRET_KEY = '483757cd797387a0e9855ac1dc2d8aaa'
     SQLALCHEMY_DATABASE_URI = 'sqlite:///site.db'
@@ -30,9 +30,9 @@ class Config:
     MAIL_USE_TLS = True
     # environment variable watch video later
     # MAIL_USENAME = os.environ.get('EMAIL_USER')
-    # MAIL_PASSWORD = os.environ.get('EMAIL_PASS')  # jacopo & WebDevelopment123!
-    MAIL_USENAME = 'jacopo'
-    MAIL_PASSWORD = 'WebDevelopment123!'
+    # MAIL_PASSWORD = os.environ.get('EMAIL_PASS')
+    EMAIL_ADDRESS = 'eventsbypolito@gmail.com'
+    EMAIL_PASSWORD = 'WebDevelopment123!'
     ADMIN = 'brendandavidpolidori@gmail.com'
 # https://github.com/antkahn/flask-api-starter-kit
 
