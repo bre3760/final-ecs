@@ -143,8 +143,8 @@ def after_payment():
             # check if the user is buying more tickets of the same type for the same event
             eventOfTicketID = Ticket.query.get(
                 ticketToBook["ticket_id"]).event_id
-            # print(eventOfTicketID)
-
+            eventInQuestion = Event.query.get(
+                eventOfTicketID)
             if UserBookings.query.filter_by(user_id=current_user.id,
                                             event_id=eventOfTicketID,
                                             ticket_id=ticketToBook["ticket_id"],
@@ -185,7 +185,7 @@ def after_payment():
                         "ticket-type": ticketInQuestion.ticket_type,
                         "num": str(ExistingBooking.number_booked),
                         "status": stat,
-                        "total":  "{:.2f}".format(total_for_tickets),
+                        "total": "{:.2f}".format(total_for_tickets),
                         "start time": str(eventInQuestion.time_from.strftime("%H:%M")),
                         "date": str(eventInQuestion.event_date.strftime("%Y-%m-%d")),
                         "location": str(eventInQuestion.location),

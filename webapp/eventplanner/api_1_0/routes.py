@@ -12,8 +12,14 @@ from eventplanner.events.utils_events import save_picture_api
 import os
 from werkzeug.utils import secure_filename
 import urllib.request
-
+import qrcode
+from PIL import Image
+import secrets
+from datetime import datetime
 from flask_cors import CORS
+from eventplanner.emails.routes import generate_email
+from eventplanner.utilities.pdfGen import create_pdf_receipt
+
 api = Blueprint('api', __name__)
 CORS(api)
 auth = HTTPBasicAuth()
@@ -611,6 +617,10 @@ def upload_file(event_id):
 def create_booking_api(current_user_api):
     try:
         data = request.get_json()
+        all_qr_names = []
+        all_event_ticket_info = []
+        total_for_booking = 0
+        total_for_tickets = 0.00
         # json for a booking
         # examplebookingJSON = {"event_id":1,
         #                     "user_id":2,
@@ -619,7 +629,6 @@ def create_booking_api(current_user_api):
         #                     "selected_tickets":[{"ticket_id":2,"quantity":3},{"ticket_id":3,"quantity":2}]}
         eventID = data["event_id"]
         userID = data["user_id"]
-        #totalPrice = data["total_price"]
         statusOfPayment = data["status"]
         selectedTickets = data["selected_tickets"]
 
@@ -630,22 +639,56 @@ def create_booking_api(current_user_api):
             if "Manager" in role.name:
                 isManager = True
 
-
-        if isManager == False:
+        if isManager is False:
             for ticketToBook in selectedTickets:
                 # check if the user is buying more tickets of the same type for the same event
-                if UserBookings.query.filter_by(user_id = userID,\
-                                                event_id = eventID,\
-                                                ticket_id = ticketToBook["ticket_id"],\
+                eventInQuestion = Event.query.get(eventID)
+                eventOfTicketID = eventID
+                if UserBookings.query.filter_by(user_id = userID,
+                                                event_id = eventID,
+                                                ticket_id = ticketToBook["ticket_id"],
                                                 payment_status = statusOfPayment).first():
                     if Ticket.query.get(ticketToBook["ticket_id"]):
                         ticketInQuestion = Ticket.query.get(
                             ticketToBook["ticket_id"])
                         availableToPurchase = ticketInQuestion.num_tickets - int(ticketInQuestion.num_bought)
                         if availableToPurchase >= int(ticketToBook["quantity"]):
-                            ExistingBooking = UserBookings.query.filter_by(user_id = userID, event_id = eventID ,ticket_id = ticketToBook["ticket_id"], payment_status = statusOfPayment).first()
+                            ExistingBooking = UserBookings.query.filter_by(user_id=userID,event_id=eventID,ticket_id=ticketToBook["ticket_id"],payment_status=statusOfPayment).first()
                             ExistingBooking.number_booked += ticketToBook["quantity"]
                             ticketInQuestion.num_bought += int(ticketToBook["quantity"])
+                            ticketActualPriceFromDB = ticketInQuestion.price
+                            total_for_tickets += ticketActualPriceFromDB * \
+                                ExistingBooking.number_booked
+                            if ExistingBooking.image_file == 'default_qr':
+                                dataForQR = {"ticket_id": ticketToBook["ticket_id"],
+                                             "event_id": eventOfTicketID,
+                                             "user_id": current_user.id,
+                                             "status": statusOfPayment}
+                                qr_image = createQR(dataForQR)
+                                ExistingBooking.image_file = qr_image
+                                all_qr_names.append(ExistingBooking.image_file)
+
+
+                            if statusOfPayment == 'not payed':
+                                stat = 'Not Paid'
+                            else:
+                                stat = 'Paid'
+                            dataForPDF = {
+                                "event-title": str(eventInQuestion.title),
+                                "ticket-type": ticketInQuestion.ticket_type,
+                                "num": str(ExistingBooking.number_booked),
+                                "status": stat,
+                                "total":  "{:.2f}".format(total_for_tickets),
+                                "start time": str(eventInQuestion.time_from.strftime("%H:%M")),
+                                "date": str(eventInQuestion.event_date.strftime("%Y-%m-%d")),
+                                "location": str(eventInQuestion.location),
+                                "info": str(eventInQuestion.address) + ' ' + str(eventInQuestion.city)
+                            }
+                            # print(dataForPDF, "data foe pdf")
+                            all_event_ticket_info.append(
+                                dataForPDF)
+
+
                             db.session.commit()
                         else:
                             result = {"result":"not enough ticket available"}
@@ -666,7 +709,7 @@ def create_booking_api(current_user_api):
                                          "user_id": userID,
                                          "status": statusOfPayment}
                             qr_image = createQR(dataForQR)
-
+                            all_qr_names.append(qr_image)
                             bookingToAdd = UserBookings(user_id=userID,
                                                         event_id=eventID,
                                                         ticket_id=ticketToBook["ticket_id"],
@@ -676,11 +719,41 @@ def create_booking_api(current_user_api):
                                                         payment_status=statusOfPayment,
                                                         image_file=qr_image)
 
+                            ticketInQuestion.num_bought += int(
+                                        ticketToBook["booked_num"])
+                            total_for_tickets += ticketActualPriceFromDB * ExistingBooking.number_booked
+                            if statusOfPayment == 'not payed':
+                                stat = 'Not Paid'
+                            else:
+                                stat = 'Paid'
+                            db.session.add(bookingToAdd)
+                            dataForPDF = {
+                                "event-title": eventInQuestion.title,
+                                "ticket-type": ticketInQuestion.ticket_type,
+                                "num": str(bookingToAdd.number_booked),
+                                "status": stat,
+                                "total": "{:.2f}".format(total_for_tickets),
+                                "start time": str(eventInQuestion.time_from.strftime("%H:%M")),
+                                "date": str(eventInQuestion.event_date.strftime("%Y-%m-%d")),
+                                "location": eventInQuestion.location,
+                                "info": eventInQuestion.address + ' ' + eventInQuestion.city
+                            }
+                            all_event_ticket_info.append(dataForPDF)
+
                             db.session.add(bookingToAdd)
                         else:
-                            result = {"result":"not enough ticket available"}
+                            result = {"result": "not enough ticket available"}
                             return jsonify(result)
             db.session.commit()
+            random_hex = secrets.token_hex(16)
+            pdfname = random_hex
+            pdf_receipt = create_pdf_receipt(
+                pdfname, all_qr_names, all_event_ticket_info)
+            subject = 'Your receipt'
+            emailTo = current_user_api.email
+            content = 'Thank you for your purchase. Please find your tickets attached'
+            filename = pdf_receipt
+            email = generate_email(subject, emailTo, content, filename)
             result = {"result": "booking completed"}
             return jsonify(result)
         else:
@@ -705,7 +778,7 @@ def get_user_bookings_api():
             user = User.query.get(data["user_id"])
             events_and_status = []
             for singleBooking in user.bookings:
-                tp = (singleBooking.event_id,singleBooking.payment_status)
+                tp = (singleBooking.event_id, singleBooking.payment_status)
                 if tp not in events_and_status:
                     events_and_status.append(tp)
             # list with the (event-id)
@@ -768,176 +841,3 @@ def createQR(data):
 
 
 
-
-
-# @api.route('/user-bookings/', methods=['POST'])
-# @csrf.exempt
-# def get_user_bookings_api():
-#     try:
-#         data = request.get_json()
-#     # json has {"user_id":2}
-#     except Exception as e:
-#         result = {"result": "error", "type": str(e)}
-#         return jsonify(result)
-#     try:
-#         if User.query.get(data["user_id"]):
-#             user = User.query.get(data["user_id"])
-#             events_booked = []
-#             for singleBooking in user.bookings:
-#                 if singleBooking.event_id not in events_booked:
-#                     events_booked.append((singleBooking.event_id,singleBooking.payment_status)) # list of tuples (eventid,status)
-#             # list with the (event-id)
-
-#             all_bookings = []
-#             i = 0
-#             for tupla_evID_status in events_booked:  # check all event ids
-#                 eventID = tupla_evID_status[0]
-#                 status = tupla_evID_status[1]
-#                 dict_for_ev = {}
-#                 dict_for_ev["event_id"] = eventID
-#                 dict_for_ev["status"] = status
-#                 all_bookings.append(dict_for_ev)
-#                 selectedTickets = []
-#                 totalPriceOfBooking = 0
-#                 for singleBooking in user.bookings:  # check through all bookings
-#                     if singleBooking.event_id == eventID and singleBooking.payment_status == status:
-#                         selectedTickets.append({
-#                             "quantity": singleBooking.number_booked,
-#                             "ticket_id": singleBooking.ticket_id
-#                         })
-#                         try:
-#                             tick = Ticket.query.get(singleBooking.ticket_id)
-#                         except Exception as e:
-#                             result = {"result": "error", "type": str(e)}
-#                             return jsonify(result)
-#                         totalPriceOfBooking = totalPriceOfBooking + \
-#                             tick.price * singleBooking.number_booked
-
-#                 all_bookings[i]["selected_tickets"] = selectedTickets
-#                 all_bookings[i]["total_price"] = totalPriceOfBooking
-#                 all_bookings[i]["user_id"] = user.id
-#                 i = i + 1
-
-#             return jsonify(all_bookings)
-
-#         else:
-#             result = {"result": "user not found"}
-#             return jsonify(result)
-#     except Exception as e:
-#         result = {"result": "error", "type": str(e)}
-#         return jsonify(result)
-
-# @api.route('/create-booking/', methods=['POST'])
-# @token_required
-# @csrf.exempt
-# def create_booking_api(current_user_api):
-#     try:
-#         data = request.get_json()
-#         # json for a booking
-#         # examplebookingJSON = {"event_id":1,
-#         #                     "user_id":2,
-#         #                     "total_price":22,
-#         #                     "status":"not payed",
-#         #                     "selected_tickets":[{"ticket_id":2,"quantity":3},{"ticket_id":3,"quantity":2}]}
-#         eventID = data["event_id"]
-#         userID = data["user_id"]
-#         #totalPrice = data["total_price"]
-#         statusOfPayment = data["status"]
-#         selectedTickets = data["selected_tickets"]
-
-#         # check if the user is a simple user or at least not a manager
-#         isManager = False
-#         userToCheck = User.query.get(userID)
-#         for role in userToCheck.roles:
-#             if "Manager" in role.name:
-#                 isManager = True
-
-
-#         if isManager == False:
-#             for ticketToBook in selectedTickets:
-#                 # check if the user is buying more tickets of the same type for the same event
-#                 if UserBookings.query.filter_by(user_id = userID , event_id = eventID , ticket_id = ticketToBook["ticket_id"]).first():
-#                     ExistingBooking = UserBookings.query.filter_by(user_id = userID , event_id = eventID , ticket_id = ticketToBook["ticket_id"]).first()
-#                     ExistingBooking.number_booked += ticketToBook["quantity"]
-#                     db.session.commit()
-#                 else: # the booking combination does not already exist so create a new one
-#                     if Ticket.query.get(ticketToBook["ticket_id"]):
-#                         ticketTYPE = Ticket.query.get(
-#                             ticketToBook["ticket_id"]).ticket_type
-#                         ticketActualPriceFromDB = Ticket.query.get(
-#                             ticketToBook["ticket_id"]).price
-
-#                         bookingToAdd = UserBookings(user_id=userID,
-#                                                     event_id=eventID,
-#                                                     ticket_id=ticketToBook["ticket_id"],
-#                                                     ticket_type=ticketTYPE,
-#                                                     number_booked=ticketToBook["quantity"],
-#                                                     number_scanned=0,
-#                                                     payment_status=statusOfPayment)
-
-#                         db.session.add(bookingToAdd)
-#             db.session.commit()
-#             result = {"result": "booking completed"}
-#             return jsonify(result)
-#         else:
-#             result = {"result": "error", "type": "As a Manager you cannot book an event"}
-#             return jsonify(result)
-#     except Exception as e:
-#         result = {"result": "error", "type": str(e)}
-#         return jsonify(result)
-
-
-# @api.route('/user-bookings/', methods=['POST'])
-# @csrf.exempt
-# def get_user_bookings_api():
-#     try:
-#         data = request.get_json()
-#     # json has {"user_id":2}
-#     except Exception as e:
-#         result = {"result": "error", "type": str(e)}
-#         return jsonify(result)
-#     try:
-#         if User.query.get(data["user_id"]):
-#             user = User.query.get(data["user_id"])
-#             events_booked = []
-#             for singleBooking in user.bookings:
-#                 if singleBooking.event_id not in events_booked:
-#                     events_booked.append(singleBooking.event_id)
-#             # list with the event ids
-
-#             all_bookings = []
-#             i = 0
-#             for eventID in events_booked:  # check all event ids
-#                 dict_for_ev = {}
-#                 dict_for_ev["event_id"] = eventID
-#                 all_bookings.append(dict_for_ev)
-#                 selectedTickets = []
-#                 totalPriceOfBooking = 0
-#                 for singleBooking in user.bookings:  # check through all bookings
-#                     if singleBooking.event_id == eventID:
-#                         all_bookings[i]["status"] = singleBooking.payment_status
-#                         selectedTickets.append({
-#                             "quantity": singleBooking.number_booked,
-#                             "ticket_id": singleBooking.ticket_id
-#                         })
-#                         try:
-#                             tick = Ticket.query.get(singleBooking.ticket_id)
-#                         except Exception as e:
-#                             result = {"result": "error", "type": str(e)}
-#                             return jsonify(result)
-#                         totalPriceOfBooking = totalPriceOfBooking + \
-#                             tick.price * singleBooking.number_booked
-
-#                 all_bookings[i]["selected_tickets"] = selectedTickets
-#                 all_bookings[i]["total_price"] = totalPriceOfBooking
-#                 all_bookings[i]["user_id"] = user.id
-#                 i = i + 1
-
-#             return jsonify(all_bookings)
-
-#         else:
-#             result = {"result": "user not found"}
-#             return jsonify(result)
-#     except Exception as e:
-#         result = {"result": "error", "type": str(e)}
-#         return jsonify(result)
