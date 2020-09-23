@@ -1,7 +1,7 @@
 import os
 import json
-from flask import (render_template, url_for, flash,
-                   redirect, request, abort, Blueprint, jsonify, current_app, make_response)
+from flask import (render_template, url_for, flash, send_file,
+                   redirect, request, abort, Blueprint, jsonify, current_app, make_response, send_from_directory)
 from flask_login import current_user, login_required
 from eventplanner import db, csrf
 from eventplanner.models import User, Role, UserRoles, Event, EventStaff, Ticket, event_schema, events_schema, UserBookings
@@ -11,7 +11,6 @@ from PIL import Image
 import secrets
 from datetime import datetime
 # for emails
-# generate_email(subject,emailTo,content,filenames):
 from eventplanner.emails.routes import generate_email
 from eventplanner.utilities.pdfGen import create_pdf_receipt
 
@@ -80,7 +79,6 @@ def create_booking():
                                     ticketToBook["ticket_id"])
                                 availableToPurchase = ticketInQuestion.num_tickets - \
                                     int(ticketInQuestion.num_bought)
-                                # print("available", availableToPurchase)
                                 if availableToPurchase >= int(ticketToBook["booked_num"]):
                                     # print("here")
                                     ExistingBooking = UserBookings.query.filter_by(user_id=current_user.id,
@@ -193,7 +191,8 @@ def create_booking():
                 # print(dataForPDF)
                 # print("befpre")
                 random_hex = secrets.token_hex(16)
-                pdfname = 'testingpdfbooking'
+                # pdfname = 'testingpdfbooking'
+                pdfname = random_hex
                 # print(pdfname, "name of pdf ")
                 # print(all_qr_names)
 
@@ -221,90 +220,42 @@ def create_booking():
             return jsonify(result)
 
 
-@ bookings.route("/display-booking/", methods=['POST', 'GET'])
-@ csrf.exempt
+@bookings.route("/display-booking/", methods=['POST', 'GET'])
+@csrf.exempt
 def display_booking():
     userbookingsAll = UserBookings.query.filter_by(user_id=current_user.id)
     return render_template('bookings/user_bookings.html', all_bookings=userbookingsAll, user=current_user)
 
 
-# try:
-#     data = request.get_json()
-#     # json for a booking
-#     # examplebookingJSON = {"event_id":1,
-#     #                     "user_id":2,
-#     #                     "total_price":22,
-#     #                     "status":"not payed",
-#     #                     "selected_tickets":[{"ticket_id":2,"quantity":3},{"ticket_id":3,"quantity":2}]}
-#     eventID = data["event_id"]
-#     userID = data["user_id"]
-#     #totalPrice = data["total_price"]
-#     statusOfPayment = data["status"]
-#     selectedTickets = data["selected_tickets"]
+@bookings.route('/download/<bid>', methods=['GET', 'POST'])
+def download(bid):
+    print(bid)
+    # It is important to reiterate that UPLOAD_FOLDER must be relative for this to work, e.g. not start with a /.
+    # uploads = os.path.join(current_app.root_path, app.config['UPLOAD_FOLDER'])
+    # return send_from_directory(directory=uploads, filename=filename)
+    booking = UserBookings.query.get(bid)
+    eventInQuestion = Event.query.get(booking.event_id)
+    ticketInQuestion = Ticket.query.get(booking.ticket_id)
+    total_for_tickets = booking.number_booked * ticketInQuestion.price
 
-#     # check if the user is a simple user or at least not a manager
-#     isManager = False
-#     userToCheck = User.query.get(userID)
-#     for role in userToCheck.roles:
-#         if "Manager" in role.name:
-#             isManager = True
+    dataForPDF = {
+        "event-title": eventInQuestion.title,
+        "ticket-type": ticketInQuestion.ticket_type,
+        "num": str(booking.number_booked),
+        "status": booking.payment_status,
+        "total": "{:.2f}".format(total_for_tickets),
+        "start time": str(eventInQuestion.time_from.strftime("%H:%M")),
+        "date": str(eventInQuestion.event_date.strftime("%Y-%m-%d")),
+        "location": eventInQuestion.location,
+        "info": eventInQuestion.address + ' ' + eventInQuestion.city
+    }
 
-#     if isManager == False:
-#         for ticketToBook in selectedTickets:
-#             # check if the user is buying more tickets of the same type for the same event
-#             if UserBookings.query.filter_by(user_id=userID,
-#                                             event_id=eventID,
-#                                             ticket_id=ticketToBook["ticket_id"],
-#                                             payment_status=statusOfPayment).first():
+    random_hex = secrets.token_hex(16)
+    pdfname = random_hex
+    all_event_ticket_info = []
+    all_event_ticket_info.append(dataForPDF)
+    all_qr_names = [booking.image_file]
+    pdf_receipt = create_pdf_receipt(
+        pdfname, all_qr_names, all_event_ticket_info)
 
-#                 ExistingBooking = UserBookings.query.filter_by(
-#                     user_id=userID, event_id=eventID, ticket_id=ticketToBook["ticket_id"], payment_status=statusOfPayment).first()
-#                 ExistingBooking.number_booked += ticketToBook["quantity"]
-#                 db.session.commit()
-#             else:  # the booking combination does not already exist so create a new one
-#                 if Ticket.query.get(ticketToBook["ticket_id"]):
-#                     ticketTYPE = Ticket.query.get(
-#                         ticketToBook["ticket_id"]).ticket_type
-#                     ticketActualPriceFromDB = Ticket.query.get(
-#                         ticketToBook["ticket_id"]).price
-
-#                     bookingToAdd = UserBookings(user_id=userID,
-#                                                 event_id=eventID,
-#                                                 ticket_id=ticketToBook["ticket_id"],
-#                                                 ticket_type=ticketTYPE,
-#                                                 number_booked=ticketToBook["quantity"],
-#                                                 number_scanned=0,
-#                                                 payment_status=statusOfPayment)
-
-#                     db.session.add(bookingToAdd)
-#         db.session.commit()
-#         result = {"result": "booking completed"}
-#         return jsonify(result)
-#     else:
-#         result = {"result": "error",
-#                   "type": "As a Manager you cannot book an event"}
-#         return jsonify(result)
-# except Exception as e:
-#     result = {"result": "error", "type": str(e)}
-#     return jsonify(result)
-
-    # creating qr_codes
-    # qr_names = []
-    # for ticket in data:
-    #         # print("hi", ticket)
-    #     ticketJSON = ticket
-    #     ticketJSON["user_id"] = current_user.id
-    #     eventOfTicketID = Ticket.query.get(
-    #         ticketJSON["ticket_id"]).event_id
-    #     ticketJSON["event_id"] = eventOfTicketID
-    #     ticketJSON["payment_status"] = "not payed"
-    #     qr_names.append(createQR(ticketJSON))
-
-    #     # creating the bookings in the db
-    #     eventID = ticketJSON["event_id"]
-    #     userID = data["user_id"]
-    #     #totalPrice = data["total_price"]
-    #     statusOfPayment = data["status"]
-    #     selectedTickets = data["selected_tickets"]
-
-    # check if the user is a simple user or at least not a manager
+    return send_file(pdf_receipt, as_attachment=True)

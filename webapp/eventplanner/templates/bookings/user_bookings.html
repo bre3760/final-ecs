@@ -1,54 +1,58 @@
 {% extends "layout.html" %} <!-- to have the base model  -->
 {% block content %} <!-- to specify what is the content to insert into the base page -->
 
-	<div class="row w-100">
-		<div class="col-md-1">
-		</div>
-		<div class="col-md-7">
-			{% for booking in all_bookings %}
-				<div class="card mb-3" style="max-width: 100%">
-					<a data-toggle="modal" data-target="#qrModal" onclick="showQR('{{ url_for('static', filename ='booking_qr_codes/' + booking.image_file ) }}')" style="cursor:pointer;">
-						<div class="row no-gutters">
-							<div class="col-md-2">
-								<img src="{{ url_for('static', filename ='booking_qr_codes/' + booking.image_file ) }}" class="card-img" alt="...">
-							</div>
-							<div class="col-md-8">
-								<div class="card-body">
-									<h3 class="card-title"><strong>PIPPO</strong></h3>
-									<p class="card-text">
-										<span style="font-size:1.4em"><strong>Ticket type:</strong> {{ booking.ticket_type }}</span>
-										<br>
-										<span style="font-size:1.4em"><strong>This QR code is valid for:</strong> {{ booking.number_booked }} tickets</span>
-									</p>
-								</div>
+<div class="row w-100">
+	<div class="col-md-1"></div>
+	<div class="col-md-7">
+		<h3 class="orange"> Your tickets</h3>
+		{% for booking in all_bookings %}
+			<div class="card mb-3" style="max-width: 100%">
+				<a data-toggle="modal" data-target="#qrModal" onclick="showQR('{{ url_for('static', filename ='booking_qr_codes/' + booking.image_file ) }}')" style="cursor:pointer;">
+					<div class="row no-gutters">
+						<div class="col-md-2">
+							<img src="{{ url_for('static', filename ='booking_qr_codes/' + booking.image_file ) }}" class="card-img" alt="...">
+						</div>
+						<div class="col-md-8">
+							<div class="card-body">
+								<h3 class="card-title"><strong>PIPPO</strong></h3>
+								<p class="card-text">
+									<span><strong>Ticket type:</strong> {{ booking.ticket_type }}</span>
+									<br>
+									<span><strong>This QR code is valid for:</strong> {{ booking.number_booked }} tickets</span>
+									<br>
+									<span><strong>Status:</strong> {{ booking.payment_status }} tickets</span>
+								</p>
 							</div>
 						</div>
-					</a>
-					<div class="card-footer text-right">
-						<small class="text-muted">Download your ticket: <a class="brown-link" href=""></a>asd</small>
 					</div>
+				</a>
+				<div class="card-footer text-right">
+					<small class="text-muted">Download your ticket: <a href="{{ url_for('bookings.download', bid = booking.id ) }}">Download</a></small>
 				</div>
-			{% endfor %}
-		</div>
-		<div class="col-md-3">
-			<div class="content-section text-center">
-				<h3>Our Sidebar</h3>
 			</div>
-		</div> 
+		{% else %}
+			<h3>No tickets have been booked yet</h3>
+		{% endfor %}
 	</div>
+	<div class="col-md-3">
+		<div class="content-section text-center">
+			<h3></h3>
+		</div>
+	</div>
+</div>
 
-	<div class="modal fade bd-example-modal-lg" id="qrModal" tabindex="-1" role="dialog">
-		<div class="modal-dialog modal-lg" style="background-color:white">
-			<div class="modal-header">
-				<h5 class="modal-title" id="exampleModalLabel">Ticket QR code</h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-content">
-				<img id="qrModalImage" style="object-fit:scale-down"></img>
-			</div>
+<div class="modal fade bd-example-modal-lg" id="qrModal" tabindex="-1" role="dialog">
+	<div class="modal-dialog modal-lg" style="background-color:white">
+		<div class="modal-header">
+			<h5 class="modal-title" id="exampleModalLabel">Ticket QR code</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+		<div class="modal-content">
+			<img id="qrModalImage" style="object-fit:scale-down"></img>
 		</div>
 	</div>
-	
+</div>
+
 {% endblock content%} <!-- put the name of what block we are ending -->

@@ -9,6 +9,9 @@ from eventplanner import db, csrf
 from eventplanner.models import User, Role, UserRoles, UserBookings, Event, EventStaff, Ticket, event_schema, events_schema
 import qrcode
 import secrets
+from eventplanner.emails.routes import generate_email
+from eventplanner.utilities.pdfGen import create_pdf_receipt
+
 
 payments = Blueprint('payments', __name__)
 stripe_keys = {
@@ -126,6 +129,10 @@ def generate_response(intent):
 @csrf.exempt
 @login_required
 def after_payment():
+    all_qr_names = []
+    all_event_ticket_info = []
+    total_for_booking = 0
+    total_for_tickets = 0.00
     statusOfPayment = "payed"
     #
     for ticketToBook in session.get("payment_data", None):
@@ -142,11 +149,10 @@ def after_payment():
                                             event_id=eventOfTicketID,
                                             ticket_id=ticketToBook["ticket_id"],
                                             payment_status=statusOfPayment).first():
-                print("found already existing")
+
                 ticketInQuestion = Ticket.query.get(ticketToBook["ticket_id"])
                 availableToPurchase = ticketInQuestion.num_tickets - \
                     int(ticketInQuestion.num_bought)
-                print("available", availableToPurchase)
                 if availableToPurchase >= int(ticketToBook["booked_num"]):
                     print("here")
                     ExistingBooking = UserBookings.query.filter_by(user_id=current_user.id,
@@ -158,8 +164,9 @@ def after_payment():
                         ticketToBook["booked_num"])
                     ticketInQuestion.num_bought += int(
                         ticketToBook["booked_num"])
-                    # print("tecnically added?")
-
+                    ticketActualPriceFromDB = ticketInQuestion.price
+                    total_for_tickets += ticketActualPriceFromDB * \
+                        ExistingBooking.number_booked
                     if ExistingBooking.image_file == 'default_qr':
                         dataForQR = {"ticket_id": ticketToBook["ticket_id"],
                                      "event_id": eventOfTicketID,
@@ -167,10 +174,29 @@ def after_payment():
                                      "status": statusOfPayment}
                         qr_image = createQR(dataForQR)
                         ExistingBooking.image_file = qr_image
+                    all_qr_names.append(ExistingBooking.image_file)
+
+                    if statusOfPayment == 'not payed':
+                        stat = 'Not Paid'
+                    else:
+                        stat = 'Paid'
+                    dataForPDF = {
+                        "event-title": str(eventInQuestion.title),
+                        "ticket-type": ticketInQuestion.ticket_type,
+                        "num": str(ExistingBooking.number_booked),
+                        "status": stat,
+                        "total":  "{:.2f}".format(total_for_tickets),
+                        "start time": str(eventInQuestion.time_from.strftime("%H:%M")),
+                        "date": str(eventInQuestion.event_date.strftime("%Y-%m-%d")),
+                        "location": str(eventInQuestion.location),
+                        "info": str(eventInQuestion.address) + ' ' + str(eventInQuestion.city)
+                    }
+                    # print(dataForPDF, "data foe pdf")
+                    all_event_ticket_info.append(
+                        dataForPDF)
                     db.session.commit()  # ?
 
             else:  # the booking combination does not already exist so create a new one
-                print("not found existing")
                 if Ticket.query.get(ticketToBook["ticket_id"]):
                     ticketTYPE = Ticket.query.get(
                         ticketToBook["ticket_id"]).ticket_type
@@ -182,7 +208,7 @@ def after_payment():
                                  "user_id": current_user.id,
                                  "status": statusOfPayment}
                     qr_image = createQR(dataForQR)
-
+                    all_qr_names.append(qr_image)
                     bookingToAdd = UserBookings(user_id=current_user.id,
                                                 event_id=eventOfTicketID,
                                                 ticket_id=ticketToBook["ticket_id"],
@@ -194,9 +220,36 @@ def after_payment():
                                                 image_file=qr_image)
                     ticketInQuestion.num_bought += int(
                         ticketToBook["booked_num"])
+                    total_for_tickets += ticketActualPriceFromDB * ExistingBooking.number_booked
+                    if statusOfPayment == 'not payed':
+                        stat = 'Not Paid'
+                    else:
+                        stat = 'Paid'
+                    db.session.add(bookingToAdd)
+                    dataForPDF = {
+                        "event-title": eventInQuestion.title,
+                        "ticket-type": ticketInQuestion.ticket_type,
+                        "num": str(bookingToAdd.number_booked),
+                        "status": stat,
+                        "total": "{:.2f}".format(total_for_tickets),
+                        "start time": str(eventInQuestion.time_from.strftime("%H:%M")),
+                        "date": str(eventInQuestion.event_date.strftime("%Y-%m-%d")),
+                        "location": eventInQuestion.location,
+                        "info": eventInQuestion.address + ' ' + eventInQuestion.city
+                    }
+                    all_event_ticket_info.append(dataForPDF)
                     db.session.add(bookingToAdd)
     db.session.commit()
-
+    random_hex = secrets.token_hex(16)
+    # pdfname = 'testingpdfbooking'
+    pdfname = random_hex
+    pdf_receipt = create_pdf_receipt(
+        pdfname, all_qr_names, all_event_ticket_info)
+    subject = 'Your receipt'
+    emailTo = current_user.email
+    content = 'Thank you for your purchase. Please find your tickets attached'
+    filename = pdf_receipt
+    email = generate_email(subject, emailTo, content, filename)
     return redirect(url_for('payments.final'), code=302)
 
 
