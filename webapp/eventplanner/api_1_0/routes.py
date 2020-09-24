@@ -662,7 +662,7 @@ def create_booking_api(current_user_api):
                             if ExistingBooking.image_file == 'default_qr':
                                 dataForQR = {"ticket_id": ticketToBook["ticket_id"],
                                              "event_id": eventOfTicketID,
-                                             "user_id": current_user.id,
+                                             "user_id": userID,
                                              "status": statusOfPayment}
                                 qr_image = createQR(dataForQR)
                                 ExistingBooking.image_file = qr_image
@@ -722,7 +722,7 @@ def create_booking_api(current_user_api):
 
                             ticketInQuestion.num_bought += int(
                                         ticketToBook["quantity"])
-                            total_for_tickets += ticketActualPriceFromDB * ExistingBooking.number_booked
+                            total_for_tickets += ticketActualPriceFromDB * bookingToAdd.number_booked
                             if statusOfPayment == 'not payed':
                                 stat = 'Not Paid'
                             else:
@@ -751,7 +751,8 @@ def create_booking_api(current_user_api):
             pdf_receipt = create_pdf_receipt(
                 pdfname, all_qr_names, all_event_ticket_info)
             subject = 'Your receipt'
-            emailTo = current_user_api.email
+            userInQuestion = User.query.get(userID)
+            emailTo = userInQuestion.email
             content = 'Thank you for your purchase. Please find your tickets attached'
             filename = pdf_receipt
             email = generate_email(subject, emailTo, content, filename)
