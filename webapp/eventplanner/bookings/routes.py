@@ -224,7 +224,11 @@ def create_booking():
 @csrf.exempt
 def display_booking():
     userbookingsAll = UserBookings.query.filter_by(user_id=current_user.id)
-    return render_template('bookings/user_bookings.html', all_bookings=userbookingsAll, user=current_user)
+    eventsOfBookings = []
+    for booking in userbookingsAll:
+        ev = Event.query.get(booking.event_id)
+        eventsOfBookings.append()
+    return render_template('bookings/user_bookings.html', all_bookings=userbookingsAll, user=current_user,events = eventsOfBookings)
 
 
 @bookings.route('/download/<bid>', methods=['GET', 'POST'])
