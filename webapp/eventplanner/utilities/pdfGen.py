@@ -67,7 +67,7 @@ def create_pdf_receipt(pdfName, ticketsBooked, ticket_event_info):
             textLines = [
                 'Event Title: ' + dict_with_info["event-title"],
                 'Ticket type: ' + dict_with_info["ticket-type"],
-                'Scan ' + dict_with_info["num"] + ' times',
+                'Scannable ' + dict_with_info["num"] + ' times',
                 'Status of Payment: ' + dict_with_info["status"],
                 'Total price: ' + str(dict_with_info["total"]) + '€',
                 'Start Time: ' + dict_with_info["start time"],
