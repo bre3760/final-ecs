@@ -695,8 +695,9 @@ def create_booking_api(current_user_api):
                             return jsonify(result)
                 else: # the booking combination does not already exist so create a new one
                     if Ticket.query.get(ticketToBook["ticket_id"]):
-                        ticketInQuestion = Ticket.query.get(
-                            ticketToBook["ticket_id"])
+                        ExistingBooking = UserBookings.query.filter_by(user_id=userID,event_id=eventID,ticket_id=ticketToBook["ticket_id"],payment_status=statusOfPayment).first()
+
+                        ticketInQuestion = Ticket.query.get(ticketToBook["ticket_id"])
                         availableToPurchase = ticketInQuestion.num_tickets - int(ticketInQuestion.num_bought)
                         if availableToPurchase >= int(ticketToBook["quantity"]):
                             ticketTYPE = Ticket.query.get(
@@ -720,7 +721,7 @@ def create_booking_api(current_user_api):
                                                         image_file=qr_image)
 
                             ticketInQuestion.num_bought += int(
-                                        ticketToBook["booked_num"])
+                                        ticketToBook["quantity"])
                             total_for_tickets += ticketActualPriceFromDB * ExistingBooking.number_booked
                             if statusOfPayment == 'not payed':
                                 stat = 'Not Paid'
