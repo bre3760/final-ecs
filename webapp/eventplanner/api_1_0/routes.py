@@ -892,7 +892,7 @@ def check_qr_api():
                         return jsonify(result)
                     else:
                         # print("good")
-                        result = {"result": "error", "type": "Access Granted"}
+                        result = {"result": "success", "type": "Access Granted"}
                         return jsonify(result)
 
             else:
