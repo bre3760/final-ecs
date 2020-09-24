@@ -6,7 +6,7 @@ from flask_login import login_required
 from eventplanner.models import event_schema, events_schema, users_schema, user_schema, ticket_schema, tickets_schema, eventstaff_schema, eventstaffs_schema, userbooking_schema
 from ..models import User, Event, Ticket, Role, UserRoles, UserBookings, EventStaff
 from functools import wraps
-from datetime import datetime
+from datetime import datetime,timedelta
 from eventplanner.events.utils_events import save_picture_api
 
 import os
@@ -837,6 +837,80 @@ def createQR(data):
     return filename
 
 
+@api.route('/check-qr/', methods=['POST','GET','PUT'])
+@csrf.exempt
+def check_qr_api():
+    """
+    dataForQR = {"ticket_id": ticketToBook["ticket_id"],
+                 "event_id": eventOfTicketID,
+                 "user_id": current_user.id,
+                 "status": statusOfPayment}
+    is what is send along with the request
+    i need to check varioues things:
+        - the validity of the combination of values, this means searching inside UserBookings
+        - check if the time at which the ticket is scanned is within the time parameters and
+           date parameters of the event in question
+        - if the booking is found i need to increment the number_scanned parameter
+        - after that i need to send a return response with a valid code
+
+
+    """
+    try:
+        data = request.get_json()
+        ticketID = data["ticket_id"]
+        eventID = data["event_id"]
+        userID = data["user_id"]
+        status = data["status"]
+
+        if UserBookings.query.filter_by(user_id=userID,
+                                        ticket_id=ticketID,
+                                        event_id=eventID,
+                                        payment_status=status):
+            bookingInQuestion = UserBookings.query.filter_by(user_id=userID,
+                                        ticket_id=ticketID,
+                                        event_id=eventID,
+                                        payment_status=status)
+            ticketInQuestion = Ticket.query.get(ticketID)
+            # EVent time information
+            eventInQuestion = Event.query.get(eventID)
+            event_date_obj = eventInQuestion.event_date
+            time_from_obj = eventInQuestion.time_from
+            # <class 'datetime.date'> <class 'datetime.time'>
+            delta_before = timedelta(minutes=30)
+            delta_after = timedelta(minutes=15)
+            scan_date_time = datetime.now()
+            if scan_date_time.date() == event_date_obj:
+                if time_from_obj < (scan_date_time - delta_after).time():
+                    print("late")
+                    result = {"result": "error", "type": "You are too late"}
+                    return jsonify(result)
+                elif time_from_obj > scan_date_time.time():
+                    # print("before event start")
+                    if time_from_obj > (scan_date_time + delta_before).time():
+                        print("too early")
+                        result = {"result": "error", "type": "You are too early"}
+                        return jsonify(result)
+                    else:
+                        # print("good")
+                        result = {"result": "error", "type": "Access Granted"}
+                        return jsonify(result)
+
+            else:
+                result = {"result": "error", "type": "Valid ticket, incorrect date"}
+                return jsonify(result)
+        else:
+            result = {"result": "error", "type": "invalid ticket"}
+            return jsonify(result)
+
+
+
+
+
+
+
+    except Exception as e:
+        result = {"result": "error", "type": str(e)}
+        return jsonify(result)
 
 
 
