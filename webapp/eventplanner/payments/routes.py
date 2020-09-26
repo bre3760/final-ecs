@@ -22,6 +22,14 @@ stripe_keys = {
 
 stripe.api_key = stripe_keys['secret_key']
 
+# Event title
+
+# event date
+# event location
+# ticket type1
+# ticket cost1
+# ticket type2
+# ticket cost2
 
 @payments.route('/start-payment-flow', methods=['POST', 'GET'])
 @csrf.exempt
@@ -30,8 +38,21 @@ def start_payment_flow():
     if request.method == 'POST':
         # booked_tickets = [ {ticket_id: 2, booked_num: 2}, {ticket_id: 12, booked_num: 4}]
         payment_data = request.get_json()
-        print("data received is: ", payment_data)
         session['payment_data'] = payment_data
+        ticket_id = payment_data[0]["ticket_id"]
+        ticket = Ticket.query.get(ticket_id)
+        event = Event.query.get(ticket.event_id)
+        eventTitle = event.title
+        eventDate = event.event_date
+        eventLocation = event.location
+        session['event-info'] = [eventTitle,eventDate,eventLocation]
+        # session['event-date'] = eventDate
+        # session['event-location'] = eventLocation
+        tickets_info = []
+        for ticket in payment_data:
+            tt = Ticket.query.get(ticket["ticket_id"])
+            tickets_info.append((tt.ticket_type, tt.price * int(ticket["booked_num"]) ))
+        session["ticket-info"] = tickets_info
     return redirect(url_for('payments.get_example'), code=302)
 
 
@@ -40,7 +61,11 @@ def get_example():
     # Display checkout page
     payment_data = session.get("payment_data", None)
     tot_price = calculate_order_amount(payment_data) / 100
-    return render_template('payments/payment.html', payment_data=payment_data, tot_price=tot_price)
+    return render_template('payments/payment.html',
+                            payment_data=payment_data,
+                            tot_price=tot_price,
+                            eventInfo = session.get("event-info",None),
+                            ticketsInfo = session.get("ticket-info",None))
 
 
 def calculate_order_amount(items):

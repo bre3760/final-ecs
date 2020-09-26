@@ -227,7 +227,7 @@ def display_booking():
     eventsOfBookings = []
     for booking in userbookingsAll:
         ev = Event.query.get(booking.event_id)
-        eventsOfBookings.append()
+        eventsOfBookings.append(ev)
     return render_template('bookings/user_bookings.html', all_bookings=userbookingsAll, user=current_user,events = eventsOfBookings)
 
 

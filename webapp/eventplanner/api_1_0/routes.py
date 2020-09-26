@@ -806,8 +806,8 @@ def get_user_bookings_api():
                         except Exception as e:
                             result = {"result": "error", "type": str(e)}
                             return jsonify(result)
-                        totalPriceOfBooking = totalPriceOfBooking + \
-                            tick.price * singleBooking.number_booked
+                        tick = Ticket.query.get(singleBooking.ticket_id)
+                        totalPriceOfBooking = totalPriceOfBooking + tick.price * singleBooking.number_booked
 
                 all_bookings[i]["selected_tickets"] = selectedTickets
                 all_bookings[i]["total_price"] = totalPriceOfBooking
@@ -854,8 +854,6 @@ def check_qr_api():
            date parameters of the event in question
         - if the booking is found i need to increment the number_scanned parameter
         - after that i need to send a return response with a valid code
-
-
     """
     try:
         data = request.get_json()
@@ -903,12 +901,6 @@ def check_qr_api():
         else:
             result = {"result": "error", "type": "invalid ticket"}
             return jsonify(result)
-
-
-
-
-
-
 
     except Exception as e:
         result = {"result": "error", "type": str(e)}

@@ -70,6 +70,12 @@ def login():
             login_user(user, remember=form.remember.data)
             # args is a dictionary, don't access using key would give error, use get
             next_page = request.args.get('next')
+            print("next page is: ",next_page)
+            if next_page == '/start-payment-flow':
+                return redirect(url_for('main.home'))
+            if next_page == '/generate-booking/':
+                return redirect(url_for('main.home'))
+
 
             return redirect(next_page) if next_page else redirect(url_for('main.home'))
         else:
