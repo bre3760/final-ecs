@@ -14,7 +14,17 @@
 						</div>
 						<div class="col-md-8">
 							<div class="card-body">
-								<h3 class="card-title"><strong>PIPPO</strong></h3>
+								<h3 class="card-title">
+									<strong>
+										{% set ns = namespace(found=false) %}
+										{% for event in events %}
+											{% if event.id == booking.event_id and ns.found == false %}
+												{{ event.title }}
+												{% set ns.found = true%}
+											{%endif%}
+										{% endfor %}
+									</strong>
+								</h3>
 								<p class="card-text">
 									<span><strong>Ticket type:</strong> {{ booking.ticket_type }}</span>
 									<br>
@@ -27,7 +37,7 @@
 					</div>
 				</a>
 				<div class="card-footer text-right">
-					<small class="text-muted">Download your ticket: <a href="{{ url_for('bookings.download', bid = booking.id ) }}">Download</a></small>
+					<small class="text-muted">Download your ticket: <a class="brown-link" href="{{ url_for('bookings.download', bid = booking.id ) }}">Download</a></small>
 				</div>
 			</div>
 		{% else %}

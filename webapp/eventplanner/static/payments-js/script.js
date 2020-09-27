@@ -2,13 +2,11 @@
 // A reference to Stripe.js
 var stripe;
 var orderItems = document.getElementById("payment-data-bre").innerHTML;
-alert(orderItems.innerHTML)
 var orderData = {
   items: orderItems,
   currency: "eur"
 };
 console.log(orderItems)
-alert(orderItems)
 
 // Disable the button until we have Stripe set up on the page
 document.querySelector("button").disabled = true;

@@ -2,41 +2,56 @@
 {% extends "layout.html" %} <!-- to have the base model  -->
 {% block content %} <!-- to specify what is the content to insert into the base page -->
     <!-- form for posting new events -->
-    <div class="content-section">
-        <form method="POST" action="" enctype = "multipart/form-data">
-            {{ form.hidden_tag()}} <!-- we pass in the form instance to this template -->
-            <!-- the hidden tag adds a csrf token aka cross site request forgery token  -->
-            <fieldset class="form-group">
-                <legend class="border-bottom mb-4">{{ legend }}</legend>
+    <div class="row">
+		<div class="col-md-3">
+		</div>
+		<div class="col-md-6">
+			<div class="card sharp-border" style="margin-bottom:10px">
+				<div class="card-header text-center" style="background-color:white">
+					<h3 class="text-uppercase orange">Add ticket</h3>
+				</div>
+				<div class="card-body text-center">
+					<form method="POST" action="" enctype = "multipart/form-data">
+						{{ form.hidden_tag()}} <!-- we pass in the form instance to this template -->
+						<!-- the hidden tag adds a csrf token aka cross site request forgery token  -->
+						
+						<fieldset class="form-group">
 
-                <div data-toggle="fieldset" id="tickets-fieldset">
-                     {{ form.tickets.label }}  <button type="button" data-toggle="fieldset-add-row"
-                                                      data-target="#tickets-fieldset">+</button>
-                    <table>
-                        <tr>
-                            <th>Ticket name</th>
-                            <th>Number of tickets</th>
-                            <th>Price</th>
-                            <th></th>
-                        </tr>
-                        {% for ticket in form.tickets %}
-                            <tr data-toggle="fieldset-entry">
-                                <td>{{ ticket.ticket_type }}</td>
-                                <td>{{ ticket.num_tickets }}</td>
-                                <td>{{ ticket.price }}</td>
-                                <td><button type="button" data-toggle="fieldset-remove-row" id="tickets-{{loop.index0}}-remove">-</button></td>
-                            </tr>
-                        {% endfor %}
-                    </table>
-                </div>
+							<div data-toggle="fieldset" id="tickets-fieldset" class="text-left">
+								<table>
+									{% for ticket in form.tickets %}
+										<tr data-toggle="fieldset-entry">
+											<td style="width:45%">{{ ticket.ticket_type(class="form-control",placeholder="Ticket name",autocomplete="off") }}</td>
+											<td style="width:15%">{{ ticket.num_tickets(class="form-control",placeholder="n°",type="number",min="0",autocomplete="off") }}</td>
+											<td style="width:20%">{{ ticket.price(class="form-control",placeholder="€",type="number",min="0",autocomplete="off",step="0.01") }}</td>
+											<td>
+											<button class="btn btn-outline-orange" type="button" data-toggle="fieldset-remove-row" id="tickets-{{loop.index0}}-remove"><strong>-</strong></button>
+											</td>
+											<!-- <td><button type="button" data-toggle="fieldset-remove-row" id="tickets-{{loop.index0}}-remove">-</button></td> -->
+										</tr>
+									{% endfor %}
+								</table>
+								
+								<button class="btn btn-outline-orange" style="border-radius:50%!important; margin-top:10px;" type="button" data-toggle="fieldset-add-row" data-target="#tickets-fieldset"><strong>+</strong></button>
+							</div>
 
 
-            </fieldset>
-            <div class="form-group">
-                {{ form.submit(class="btn btn-outline-info")}}
-            </div>
-        </form>
-    </div>
-
+						</fieldset>
+						<div class="row">
+							<div class="col-md-6">
+								<button class="btn btn-outline-orange" onclick="window.history.back();">Cancel</button>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									{{ form.submit(class="btn btn-outline-orange",value="Add tickets")}}
+								</div>
+							</div>
+						</div>
+						
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
 
 {% endblock content%} <!-- put the name of what block we are ending -->

@@ -1,35 +1,41 @@
 {% extends "layout.html" %} <!-- to have the base model  -->
 {% block content %} <!-- to specify what is the content to insert into the base page -->
-    <div class="content-section">
-        <form method="POST" action="">
-            {{ form.hidden_tag()}} <!-- we pass in the form instance to this template -->
-            <!-- the hidden tag adds a csrf token aka cross site request forgery token  -->
-            <fieldset class="form-group">
-                <legend class="border-bottom mb-4"> <!-- margin bottom -->
-                    Reset Password
-                </legend>
+	<div class="row">
+		<div class="col-md-3">
+		</div>
+		<div class="col-md-6 text-center">
+			<div class="card sharp-border" style="max-width:500px; margin:auto;">
+				<div class="card-body">
+					<form method="POST" action="">
+						{{ form.hidden_tag()}} <!-- we pass in the form instance to this template -->
+						<!-- the hidden tag adds a csrf token aka cross site request forgery token  -->
+						<fieldset class="form-group">
 
-                <div class="form-group">
-                    <!-- here we use the fields of the form we passed in -->
-                    {{ form.email.label(class="form-control-label")}} <!-- gives us the label of the form -->
-
-                    {% if form.email.errors%}
-                        {{ form.email(class="form-control form-control-lg is-invalid")}}
-                        <div class="invalid-feedback">
-                            {% for error in form.email.errors %}
-                                <span>{{ error }}</span>
-                            {%endfor%}
-                        </div>
-                    {% else %}
-                        {{ form.email(class="form-control form-control-lg")}}  <!-- lg stands for large -->
-                    {% endif %}  <!-- lg stands for large -->
-                </div>
-
-            </fieldset>
-
-            <div class="form-group">
-                {{ form.submit(class="btn btn-outline-info")}}
-            </div>
-        </form>
-    </div>
+							<div class="form-group">
+								<div class="input-group mb-3">
+									<div class="input-group-prepend" >
+										<span class="input-group-text"><span class="material-icons">alternate_email</span></span>
+									</div>
+									{% if form.email.errors%}
+										{{ form.email(class="form-control form-control-lg is-invalid")}}
+										<div class="invalid-feedback">
+											{% for error in form.email.errors %}
+												<span>{{ error }}</span>
+											{%endfor%}
+										</div>
+									{% else %}
+										{{ form.email(class="form-control form-control-lg",placeholder="Email")}}  <!-- lg stands for large -->
+									{% endif %}  <!-- lg stands for large -->
+								</div>
+							</div>
+						</fieldset>
+						
+						<div class="form-group float-right">
+							{{ form.submit(class="btn btn-outline-orange")}}
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
 {% endblock content %} <!-- put the name of what block we are ending -->

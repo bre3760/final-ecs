@@ -7,34 +7,91 @@
 
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon" />
     <link rel="stylesheet" href="{{ url_for('static', filename='payments-css/normalize.css') }}" />
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for('static', filename='payments-css/global.css') }}" />
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://js.stripe.com/v3/"></script>
     <script src="{{ url_for('static', filename='payments-js/script.js') }}" defer></script>
 
   </head>
 
-  <body>
-    <p>the data passed is</p>
-    <p id="payment-data-bre">{{payment_data}}</p>
-    <div class="sr-root">
-      <div class="sr-main">
-        <form id="payment-form" class="sr-payment-form">
-          <div class="sr-combo-inputs-row">
-            <div class="sr-input sr-card-element" id="card-element"></div>
-          </div>
-          <div class="sr-field-error" id="card-errors" role="alert"></div>
-          <button id="submit">
-            <div class="spinner hidden" id="spinner"></div>
-            <span id="button-text">Pay {{"{:.2f}".format(tot_price)}} €</span><span id="order-amount"></span>
-          </button>
-        </form>
-        <div class="sr-result hidden">
-          <p>Payment completed<br /></p>
-          <pre>
-            <code></code>
-          </pre>
-        </div>
-      </div>
-    </div>
-  </body>
+	<body>
+		
+		<header class="site-header">
+			<nav class="navbar navbar-expand-md fixed-top">
+				<a class="navbar-brand mr-4" style="color:#0a721b;font-size:1.5em;cursor:pointer" onclick="window.history.back();"><span class="material-icons" style="vertical-align: text-bottom;margin-right:4px;">arrow_back</span>Events by Polito</a>
+			</nav>
+		</header>
+		
+		
+		<div class="row">
+			<div class="col-md-3">
+			</div>
+			<div class="col-md-6">
+									
+				<p id="payment-data-bre" style="display:none">{{payment_data}}</p>
+				<div class="sr-root">
+					<div class="sr-main">
+						<div class="card" style="border: none; background-color:transparent; margin-bottom:10px;">
+							<div class="card-body text-left">
+								<h5>Event title</h5>
+								<p>
+									event date
+									<br>
+									event location
+								</p>
+								<hr class="my-4">
+								<div class="row">
+									<div class="col-md-6 text-left">
+										ticket type1
+									</div>
+									<div class="col-md-6 text-right">
+										ticket cost1
+									</div>
+								</div>
+								<hr class="my-4">
+								<div class="row">
+									<div class="col-md-6 text-left">
+										ticket type2
+									</div>
+									<div class="col-md-6 text-right">
+										ticket cost2
+									</div>
+								</div>
+								
+								<hr class="my-4">
+								<div class="row">
+									<div class="col-md-6 text-left">
+										Total
+									</div>
+									<div class="col-md-6 text-right">
+										ticket total
+									</div>
+								</div>
+							</div>
+						</div>
+						<form id="payment-form" class="sr-payment-form">
+							<div class="sr-combo-inputs-row">
+								<div class="sr-input sr-card-element" id="card-element"></div>
+							</div>
+							<div class="sr-field-error" id="card-errors" role="alert"></div>
+							<button id="submit">
+								<div class="spinner hidden" id="spinner"></div>
+								<span id="button-text">Pay {{"{:.2f}".format(tot_price)}} €</span><span id="order-amount"></span>
+							</button>
+						</form>
+						<div class="sr-result hidden">
+							<p>Payment completed<br /></p>
+							<pre>
+								<code></code>
+							</pre>
+						</div>
+					</div>
+				</div>
+					
+			</div>
+			<div class="col-md-3">
+			</div>
+		</div>
+	</body>
 </html>

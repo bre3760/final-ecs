@@ -53,3 +53,24 @@ function addTicket(parentWrapper) {
 function showQR(qrcode) {
 	qrModalImage.setAttribute("src",qrcode);
 }
+
+function delTicket( wrapper ) {
+	try{
+	let check = wrapper.getElementsByClassName("ticket-check").item(0);
+	let type = wrapper.getElementsByClassName("ticket-type").item(0);
+	let num = wrapper.getElementsByClassName("ticket-num").item(0);
+	let price = wrapper.getElementsByClassName("ticket-price").item(0);
+	
+	if (!check.checked) {
+		type.style.textDecoration = "";
+		num.style.textDecoration = "";
+		price.style.textDecoration = "";
+	} else {
+		type.style.textDecoration = "line-through";
+		num.style.textDecoration = "line-through";
+		price.style.textDecoration = "line-through";
+	}
+	}catch(e){
+		alert(e);
+	}
+}

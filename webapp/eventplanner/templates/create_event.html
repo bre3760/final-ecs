@@ -6,7 +6,7 @@
 		<div class="col-md-3">
 		</div>
 		<div class="col-md-6">
-			<div class="card sharp-border">
+			<div class="card sharp-border" style="margin-bottom:10px">
 				<div class="card-header text-center" style="background-color:white">
 					<h3 class="text-uppercase orange">new event</h3>
 				</div>
@@ -21,12 +21,22 @@
 									<img src="{{ url_for('static', filename ='event_pics/default_event.jpg' ) }}" class="card-img" id="create_event_thumbnail" alt="...">
 								</div>
 								<div class="col-md-8">
-									{{ form.picture(class = "form-control-file",onchange="createEventThumbnail()",id="new_thumbnail",autocomplete="off",accept="image/png,image/jpeg,image/jpg,image/gif")}}
-									{% if form.picture.errors%}
-										{% for error in form.picture.errors %}
-											<span class="text-danger">{{ error }}</span> </br>
-										{%endfor%}
-									{%endif%}
+									<div class="input-group mb-3">
+										<div class="input-group-prepend">
+											<span class="input-group-text" id="inputGroupFileAddon01">Thumbnail file</span>
+										</div>
+										<div class="custom-file">
+											{{ form.picture(class = "custom-file-input",onchange="createEventThumbnail()",id="new_thumbnail",autocomplete="off",accept="image/png,image/jpeg,image/jpg,image/gif")}}
+											{% if form.picture.errors%}
+												{% for error in form.picture.errors %}
+													<span class="text-danger">{{ error }}</span> </br>
+												{%endfor%}
+											{%endif%}
+											<!-- <input type="file" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01"> -->
+											<label class="custom-file-label text-left" for="new_thumbnail"></label>
+										</div>
+									</div>
+									
 								</div>
 							</div>
 						</div>
@@ -70,7 +80,7 @@
 							<div class="form-group">
 								<div class="input-group mb-3">
 									<div class="input-group-prepend" >
-										<span class="input-group-text"><span class="material-icons">alternate_email</span></span>
+										<span class="input-group-text"><span class="material-icons">local_activity</span></span>
 									</div>
 									{% if form.event_type.errors %}
 										{{ form.content(class="form-control form-control-lg is-invalid")}}
@@ -88,7 +98,7 @@
 							<div class="form-group">
 								<div class="input-group mb-3">
 									<div class="input-group-prepend" >
-										<span class="input-group-text"><span class="material-icons">lock</span></span>
+										<span class="input-group-text"><span class="material-icons">calendar_today</span></span>
 									</div>
 									{% if form.event_date.errors %}
 										{{ form.event_date(class="form-control form-control-lg is-invalid")}}
@@ -106,7 +116,7 @@
 							<div class="form-group">
 								<div class="input-group mb-3">
 									<div class="input-group-prepend" >
-										<span class="input-group-text"><span class="material-icons">lock</span></span>
+										<span class="input-group-text"><span class="material-icons">schedule</span></span>
 									</div>
 									{% if form.time_from.errors %}
 										{{ form.time_from(class="form-control form-control-lg is-invalid")}}
@@ -124,7 +134,7 @@
 							<div class="form-group">
 								<div class="input-group mb-3">
 									<div class="input-group-prepend" >
-										<span class="input-group-text"><span class="material-icons">lock</span></span>
+										<span class="input-group-text"><span class="material-icons">schedule</span></span>
 									</div>
 									{% if form.time_to.errors %}
 										{{ form.time_to(class="form-control form-control-lg is-invalid")}}
@@ -142,7 +152,7 @@
 							<div class="form-group">
 								<div class="input-group mb-3">
 									<div class="input-group-prepend" >
-										<span class="input-group-text"><span class="material-icons">lock</span></span>
+										<span class="input-group-text"><span class="material-icons">place</span></span>
 									</div>
 									{% if form.location.errors %}
 										{{ form.location(class="form-control form-control-lg is-invalid")}}
@@ -160,7 +170,7 @@
 							<div class="form-group">
 								<div class="input-group mb-3">
 									<div class="input-group-prepend" >
-										<span class="input-group-text"><span class="material-icons">lock</span></span>
+										<span class="input-group-text"><span class="material-icons">place</span></span>
 									</div>
 									{% if form.address.errors %}
 										{{ form.address(class="form-control form-control-lg is-invalid")}}
@@ -178,7 +188,7 @@
 							<div class="form-group">
 								<div class="input-group mb-3">
 									<div class="input-group-prepend" >
-										<span class="input-group-text"><span class="material-icons">lock</span></span>
+										<span class="input-group-text"><span class="material-icons">apartment</span></span>
 									</div>
 									{% if form.city.errors %}
 										{{ form.city(class="form-control form-control-lg is-invalid")}}
@@ -192,62 +202,45 @@
 									{% endif %}
 								</div>
 							</div>
+							
+							<hr class="my-4">
+							
+							<div data-toggle="fieldset" id="tickets-fieldset" class="text-left">
+								
+								<h3>Tickets <a type="button" data-toggle="fieldset-add-row" data-target="#tickets-fieldset"></h3> 						
+								
+								<table>
+									{% for ticket in form.tickets %}
+										<tr data-toggle="fieldset-entry">
+											<td style="width:45%">{{ ticket.ticket_type(class="form-control",placeholder="Ticket name",autocomplete="off") }}</td>
+											<td style="width:15%">{{ ticket.num_tickets(class="form-control",placeholder="n°",type="number",min="0",autocomplete="off") }}</td>
+											<td style="width:20%">{{ ticket.price(class="form-control",placeholder="€",type="number",min="0",autocomplete="off",step="0.01") }}</td>
+											<td>
+											<button class="btn btn-outline-orange" type="button" data-toggle="fieldset-remove-row" id="tickets-{{loop.index0}}-remove"><strong>-</strong></button>
+											</td>
+											<!-- <td><button type="button" data-toggle="fieldset-remove-row" id="tickets-{{loop.index0}}-remove">-</button></td> -->
+										</tr>
+									{% endfor %}
+								</table>
+								
+								<button class="btn btn-outline-orange" style="border-radius:50%!important; margin-top:10px;" type="button" data-toggle="fieldset-add-row" data-target="#tickets-fieldset"><strong>+</strong></button>
+							</div>
+				
 						</fieldset>
 
-						<div class="form-group">
-							{{ form.submit(class="btn btn-outline-orange",value="Create event")}}
+						<div class="row">
+							<div class="col-md-6">
+								<button class="btn btn-outline-orange" onclick="window.history.back();">Cancel</button>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									{{ form.submit(class="btn btn-outline-orange",value="Create event")}}
+								</div>
+							</div>
 						</div>
 					</form>
 				</div>
-				<!-- <div class="card-footer" style="background-color:white">
-					<div class="container-fluid">
-						<div class="float-left">
-							<small class="text-muted">
-								Already signed up?
-								<br>
-								<a class="brown-link text-uppercase" data-toggle="modal" data-target="#myModal" onclick="modalLayout({{ url_for('users.login')}})" href="">log in</a>
-							</small>
-						</div>
-					</div>
-				</div> -->
 			</div>
 		</div>
-		<div class="col-md-3">
-		</div>
 	</div>
-
-	<div class="content-section">
-        <form method="POST" action="" enctype = "multipart/form-data">
-            {{ form.hidden_tag()}} <!-- we pass in the form instance to this template -->
-            <!-- the hidden tag adds a csrf token aka cross site request forgery token  -->
-            <fieldset class="form-group">
-                <legend class="border-bottom mb-4">{{ legend }}</legend>
-
-                <div data-toggle="fieldset" id="tickets-fieldset">
-                     {{ form.tickets.label }}  <button type="button" data-toggle="fieldset-add-row"
-                                                      data-target="#tickets-fieldset">+</button>
-                    <table>
-                        <tr>
-                            <th>Ticket name</th>
-                            <th>Number of tickets</th>
-                            <th>Price</th>
-                            <th></th>
-                        </tr>
-                        {% for ticket in form.tickets %}
-                            <tr data-toggle="fieldset-entry">
-                                <td>{{ ticket.ticket_type }}</td>
-                                <td>{{ ticket.num_tickets }}</td>
-                                <td>{{ ticket.price }}</td>
-                                <td><button type="button" data-toggle="fieldset-remove-row" id="tickets-{{loop.index0}}-remove">-</button></td>
-                            </tr>
-                        {% endfor %}
-                    </table>
-                </div>
-
-            </fieldset>
-            <div class="form-group">
-                {{ form.submit(class="btn btn-outline-info")}}
-            </div>
-        </form>
-    </div>
 {% endblock content%} <!-- put the name of what block we are ending -->

@@ -6,6 +6,12 @@
 		</div>
 		<div class="col-md-7">
 			{% for event in events.items %}
+				{% set ns = namespace(price=1000000) %}
+				{% for ticket in event.tickets %}
+					{% if ticket.price is lt ns.price %}
+						{% set ns.price = ticket.price %}
+					{% endif %}
+				{% endfor %}
 				<div class="card mb-3" style="max-width: 100%;">
 					<a class="stretched-link" href="{{ url_for('events.event', event_id = event.id)}}"></a>
 					<div class="row no-gutters">
@@ -21,8 +27,8 @@
 									{{ event.location }}, {{ event.city }}
 								</p>
 
-								<p style="font-size:1.2em; margin-top:10%; margin-bottom:0%;color:#ca5116">
-									<strong>Ticket starting from x&euro;</strong>
+								<p style="font-size:1.2em; margin-bottom:0%;color:#ca5116">
+									<strong>Ticket starting from {{ "{:.2f}".format(ns.price) }}&euro;</strong>
 								</p>
 							</div>
 						</div>
@@ -31,14 +37,15 @@
 			{% endfor %}
 			{% for page_num in events.iter_pages(left_edge=1,right_edge=1, left_current=1, right_current=2) %} <!-- right current includes current -->
 				{% if page_num %}
-					{% if events.page==page_num %}
-						<a class="btn btn-orange mb-4" href="{{ url_for('main.home',page=page_num ) }}" style="backgorund-color:#ca5116">{{ page_num }}</a>
-					{% else %}
-						<a class="btn btn-outline-orange mb-4" href="{{ url_for('main.home',page=page_num ) }}">{{ page_num }}</a>
+					{% if page_num is gt 1 %}
+						{% if events.page==page_num %}
+							<a class="btn btn-orange mb-4" href="{{ url_for('main.home',page=page_num ) }}" style="backgorund-color:#ca5116">{{ page_num }}</a>
+						{% else %}
+							<a class="btn btn-outline-orange mb-4" href="{{ url_for('main.home',page=page_num ) }}">{{ page_num }}</a>
+						{% endif %}
 					{% endif %}
-				{% else %}
-					...
 				{% endif %}
+				
 			{% endfor %}
 		</div>
 		<div class="col-md-3">

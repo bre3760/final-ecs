@@ -41,14 +41,13 @@
 			{% endfor %}
 			{% for page_num in events.iter_pages(left_edge=1,right_edge=1, left_current=1, right_current=2) %} <!-- right current includes current -->
 				{% if page_num %}
-					{% if events.page==page_num %}
-						<a class="btn btn-orange mb-4" href="{{ url_for('main.home',page=page_num ) }}" style="backgorund-color:#ca5116">{{ page_num }}</a>
-					{% else %}
-						<a class="btn btn-outline-orange mb-4" href="{{ url_for('main.home',page=page_num ) }}">{{ page_num }}</a>
+					{% if page_num is gt 1 %}
+						{% if events.page==page_num %}
+							<a class="btn btn-orange mb-4" href="{{ url_for('main.home',page=page_num ) }}" style="backgorund-color:#ca5116">{{ page_num }}</a>
+						{% else %}
+							<a class="btn btn-outline-orange mb-4" href="{{ url_for('main.home',page=page_num ) }}">{{ page_num }}</a>
+						{% endif %}
 					{% endif %}
-				{% else %}
-
-					...
 				{% endif %}
 			{% endfor %}
 		</div>

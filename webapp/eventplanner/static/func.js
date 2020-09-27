@@ -5,16 +5,14 @@ function modalLayout(page){
 }
 
 function divLayout(div,page){
-	try{
 	$(`#${div}`).load(`${page}`,function(){});
-	}catch(e){
-		alert(e);
-	}
+	event.stopPropagation();
 }
 
 function accountSidebar(){
 	$("#accountCollapse").animate({width:'toggle'},500);
 	divLayout('user_info',"/account-info/");
+	event.stopPropagation();
 }
 
 function accountUpdated(){
@@ -23,13 +21,6 @@ function accountUpdated(){
 
 function createEventThumbnail(){
 	create_event_thumbnail.setAttribute("src",URL.createObjectURL(new_thumbnail.files[0]));
-}
-
-function onLoad(){
-		/* let path = event.target.location.pathname;
-		if (path.match(/^\/event\/\d+\/$/)){
-
-		} */
 }
 
 
@@ -62,6 +53,7 @@ function booking(pressed_btn){
 	      .catch(error => console.log('error', error));
 	} else if ( pressed_btn.id == "book_button") {
 		// BOOK
+		try{
 		var myHeaders = new Headers();
 	    myHeaders.append("Content-Type", "application/json");
 	    var raw = JSON.stringify(booked_tickets);
@@ -79,5 +71,8 @@ function booking(pressed_btn){
 	      })
 	      .then(result => console.log(result))
 	      .catch(error => console.log('error', error));
+		}catch(e){
+			alert(e);
+		}
 	} // end else if
 } // end func

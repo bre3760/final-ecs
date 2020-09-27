@@ -113,7 +113,7 @@
 			.account-img{
 				max-width:150px;
 				width:100%;
-				object-fit: scale-down;
+				object-fit: fill;
 				border:2px solid #ca5116;
 			}
 
@@ -147,6 +147,17 @@
 			.pointer{
 				cursor:pointer;
 			}
+			/* Chrome, Safari, Edge, Opera */
+			input::-webkit-outer-spin-button,
+			input::-webkit-inner-spin-button {
+			  -webkit-appearance: none;
+			  margin: 0;
+			}
+
+			/* Firefox */
+			input[type=number] {
+			  -moz-appearance: textfield;
+			}
 		</style>
 
 
@@ -161,9 +172,9 @@
 		<!-- we are linking to our static folder to the main.css file -->
 
 		{% if title %}
-			<title>Events by Polito - {{title}}</title> <!-- #default title -->
+			<title>EventsByPolito - {{title}}</title> <!-- #default title -->
 		{% else %}
-			<title>Events by Polito</title>
+			<title>EventsByPolito</title>
 		{% endif %}
 		{% with messages = get_flashed_messages() %}
 			{% if messages %}
@@ -176,11 +187,11 @@
 		{% endwith %}
 
 	</head>
-	<body style="background-color:#fcfcfc" onload="onLoad()">
+	<body style="background-color:#fcfcfc">
 		<!-- navigation bar start -->
 		<header class="site-header">
 			<nav class="navbar navbar-expand-md navbar-dark bg-orange fixed-top">
-				<a class="navbar-brand mr-4" href="{{ url_for('main.home')}}">Events by Polito</a>
+				<a class="navbar-brand mr-4" href="{{ url_for('main.home')}}">EventsByPolito</a>
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
 				</button>

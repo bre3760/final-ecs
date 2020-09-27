@@ -1,0 +1,7 @@
+.container {
+  padding-top: 40px;
+}
+/*To hide the alert on page load*/
+#status {
+  display: none;
+}

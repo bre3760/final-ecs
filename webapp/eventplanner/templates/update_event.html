@@ -1,157 +1,224 @@
 <!-- update event html file -->
 {% extends "layout.html" %} <!-- to have the base model  -->
 {% block content %} <!-- to specify what is the content to insert into the base page -->
-    <!-- form for posting new events -->
-    <div class="content-section">
-        <form method="POST" action="" enctype = "multipart/form-data">
-            {{ form.hidden_tag()}} <!-- we pass in the form instance to this template -->
-            <!-- the hidden tag adds a csrf token aka cross site request forgery token  -->
-            <fieldset class="form-group">
-                <legend class="border-bottom mb-4">{{ legend }}</legend>
-                <div class="form-group">
-                    <!-- here we use the fields of the form we passed in -->
-                    {{ form.title.label(class="form-control-label")}} <!-- gives us the label of the form -->
+	<div class="row">
+		<div class="col-md-3">
+		</div>
+		<div class="col-md-6">
+			<div class="card sharp-border" style="margin-bottom:10px">
+				<div class="card-header text-center" style="background-color:white">
+					<h3 class="text-uppercase orange">update event</h3>
+				</div>
+				<div class="card-body text-center">
+					<form method="POST" action="" enctype = "multipart/form-data">
+						{{ form.hidden_tag()}} <!-- we pass in the form instance to this template -->
+						<!-- the hidden tag adds a csrf token aka cross site request forgery token  -->
+						<fieldset class="form-group">
+						<div class="form-group">
+							<div class="row">
+								<div class="col-md-4">
+									<img src="{{ url_for('static', filename ='event_pics/' + event.image_file ) }}" class="card-img" id="create_event_thumbnail" alt="...">
+								</div>
+								<div class="col-md-8">
+									<div class="input-group mb-3">
+										<div class="input-group-prepend">
+											<span class="input-group-text" id="inputGroupFileAddon01">Thumbnail file</span>
+										</div>
+										<div class="custom-file">
+											{{ form.picture(class = "custom-file-input",onchange="createEventThumbnail()",id="new_thumbnail",autocomplete="off",accept="image/png,image/jpeg,image/jpg,image/gif")}}
+											{% if form.picture.errors%}
+												{% for error in form.picture.errors %}
+													<span class="text-danger">{{ error }}</span> </br>
+												{%endfor%}
+											{%endif%}
+											<!-- <input type="file" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01"> -->
+											<label class="custom-file-label text-left" for="new_thumbnail"></label>
+										</div>
+									</div>
+									
+								</div>
+							</div>
+						</div>
 
-                    {% if form.title.errors%}
-                        {{ form.title(class="form-control form-control-lg is-invalid")}}
-                        <div class="invalid-feedback">
-                            {% for error in form.title.errors %}
-                                <span>{{ error }}</span>
-                            {%endfor%}
-                        </div>
-                    {% else %}
-                        {{ form.title(class="form-control form-control-lg")}}  <!-- lg stands for large -->
-                    {% endif %}  <!-- lg stands for large -->
-                </div>
-                <div class="form-group">
-                    <!-- here we use the fields of the form we passed in -->
-                    {{ form.event_type.label(class="form-control-label")}} <!-- gives us the label of the form -->
-                    {% if form.event_type.errors %}
-                        {{ form.content(class="form-control form-control-lg is-invalid")}}
-                        <div class="invalid-feedback">
-                            {% for error in form.event_type.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.event_type(class="form-control form-control-lg")}}  <!-- lg stands for large -->
-                    {% endif %}  <!-- lg stands for large -->
-                </div>
-                <div class="form-group">
-                    <!-- here we use the fields of the form we passed in -->
-                    {{ form.event_date.label(class="form-control-label")}} <!-- gives us the label of the form -->
-                    {% if form.event_date.errors %}
-                        {{ form.event_date(class="form-control form-control-lg is-invalid")}}
-                        <div class="invalid-feedback">
-                            {% for error in form.content.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.event_date(class="form-control form-control-lg")}}  <!-- lg stands for large -->
-                    {% endif %}  <!-- lg stands for large -->
-                </div>
-                <div class="form-group">
-                    <!-- here we use the fields of the form we passed in -->
-                    {{ form.time_from.label(class="form-control-label")}} <!-- gives us the label of the form -->
-                    {% if form.time_from.errors %}
-                        {{ form.time_from(class="form-control form-control-lg is-invalid")}}
-                        <div class="invalid-feedback">
-                            {% for error in form.content.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.time_from(class="form-control form-control-lg")}}  <!-- lg stands for large -->
-                    {% endif %}  <!-- lg stands for large -->
-                </div>
-                <div class="form-group">
-                    <!-- here we use the fields of the form we passed in -->
-                    {{ form.time_to.label(class="form-control-label")}} <!-- gives us the label of the form -->
-                    {% if form.time_to.errors %}
-                        {{ form.time_to(class="form-control form-control-lg is-invalid")}}
-                        <div class="invalid-feedback">
-                            {% for error in form.content.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.time_to(class="form-control form-control-lg")}}  <!-- lg stands for large -->
-                    {% endif %}  <!-- lg stands for large -->
-                </div>
-                <div class="form-group">
-                    <!-- here we use the fields of the form we passed in -->
-                    {{ form.content.label(class="form-control-label")}} <!-- gives us the label of the form -->
-                    {% if form.content.errors %}
-                        {{ form.content(class="form-control form-control-lg is-invalid")}}
-                        <div class="invalid-feedback">
-                            {% for error in form.content.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.content(class="form-control form-control-lg")}}  <!-- lg stands for large -->
-                    {% endif %}  <!-- lg stands for large -->
-                </div>
-                <div class="form-group">
-                    <!-- here we use the fields of the form we passed in -->
-                    {{ form.address.label(class="form-control-label")}} <!-- gives us the label of the form -->
-                    {% if form.address.errors %}
-                        {{ form.address(class="form-control form-control-lg is-invalid")}}
-                        <div class="invalid-feedback">
-                            {% for error in form.content.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.address(class="form-control form-control-lg")}}  <!-- lg stands for large -->
-                    {% endif %}  <!-- lg stands for large -->
-                </div>
-                <div class="form-group">
-                    <!-- here we use the fields of the form we passed in -->
-                    {{ form.city.label(class="form-control-label")}} <!-- gives us the label of the form -->
-                    {% if form.city.errors %}
-                        {{ form.city(class="form-control form-control-lg is-invalid")}}
-                        <div class="invalid-feedback">
-                            {% for error in form.content.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.city(class="form-control form-control-lg")}}  <!-- lg stands for large -->
-                    {% endif %}  <!-- lg stands for large -->
-                </div>
-                <div class="form-group">
-                    <!-- here we use the fields of the form we passed in -->
-                    {{ form.location.label(class="form-control-label")}} <!-- gives us the label of the form -->
-                    {% if form.location.errors %}
-                        {{ form.location(class="form-control form-control-lg is-invalid")}}
-                        <div class="invalid-feedback">
-                            {% for error in form.location.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.location(class="form-control form-control-lg")}}  <!-- lg stands for large -->
-                    {% endif %}  <!-- lg stands for large -->
-                </div>
-                <div class="form-group">
-                    <!-- here we use the fields of the form we passed in -->
-                    {{ form.picture.label()}} <!-- gives us the label of the form -->
-                    {{ form.picture(class = "form-control-file")}}
-                    {% if form.picture.errors%}
-                        {% for error in form.picture.errors %}
-                            <span class="text-danger">{{ error }}</span> </br>
-                        {%endfor%}
-                    {%endif%}
-                </div>
+							<div class="form-group">
+								<div class="input-group mb-3">
+									<div class="input-group-prepend" >
+										<span class="input-group-text"><span class="material-icons">title</span></span>
+									</div>
+									{% if form.title.errors%}
+										{{ form.title(class="form-control form-control-lg is-invalid")}}
+										<div class="invalid-feedback">
+											{% for error in form.title.errors %}
+												<span>{{ error }}</span>
+											{%endfor%}
+										</div>
+									{% else %}
+										{{ form.title(class="form-control form-control-lg",placeholder="Title")}}
+									{% endif %}
+								</div>
+							</div>
 
-            </fieldset>
-            <div class="form-group">
-                {{ form.submit(class="btn btn-outline-info")}}
-            </div>
-        </form>
-    </div>
+							<div class="form-group">
+								<div class="input-group mb-3">
+									<div class="input-group-prepend" >
+										<span class="input-group-text"><span class="material-icons">title</span></span>
+									</div>
+									{% if form.content.errors %}
+										{{ form.content(class="form-control form-control-lg is-invalid")}}
+										<div class="invalid-feedback">
+											{% for error in form.content.errors %}
+												<span>{{ error }}</span>
+											{% endfor %}
+										</div>
+									{% else %}
+										{{ form.content(class="form-control form-control-lg",placeholder="Description",rows="6")}}  <!-- lg stands for large -->
+									{% endif %}
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="input-group mb-3">
+									<div class="input-group-prepend" >
+										<span class="input-group-text"><span class="material-icons">local_activity</span></span>
+									</div>
+									{% if form.event_type.errors %}
+										{{ form.content(class="form-control form-control-lg is-invalid")}}
+										<div class="invalid-feedback">
+											{% for error in form.event_type.errors %}
+												<span>{{ error }}</span>
+											{% endfor %}
+										</div>
+									{% else %}
+										{{ form.event_type(class="form-control form-control-lg",placeholder="Type")}}
+									{% endif %}
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="input-group mb-3">
+									<div class="input-group-prepend" >
+										<span class="input-group-text"><span class="material-icons">calendar_today</span></span>
+									</div>
+									{% if form.event_date.errors %}
+										{{ form.event_date(class="form-control form-control-lg is-invalid")}}
+										<div class="invalid-feedback">
+											{% for error in form.content.errors %}
+												<span>{{ error }}</span>
+											{% endfor %}
+										</div>
+									{% else %}
+										{{ form.event_date(class="form-control form-control-lg",placeholder="Date")}}  <!-- lg stands for large -->
+									{% endif %}
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="input-group mb-3">
+									<div class="input-group-prepend" >
+										<span class="input-group-text"><span class="material-icons">schedule</span></span>
+									</div>
+									{% if form.time_from.errors %}
+										{{ form.time_from(class="form-control form-control-lg is-invalid")}}
+										<div class="invalid-feedback">
+											{% for error in form.content.errors %}
+												<span>{{ error }}</span>
+											{% endfor %}
+										</div>
+									{% else %}
+										{{ form.time_from(class="form-control form-control-lg",placeholder="Start time")}}  <!-- lg stands for large -->
+									{% endif %}
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="input-group mb-3">
+									<div class="input-group-prepend" >
+										<span class="input-group-text"><span class="material-icons">schedule</span></span>
+									</div>
+									{% if form.time_to.errors %}
+										{{ form.time_to(class="form-control form-control-lg is-invalid")}}
+										<div class="invalid-feedback">
+											{% for error in form.content.errors %}
+												<span>{{ error }}</span>
+											{% endfor %}
+										</div>
+									{% else %}
+										{{ form.time_to(class="form-control form-control-lg",placeholder="End time")}}  <!-- lg stands for large -->
+									{% endif %}
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="input-group mb-3">
+									<div class="input-group-prepend" >
+										<span class="input-group-text"><span class="material-icons">place</span></span>
+									</div>
+									{% if form.location.errors %}
+										{{ form.location(class="form-control form-control-lg is-invalid")}}
+										<div class="invalid-feedback">
+											{% for error in form.location.errors %}
+												<span>{{ error }}</span>
+											{% endfor %}
+										</div>
+									{% else %}
+										{{ form.location(class="form-control form-control-lg",placeholder="Location")}}  <!-- lg stands for large -->
+									{% endif %}
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="input-group mb-3">
+									<div class="input-group-prepend" >
+										<span class="input-group-text"><span class="material-icons">place</span></span>
+									</div>
+									{% if form.address.errors %}
+										{{ form.address(class="form-control form-control-lg is-invalid")}}
+										<div class="invalid-feedback">
+											{% for error in form.content.errors %}
+												<span>{{ error }}</span>
+											{% endfor %}
+										</div>
+									{% else %}
+										{{ form.address(class="form-control form-control-lg",placeholder="Address")}}  <!-- lg stands for large -->
+									{% endif %}
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="input-group mb-3">
+									<div class="input-group-prepend" >
+										<span class="input-group-text"><span class="material-icons">apartment</span></span>
+									</div>
+									{% if form.city.errors %}
+										{{ form.city(class="form-control form-control-lg is-invalid")}}
+										<div class="invalid-feedback">
+											{% for error in form.content.errors %}
+												<span>{{ error }}</span>
+											{% endfor %}
+										</div>
+									{% else %}
+										{{ form.city(class="form-control form-control-lg",placeholder="City")}}  <!-- lg stands for large -->
+									{% endif %}
+								</div>
+							</div>
+				
+						</fieldset>
+
+						<div class="row">
+							<div class="col-md-6">
+								<button class="btn btn-outline-orange" onclick="window.history.back();">Cancel</button>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									{{ form.submit(class="btn btn-outline-orange",value="Update event")}}
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
 
 
 {% endblock content%} <!-- put the name of what block we are ending -->

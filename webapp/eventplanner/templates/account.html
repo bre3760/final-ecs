@@ -3,8 +3,8 @@
             {{ form.hidden_tag() }} <!-- we pass in the form instance to this template -->
             <fieldset class="form-group">
 				<div class="form-group">
-                    <img class="rounded-circle account-img mb-2" src="{{ url_for('static', filename ='profile_pics/' + current_user.image_file ) }}">
-                    {{ form.picture(class = "form-control-file")}}
+                    <img class="rounded-circle account-img mb-2" id="create_event_thumbnail" src="{{ url_for('static', filename ='profile_pics/' + current_user.image_file ) }}">
+                    {{ form.picture(class = "form-control-file",onchange="createEventThumbnail()",id="new_thumbnail")}}
                     {% if form.picture.errors%}
                         {% for error in form.picture.errors %}
                             <span class="text-danger">{{ error }}</span> </br>
@@ -37,11 +37,17 @@
                         {{ form.email(class="form-control sharp-border")}}  <!-- lg stands for large -->
                     {% endif %}  <!-- lg stands for large -->
                 </div>
-				<button class="btn btn-outline-brown" type="button" autocomplete="off" onclick="" disabled></button>
                 
             </fieldset>
-            <div class="form-group">
-                {{ form.submit(class="btn btn-outline-brown",onclick="accountUpdated()")}} <!-- onclick missing -->
-            </div>
+			<div class="row">
+				<div class="col-md-6">
+					<button class="btn btn-outline-brown" type="button" autocomplete="off" onclick="accountUpdated()">Cancel</button>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group">
+						{{ form.submit(class="btn btn-outline-brown",onclick="accountUpdated()")}} <!-- onclick missing -->
+					</div>
+				</div>
+                
         </form>
 </div>

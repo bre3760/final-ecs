@@ -2,44 +2,64 @@
 {% extends "layout.html" %} <!-- to have the base model  -->
 {% block content %} <!-- to specify what is the content to insert into the base page -->
     <!-- form for posting new events -->
-    <div class="content-section">
-        <form method="POST" action="" enctype = "multipart/form-data">
-            {{ form.hidden_tag()}} <!-- we pass in the form instance to this template -->
-            <!-- the hidden tag adds a csrf token aka cross site request forgery token  -->
-            <fieldset class="form-group">
-                <legend class="border-bottom mb-4">{{ legend }}</legend>
-                <div>
-                    <table>
-                        <tr>
-                            <th>Checkbox</th>
-                            <th>Ticket Number.</th>
-                            <th>Ticket Type</th>
-                            <th>Number of Tickets</th>
-                            <th>Price</th>
-                        </tr>
-                        {% for ticket in event.tickets %}
+	<div class="row">
+		<div class="col-md-3">
+		</div>
+		<div class="col-md-6">
+			<div class="card sharp-border" style="margin-bottom:10px">
+				<div class="card-header text-center" style="background-color:white">
+					<h3 class="text-uppercase orange">delete tickets</h3>
+				</div>
+				<div class="card-body text-center">
+					<form method="POST" action="" enctype = "multipart/form-data">
+						{{ form.hidden_tag()}} <!-- we pass in the form instance to this template -->
+						<!-- the hidden tag adds a csrf token aka cross site request forgery token  -->
+						
+						<fieldset class="form-group">
+							<div>
+								<table class="w-100 table">
+									<thead>
+										<tr class="orange">
+											<th scope="col"></th>
+											<th scope="col">Ticket type</th>
+											<th scope="col">Number </th>
+											<th scope="col">Price</th>
+										</tr>
+									</thead>
+									{% for ticket in event.tickets %}
 
-                        <tr>
-                            <td><label class="checkbox">
-                              <input type="checkbox" name="ticket_keys" value="{{ ticket.id }}">
-                            </label></td>
+									<tr>
+										<th scope="row">
+											<label class="checkbox">
+											  <input type="checkbox" name="ticket_keys" class="ticket-check" autocomplete="off" value="{{ ticket.id }}" onchange="delTicket(this.parentElement.parentElement.parentElement)">
+											</label>
+										</th>
+										<td class="ticket-type">{{ ticket.ticket_type }}</td>
+										<td class="ticket-num">{{ ticket.num_tickets }}</td>
+										<td class="ticket-price">{{ "{:.2f}".format(ticket.price) }} &euro;</td>
+									</tr>
 
-                            <td>{{ ticket.id }}</td>
-                            <td>{{ ticket.ticket_type }}</td>
-                            <td>{{ ticket.num_tickets }}</td>
-                            <td>{{ ticket.price }}</td>
-                        </tr>
+									{% endfor %}
+								</table>
+							</div>
 
-                        {% endfor %}
-                    </table>
-                </div>
-
-            </fieldset>
-            <div class="form-group">
-                {{ form.submit(class="btn btn-outline-info")}}
-            </div>
-        </form>
-    </div>
+						</fieldset>
+						<div class="row">
+							<div class="col-md-6">
+								<button class="btn btn-outline-orange" onclick="window.history.back();">Cancel</button>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									{{ form.submit(class="btn btn-outline-orange",value="Delete tickets")}}
+								</div>
+							</div>
+						</div>
+						
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
 
 
 {% endblock content%} <!-- put the name of what block we are ending -->
