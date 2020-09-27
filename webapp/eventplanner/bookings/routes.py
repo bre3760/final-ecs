@@ -46,7 +46,7 @@ def create_booking():
         try:
             # // booked_tickets = [ {ticket_id: 2, booked_num: 2}, {ticket_id: 12, booked_num: 4}]
             data = request.get_json()
-            # print("data received is: ", data)
+            print("data received is: ", data)
             statusOfPayment = "not payed"
 
             # check if booking user is a manager or not

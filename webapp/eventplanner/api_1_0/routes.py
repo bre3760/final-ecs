@@ -641,123 +641,124 @@ def create_booking_api(current_user_api):
 
         if isManager is False:
             for ticketToBook in selectedTickets:
-                # check if the user is buying more tickets of the same type for the same event
-                eventInQuestion = Event.query.get(eventID)
-                eventOfTicketID = eventID
-                if UserBookings.query.filter_by(user_id = userID,
-                                                event_id = eventID,
-                                                ticket_id = ticketToBook["ticket_id"],
-                                                payment_status = statusOfPayment).first():
-                    if Ticket.query.get(ticketToBook["ticket_id"]):
-                        ticketInQuestion = Ticket.query.get(
-                            ticketToBook["ticket_id"])
-                        availableToPurchase = ticketInQuestion.num_tickets - int(ticketInQuestion.num_bought)
-                        if availableToPurchase >= int(ticketToBook["quantity"]):
+                if int(ticketToBook["quantity"])>0:
+                    # check if the user is buying more tickets of the same type for the same event
+                    eventInQuestion = Event.query.get(eventID)
+                    eventOfTicketID = eventID
+                    if UserBookings.query.filter_by(user_id = userID,
+                                                    event_id = eventID,
+                                                    ticket_id = ticketToBook["ticket_id"],
+                                                    payment_status = statusOfPayment).first():
+                        if Ticket.query.get(ticketToBook["ticket_id"]):
+                            ticketInQuestion = Ticket.query.get(
+                                ticketToBook["ticket_id"])
+                            availableToPurchase = ticketInQuestion.num_tickets - int(ticketInQuestion.num_bought)
+                            if availableToPurchase >= int(ticketToBook["quantity"]):
+                                ExistingBooking = UserBookings.query.filter_by(user_id=userID,event_id=eventID,ticket_id=ticketToBook["ticket_id"],payment_status=statusOfPayment).first()
+                                ExistingBooking.number_booked += ticketToBook["quantity"]
+                                ticketInQuestion.num_bought += int(ticketToBook["quantity"])
+                                ticketActualPriceFromDB = ticketInQuestion.price
+                                total_for_tickets += ticketActualPriceFromDB * \
+                                    ExistingBooking.number_booked
+                                if ExistingBooking.image_file == 'default_qr':
+                                    dataForQR = {"ticket_id": ticketToBook["ticket_id"],
+                                                 "event_id": eventOfTicketID,
+                                                 "user_id": userID,
+                                                 "status": statusOfPayment}
+                                    qr_image = createQR(dataForQR)
+                                    ExistingBooking.image_file = qr_image
+                                    all_qr_names.append(ExistingBooking.image_file)
+
+
+                                if statusOfPayment == 'not payed':
+                                    stat = 'Not Paid'
+                                else:
+                                    stat = 'Paid'
+                                dataForPDF = {
+                                    "event-title": str(eventInQuestion.title),
+                                    "ticket-type": ticketInQuestion.ticket_type,
+                                    "num": str(ExistingBooking.number_booked),
+                                    "status": stat,
+                                    "total":  "{:.2f}".format(total_for_tickets),
+                                    "start time": str(eventInQuestion.time_from.strftime("%H:%M")),
+                                    "date": str(eventInQuestion.event_date.strftime("%Y-%m-%d")),
+                                    "location": str(eventInQuestion.location),
+                                    "info": str(eventInQuestion.address) + ' ' + str(eventInQuestion.city)
+                                }
+                                # print(dataForPDF, "data foe pdf")
+                                all_event_ticket_info.append(
+                                    dataForPDF)
+
+
+                                db.session.commit()
+                            else:
+                                result = {"result":"not enough ticket available"}
+                                return jsonify(result)
+                    else: # the booking combination does not already exist so create a new one
+                        if Ticket.query.get(ticketToBook["ticket_id"]):
                             ExistingBooking = UserBookings.query.filter_by(user_id=userID,event_id=eventID,ticket_id=ticketToBook["ticket_id"],payment_status=statusOfPayment).first()
-                            ExistingBooking.number_booked += ticketToBook["quantity"]
-                            ticketInQuestion.num_bought += int(ticketToBook["quantity"])
-                            ticketActualPriceFromDB = ticketInQuestion.price
-                            total_for_tickets += ticketActualPriceFromDB * \
-                                ExistingBooking.number_booked
-                            if ExistingBooking.image_file == 'default_qr':
+
+                            ticketInQuestion = Ticket.query.get(ticketToBook["ticket_id"])
+                            availableToPurchase = ticketInQuestion.num_tickets - int(ticketInQuestion.num_bought)
+                            if availableToPurchase >= int(ticketToBook["quantity"]):
+                                ticketTYPE = Ticket.query.get(
+                                    ticketToBook["ticket_id"]).ticket_type
+                                ticketActualPriceFromDB = Ticket.query.get(
+                                    ticketToBook["ticket_id"]).price
+
                                 dataForQR = {"ticket_id": ticketToBook["ticket_id"],
-                                             "event_id": eventOfTicketID,
+                                             "event_id": eventID,
                                              "user_id": userID,
                                              "status": statusOfPayment}
                                 qr_image = createQR(dataForQR)
-                                ExistingBooking.image_file = qr_image
-                                all_qr_names.append(ExistingBooking.image_file)
+                                all_qr_names.append(qr_image)
+                                bookingToAdd = UserBookings(user_id=userID,
+                                                            event_id=eventID,
+                                                            ticket_id=ticketToBook["ticket_id"],
+                                                            ticket_type=ticketTYPE,
+                                                            number_booked=ticketToBook["quantity"],
+                                                            number_scanned=0,
+                                                            payment_status=statusOfPayment,
+                                                            image_file=qr_image)
 
+                                ticketInQuestion.num_bought += int(
+                                            ticketToBook["quantity"])
+                                total_for_tickets += ticketActualPriceFromDB * bookingToAdd.number_booked
+                                if statusOfPayment == 'not payed':
+                                    stat = 'Not Paid'
+                                else:
+                                    stat = 'Paid'
+                                db.session.add(bookingToAdd)
+                                dataForPDF = {
+                                    "event-title": eventInQuestion.title,
+                                    "ticket-type": ticketInQuestion.ticket_type,
+                                    "num": str(bookingToAdd.number_booked),
+                                    "status": stat,
+                                    "total": "{:.2f}".format(total_for_tickets),
+                                    "start time": str(eventInQuestion.time_from.strftime("%H:%M")),
+                                    "date": str(eventInQuestion.event_date.strftime("%Y-%m-%d")),
+                                    "location": eventInQuestion.location,
+                                    "info": eventInQuestion.address + ' ' + eventInQuestion.city
+                                }
+                                all_event_ticket_info.append(dataForPDF)
 
-                            if statusOfPayment == 'not payed':
-                                stat = 'Not Paid'
+                                db.session.add(bookingToAdd)
                             else:
-                                stat = 'Paid'
-                            dataForPDF = {
-                                "event-title": str(eventInQuestion.title),
-                                "ticket-type": ticketInQuestion.ticket_type,
-                                "num": str(ExistingBooking.number_booked),
-                                "status": stat,
-                                "total":  "{:.2f}".format(total_for_tickets),
-                                "start time": str(eventInQuestion.time_from.strftime("%H:%M")),
-                                "date": str(eventInQuestion.event_date.strftime("%Y-%m-%d")),
-                                "location": str(eventInQuestion.location),
-                                "info": str(eventInQuestion.address) + ' ' + str(eventInQuestion.city)
-                            }
-                            # print(dataForPDF, "data foe pdf")
-                            all_event_ticket_info.append(
-                                dataForPDF)
-
-
-                            db.session.commit()
-                        else:
-                            result = {"result":"not enough ticket available"}
-                            return jsonify(result)
-                else: # the booking combination does not already exist so create a new one
-                    if Ticket.query.get(ticketToBook["ticket_id"]):
-                        ExistingBooking = UserBookings.query.filter_by(user_id=userID,event_id=eventID,ticket_id=ticketToBook["ticket_id"],payment_status=statusOfPayment).first()
-
-                        ticketInQuestion = Ticket.query.get(ticketToBook["ticket_id"])
-                        availableToPurchase = ticketInQuestion.num_tickets - int(ticketInQuestion.num_bought)
-                        if availableToPurchase >= int(ticketToBook["quantity"]):
-                            ticketTYPE = Ticket.query.get(
-                                ticketToBook["ticket_id"]).ticket_type
-                            ticketActualPriceFromDB = Ticket.query.get(
-                                ticketToBook["ticket_id"]).price
-
-                            dataForQR = {"ticket_id": ticketToBook["ticket_id"],
-                                         "event_id": eventID,
-                                         "user_id": userID,
-                                         "status": statusOfPayment}
-                            qr_image = createQR(dataForQR)
-                            all_qr_names.append(qr_image)
-                            bookingToAdd = UserBookings(user_id=userID,
-                                                        event_id=eventID,
-                                                        ticket_id=ticketToBook["ticket_id"],
-                                                        ticket_type=ticketTYPE,
-                                                        number_booked=ticketToBook["quantity"],
-                                                        number_scanned=0,
-                                                        payment_status=statusOfPayment,
-                                                        image_file=qr_image)
-
-                            ticketInQuestion.num_bought += int(
-                                        ticketToBook["quantity"])
-                            total_for_tickets += ticketActualPriceFromDB * bookingToAdd.number_booked
-                            if statusOfPayment == 'not payed':
-                                stat = 'Not Paid'
-                            else:
-                                stat = 'Paid'
-                            db.session.add(bookingToAdd)
-                            dataForPDF = {
-                                "event-title": eventInQuestion.title,
-                                "ticket-type": ticketInQuestion.ticket_type,
-                                "num": str(bookingToAdd.number_booked),
-                                "status": stat,
-                                "total": "{:.2f}".format(total_for_tickets),
-                                "start time": str(eventInQuestion.time_from.strftime("%H:%M")),
-                                "date": str(eventInQuestion.event_date.strftime("%Y-%m-%d")),
-                                "location": eventInQuestion.location,
-                                "info": eventInQuestion.address + ' ' + eventInQuestion.city
-                            }
-                            all_event_ticket_info.append(dataForPDF)
-
-                            db.session.add(bookingToAdd)
-                        else:
-                            result = {"result": "not enough ticket available"}
-                            return jsonify(result)
-            db.session.commit()
-            random_hex = secrets.token_hex(16)
-            pdfname = random_hex
-            pdf_receipt = create_pdf_receipt(
-                pdfname, all_qr_names, all_event_ticket_info)
-            subject = 'Your receipt'
-            userInQuestion = User.query.get(userID)
-            emailTo = userInQuestion.email
-            content = 'Thank you for your purchase. Please find your tickets attached'
-            filename = pdf_receipt
-            email = generate_email(subject, emailTo, content, filename)
-            result = {"result": "booking completed"}
-            return jsonify(result)
+                                result = {"result": "not enough ticket available"}
+                                return jsonify(result)
+                    db.session.commit()
+                    random_hex = secrets.token_hex(16)
+                    pdfname = random_hex
+                    pdf_receipt = create_pdf_receipt(
+                        pdfname, all_qr_names, all_event_ticket_info)
+                    subject = 'Your receipt'
+                    userInQuestion = User.query.get(userID)
+                    emailTo = userInQuestion.email
+                    content = 'Thank you for your purchase. Please find your tickets attached'
+                    filename = pdf_receipt
+                    email = generate_email(subject, emailTo, content, filename)
+                    result = {"result": "booking completed"}
+                    return jsonify(result)
         else:
             result = {"result": "error", "type": "As a Manager you cannot book an event"}
             return jsonify(result)
