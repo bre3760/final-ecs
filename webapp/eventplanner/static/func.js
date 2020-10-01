@@ -70,9 +70,33 @@ function booking(pressed_btn){
 	        }
 	      })
 	      .then(result => console.log(result))
+	      //.then(result => alert(result))
 	      .catch(error => console.log('error', error));
 		}catch(e){
 			alert(e);
 		}
 	} // end else if
 } // end func
+
+
+function selectByType(type_int){
+    $.ajax({
+            async: false,
+            timeout: 10000,
+            url: `/events-by-type/`,
+            method: "POST",
+            headers: {
+                    "Content-Type":"application/json"
+            },
+            data: {
+                    "type":type_int
+            },
+            success:function(data){
+                    alert(JSON.stringify(data));
+            },
+            error:function(data){
+                    alert(JSON.stringify(data));
+            }
+    });
+}
+

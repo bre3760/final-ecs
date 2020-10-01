@@ -10,6 +10,7 @@ from flask_httpauth import HTTPBasicAuth
 from flask_user import roles_required
 from flask_cors import CORS
 from flask_wtf.csrf import CSRFProtect
+from flask_babel import Babel,gettext
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
@@ -21,7 +22,7 @@ ma = Marshmallow()
 auth = HTTPBasicAuth()
 mail = Mail()
 csrf = CSRFProtect()
-
+babell = Babel()
 # how to make a secure time token
 # python
 # from itsdangerous import TimedJSONWebSignature as Serializer
@@ -40,6 +41,8 @@ def create_app(config_class=Config):
     mail.init_app(app)
     ma.init_app(app)
     csrf.init_app(app)
+    babell.init_app(app)
+
 
     from eventplanner.users.routes import users  # blueprint
     from eventplanner.events.routes import events  # blueprint
@@ -49,6 +52,7 @@ def create_app(config_class=Config):
     from eventplanner.bookings.routes import bookings
     from eventplanner.emails.routes import emails
     from eventplanner.api_1_0.routes import api
+    from eventplanner.babel.routes import babel
 
     app.register_blueprint(users)
     app.register_blueprint(events)
@@ -58,5 +62,6 @@ def create_app(config_class=Config):
     app.register_blueprint(bookings)
     app.register_blueprint(emails)
     app.register_blueprint(api, url_prefix='/api/')
+    app.register_blueprint(babel)
 
     return app

@@ -45,14 +45,32 @@
 						{% endif %}
 					{% endif %}
 				{% endif %}
-				
+
 			{% endfor %}
 		</div>
 		<div class="col-md-3">
-			<div class="content-section text-center">
-				<h3>Our Sidebar</h3>
-			</div>
-		</div>
+                <div class="content-section text-center">
+                        <div class="card">
+                                <div class="card-body">
+                                        <div class="btn-group">
+                                                <button type="button" class="btn btn-danger">Action</button>
+                                                <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup=>
+                                                        <span class="sr-only">Toggle Dropdown</span>
+                                                </button>
+                                                <div class="dropdown-menu">
+	                                                <a class="dropdown-item" onclick="selectByType(0)" style="cursor:pointer">Music</a>
+	                                                <a class="dropdown-item" href="#">Theatre</a>
+	                                                <a class="dropdown-item" href="#">Sports</a>
+	                                                <a class="dropdown-item" href="#">Movies</a>
+	                                                <a class="dropdown-item" href="#">Culture</a>
+	                                                <a class="dropdown-item" href="#">Others</a>
+                                                </div>
+                                        </div>
+                                </div>
+                        </div>
+                </div>
+        </div>
+
 	</div>
 
 

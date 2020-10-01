@@ -238,3 +238,18 @@ def add_staff(event_id):
             flash('User not found', 'error')
 
     return render_template('add_staff.html', form=form, title='Add Staff')
+
+
+
+
+@events.route("/events-by-type/", methods=['GET', 'POST'])
+def filter_events_by_type():
+    data = request.get_json()
+    type_selected = data["type"]
+    events_by_type = Event.query.filter_by(event_type=event_type).all().order_by(
+        Event.date_posted.desc()).paginate(page=page, per_page=5)
+    page = request.args.get('page', 1, type=int)
+    # passing an argument to a template
+    # we want to paginate them
+    # return render_template('home.html', events=events_by_type)
+    return redirect(url_for('main.home',events=events_by_type), code=302)

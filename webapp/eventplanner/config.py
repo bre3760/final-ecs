@@ -2,20 +2,21 @@ import os
 # need to be set as environment variables
 
 
-# class Config:
-#     SECRET_KEY = '483757cd797387a0e9855ac1dc2d8aaa'
-#     SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:WebDevelopment123!@localhost/eventsbypolito'
-#     # SECRET_KEY = os.environ.get('SECRET_KEY')
-#     # SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI')
-#     MAIL_SERVER = 'smtp.googlemail.com'
-#     MAIL_PORT = 587
-#     MAIL_USE_TLS = True
-#     # environment variable watch video later
-#     # MAIL_USENAME = os.environ.get('EMAIL_USER')
-#     # MAIL_PASSWORD = os.environ.get('EMAIL_PASS')  # jacopo & WebDevelopment123!
-#     EMAIL_ADDRESS = 'eventsbypolito@gmail.com'
-#     EMAIL_PASSWORD = 'WebDevelopment123!'
-#     ADMIN = 'brendandavidpolidori@gmail.com'
+class Config:
+    SECRET_KEY = '483757cd797387a0e9855ac1dc2d8aaa'
+    SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:WebDevelopment123!@localhost/eventsbypolito'
+    # SECRET_KEY = os.environ.get('SECRET_KEY')
+    # SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI')
+    MAIL_SERVER = 'smtp.googlemail.com'
+    MAIL_PORT = 587
+    MAIL_USE_TLS = True
+    # environment variable watch video later
+    # MAIL_USENAME = os.environ.get('EMAIL_USER')
+    # MAIL_PASSWORD = os.environ.get('EMAIL_PASS')  # jacopo & WebDevelopment123!
+    EMAIL_ADDRESS = 'eventsbypolito@gmail.com'
+    EMAIL_PASSWORD = 'WebDevelopment123!'
+    ADMIN = 'brendandavidpolidori@gmail.com'
+    BABEL_DEFAULT_LOCALE = 'en'
 
 # #
 class Config:

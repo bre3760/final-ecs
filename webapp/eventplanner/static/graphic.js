@@ -5,7 +5,7 @@ function subTicket(parentWrapper) {
 	let purchase_num = document.getElementById("purchase-num");
 	let purchase_price = document.getElementById("purchase-price");
 	let book_num = document.getElementById("book-num");
-	
+
 	if(target.value <= 4) {
 		parentWrapper.getElementsByClassName("add-ticket").item(0).disabled = false;
 	}
@@ -13,11 +13,11 @@ function subTicket(parentWrapper) {
 		parentWrapper.getElementsByClassName("sub-ticket").item(0).disabled = true;
 	}
 	target.value--;
-	
+
 	purchase_num.innerHTML = (parseFloat(purchase_num.innerHTML) - 1);
 	book_num.innerHTML = (parseFloat(book_num.innerHTML) - 1);
 	purchase_price.innerHTML = `${(parseFloat(purchase_price.innerHTML) - price).toFixed(2)} \u20AC`;
-	
+
 	if ((parseFloat(book_num.innerHTML) - 1) < 0) {
 		document.getElementById("purchase_button").disabled = true;
 		document.getElementById("book_button").disabled = true;
@@ -31,7 +31,7 @@ function addTicket(parentWrapper) {
 	let purchase_num = document.getElementById("purchase-num");
 	let purchase_price = document.getElementById("purchase-price");
 	let book_num = document.getElementById("book-num");
-	
+
 	if(target.value >= 0) {
 		parentWrapper.getElementsByClassName("sub-ticket").item(0).disabled = false;
 	}
@@ -39,11 +39,11 @@ function addTicket(parentWrapper) {
 		parentWrapper.getElementsByClassName("add-ticket").item(0).disabled = true;
 	}
 	target.value++;
-	
+
 	purchase_num.innerHTML = (parseFloat(purchase_num.innerHTML) + 1);
 	book_num.innerHTML = (parseFloat(book_num.innerHTML) + 1);
 	purchase_price.innerHTML = `${(parseFloat(purchase_price.innerHTML) + price).toFixed(2)} \u20AC`;
-	
+
 	if ((parseFloat(book_num.innerHTML) + 1) > 0) {
 		document.getElementById("purchase_button").disabled = false;
 		document.getElementById("book_button").disabled = false;
@@ -60,7 +60,7 @@ function delTicket( wrapper ) {
 	let type = wrapper.getElementsByClassName("ticket-type").item(0);
 	let num = wrapper.getElementsByClassName("ticket-num").item(0);
 	let price = wrapper.getElementsByClassName("ticket-price").item(0);
-	
+
 	if (!check.checked) {
 		type.style.textDecoration = "";
 		num.style.textDecoration = "";

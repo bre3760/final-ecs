@@ -43,7 +43,7 @@ def start_payment_flow():
         ticket = Ticket.query.get(ticket_id)
         event = Event.query.get(ticket.event_id)
         eventTitle = event.title
-        eventDate = event.event_date
+        eventDate = event.event_date.strftime("%A %d %B %Y")
         eventLocation = event.location
         session['event-info'] = [eventTitle,eventDate,eventLocation]
         # session['event-date'] = eventDate
@@ -223,6 +223,7 @@ def after_payment():
 
             else:  # the booking combination does not already exist so create a new one
                 if Ticket.query.get(ticketToBook["ticket_id"]):
+                    ticketInQuestion = Ticket.query.get(ticketToBook["ticket_id"])
                     ticketTYPE = Ticket.query.get(
                         ticketToBook["ticket_id"]).ticket_type
                     ticketActualPriceFromDB = Ticket.query.get(
@@ -245,7 +246,7 @@ def after_payment():
                                                 image_file=qr_image)
                     ticketInQuestion.num_bought += int(
                         ticketToBook["booked_num"])
-                    total_for_tickets += ticketActualPriceFromDB * ExistingBooking.number_booked
+                    total_for_tickets += ticketActualPriceFromDB * bookingToAdd.number_booked
                     if statusOfPayment == 'not payed':
                         stat = 'Not Paid'
                     else:
