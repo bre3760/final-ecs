@@ -9,9 +9,10 @@ from eventplanner import db, bcrypt, csrf
 babel = Blueprint('babel', __name__)
 
 @babell.localeselector
-def get_locale():
-    if session['lang']:
-        return session['lang']
+def get_locale_user():
+    print("in localeselector")
+    if session.get('lingua',None) :
+        return session.get("lingua",None)
     else:
         return 'en'
 
@@ -19,19 +20,19 @@ def get_locale():
 @csrf.exempt
 def get_lang():
     if request.method == 'POST':
-        if request.form['lang']:
-            lang = request.form['lang']
-            session['lang'] = lang
+        if request.form['lello'] == 'en':
+            lang = request.form['lello']
+            session['lingua'] = lang
             print("from form",lang)
-    return render_template('multi_lang.html')
+        if request.form['lello'] == 'it':
+            lang = request.form['lello']
+            session['lingua'] = lang
+            print("from form",lang)
+        return render_template('multi_lang.html')
+    if request.method == 'GET':
+        return render_template('multi_lang.html')
 
-# @babel.route('/lang',methods=['POST'])
-# @csrf.exempt
-# def chenge_lang():
-#     if request.form['lang']:
-#         lang = request.form['lang']
-#         print("from form",lang)
-#     return redirect(url_for('babel.get_lang'))
+
 """
 flash(gettext("string to translate"))
 jsonify(gettext("string"))
