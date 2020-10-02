@@ -28,7 +28,8 @@ def get_lang():
             lang = request.form['lello']
             session['lingua'] = lang
             print("from form",lang)
-        return render_template('multi_lang.html')
+        return redirect(request.referrer)
+#	return render_template('multi_lang.html')
     if request.method == 'GET':
         return render_template('multi_lang.html')
 

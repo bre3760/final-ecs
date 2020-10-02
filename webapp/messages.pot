@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-10-01 20:54+0200\n"
+"POT-Creation-Date: 2020-10-02 11:07+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,8 +17,403 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.8.0\n"
 
-#: eventplanner/templates/multi_lang.html:8
-msgid "Computer"
+#: eventplanner/events/routes.py:37
+msgid "Your event has been created"
+msgstr ""
+
+#: eventplanner/events/routes.py:75
+msgid "Your event has been updated"
+msgstr ""
+
+#: eventplanner/events/routes.py:118
+msgid "Your event tickets have been updated"
+msgstr ""
+
+#: eventplanner/events/routes.py:148
+msgid "Your event tickets have been deleted"
+msgstr ""
+
+#: eventplanner/events/routes.py:169
+msgid "Your tickets have been created"
+msgstr ""
+
+#: eventplanner/events/routes.py:185
+msgid "Your event has been deleted"
+msgstr ""
+
+#: eventplanner/events/routes.py:233
+msgid "User already in staff"
+msgstr ""
+
+#: eventplanner/events/routes.py:236
+msgid "Your staff has been added"
+msgstr ""
+
+#: eventplanner/events/routes.py:239
+msgid "User not found"
+msgstr ""
+
+#: eventplanner/templates/account.html:44
+#: eventplanner/templates/add_staff.html:48
+#: eventplanner/templates/add_tickets.html:42
+#: eventplanner/templates/create_event.html:233
+#: eventplanner/templates/delete_event_tickets.html:49
+#: eventplanner/templates/event.html:193
+#: eventplanner/templates/update_event.html:209
+msgid "Cancel"
+msgstr ""
+
+#: eventplanner/templates/add_staff.html:9
+msgid "edit staff"
+msgstr ""
+
+#: eventplanner/templates/add_staff.html:22
+msgid "add staff"
+msgstr ""
+
+#: eventplanner/templates/add_tickets.html:11
+msgid "Add ticket"
+msgstr ""
+
+#: eventplanner/templates/add_tickets.html:24
+#: eventplanner/templates/create_event.html:215
+msgid "Ticket name"
+msgstr ""
+
+#: eventplanner/templates/create_event.html:11
+msgid "new event"
+msgstr ""
+
+#: eventplanner/templates/create_event.html:26
+#: eventplanner/templates/update_event.html:25
+msgid "Thumbnail file"
+msgstr ""
+
+#: eventplanner/templates/create_event.html:57
+#: eventplanner/templates/update_event.html:56
+msgid "Title"
+msgstr ""
+
+#: eventplanner/templates/create_event.html:75
+#: eventplanner/templates/update_event.html:74
+msgid "Description"
+msgstr ""
+
+#: eventplanner/templates/create_event.html:93
+#: eventplanner/templates/update_event.html:92
+msgid "Type"
+msgstr ""
+
+#: eventplanner/templates/create_event.html:111
+#: eventplanner/templates/update_event.html:110
+msgid "Date"
+msgstr ""
+
+#: eventplanner/templates/create_event.html:129
+#: eventplanner/templates/update_event.html:128
+msgid "Start time"
+msgstr ""
+
+#: eventplanner/templates/create_event.html:147
+#: eventplanner/templates/update_event.html:146
+msgid "End time"
+msgstr ""
+
+#: eventplanner/templates/create_event.html:165
+#: eventplanner/templates/update_event.html:164
+msgid "Location"
+msgstr ""
+
+#: eventplanner/templates/create_event.html:183
+#: eventplanner/templates/update_event.html:182
+msgid "Address"
+msgstr ""
+
+#: eventplanner/templates/create_event.html:201
+#: eventplanner/templates/update_event.html:200
+msgid "City"
+msgstr ""
+
+#: eventplanner/templates/create_event.html:237
+msgid "Create event"
+msgstr ""
+
+#: eventplanner/templates/delete_event_tickets.html:11
+msgid "delete tickets"
+msgstr ""
+
+#: eventplanner/templates/delete_event_tickets.html:24
+msgid "Ticket type"
+msgstr ""
+
+#: eventplanner/templates/delete_event_tickets.html:25
+msgid "Number"
+msgstr ""
+
+#: eventplanner/templates/delete_event_tickets.html:26
+#: eventplanner/templates/event.html:68
+msgid "Price"
+msgstr ""
+
+#: eventplanner/templates/delete_event_tickets.html:53
+#: eventplanner/templates/event.html:115
+msgid "Delete tickets"
+msgstr ""
+
+#: eventplanner/templates/event.html:20
+msgid "Event description"
+msgstr ""
+
+#: eventplanner/templates/event.html:23
+msgid "Date and time information"
+msgstr ""
+
+#: eventplanner/templates/event.html:25
+msgid "From"
+msgstr ""
+
+#: eventplanner/templates/event.html:25
+msgid "to"
+msgstr ""
+
+#: eventplanner/templates/event.html:27
+msgid "Location information"
+msgstr ""
+
+#: eventplanner/templates/event.html:33
+msgid "Provided by"
+msgstr ""
+
+#: eventplanner/templates/event.html:42
+msgid "Provider Toolbar"
+msgstr ""
+
+#: eventplanner/templates/event.html:45
+msgid "Edit event"
+msgstr ""
+
+#: eventplanner/templates/event.html:50
+msgid "Delete Event"
+msgstr ""
+
+#: eventplanner/templates/event.html:60
+msgid "Tickets"
+msgstr ""
+
+#: eventplanner/templates/event.html:70
+msgid "Available"
+msgstr ""
+
+#: eventplanner/templates/event.html:105
+msgid "Update tickets"
+msgstr ""
+
+#: eventplanner/templates/event.html:110
+msgid "Add tickets"
+msgstr ""
+
+#: eventplanner/templates/event.html:123
+msgid "Purchase"
+msgstr ""
+
+#: eventplanner/templates/event.html:123
+msgid "tickets"
+msgstr ""
+
+#: eventplanner/templates/event.html:129
+msgid "Book"
+msgstr ""
+
+#: eventplanner/templates/event.html:129
+msgid "tickets, pay at the event"
+msgstr ""
+
+#: eventplanner/templates/event.html:156
+msgid "No staff has been inserted for this event"
+msgstr ""
+
+#: eventplanner/templates/event.html:163
+msgid "Add Staff"
+msgstr ""
+
+#: eventplanner/templates/event.html:181
+msgid "Do you want to delete the selected event?"
+msgstr ""
+
+#: eventplanner/templates/home.html:31 eventplanner/templates/my_events.html:31
+#: eventplanner/templates/user_events.html:41
+msgid "Ticket starting from"
+msgstr ""
+
+#: eventplanner/templates/home.html:38
+msgid "No events are present in the database"
+msgstr ""
+
+#: eventplanner/templates/layout.html:222
+#: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:258
+#: webappvenv/lib/python3.8/site-packages/flask_user/templates/flask_user/login_or_register.html:41
+#: webappvenv/lib/python3.8/site-packages/flask_user/templates/flask_user/register.html:5
+msgid "Register"
+msgstr ""
+
+#: eventplanner/templates/layout.html:268
+msgid "Edit your profile"
+msgstr ""
+
+#: eventplanner/templates/layout.html:275
+msgid "Create a new event"
+msgstr ""
+
+#: eventplanner/templates/layout.html:280
+msgid "Show my events"
+msgstr ""
+
+#: eventplanner/templates/layout.html:287
+msgid "Show my bookings"
+msgstr ""
+
+#: eventplanner/templates/login.html:14
+msgid "login form"
+msgstr ""
+
+#: eventplanner/templates/login.html:66
+msgid "Keep me signed in"
+msgstr ""
+
+#: eventplanner/templates/login.html:80
+msgid "Forgot your password?"
+msgstr ""
+
+#: eventplanner/templates/login.html:82
+msgid "Recover it"
+msgstr ""
+
+#: eventplanner/templates/login.html:82
+msgid "here"
+msgstr ""
+
+#: eventplanner/templates/login.html:87
+msgid "Need an account?"
+msgstr ""
+
+#: eventplanner/templates/login.html:89 eventplanner/templates/register.html:88
+#: eventplanner/templates/register_manager.html:107
+msgid "Sign up"
+msgstr ""
+
+#: eventplanner/templates/my_events.html:7
+msgid "Your events"
+msgstr ""
+
+#: eventplanner/templates/my_events.html:38
+msgid "You have created no events at the moment"
+msgstr ""
+
+#: eventplanner/templates/register.html:10
+msgid "sign up form"
+msgstr ""
+
+#: eventplanner/templates/register.html:81
+#: eventplanner/templates/register_manager.html:81
+msgid "Confirm password"
+msgstr ""
+
+#: eventplanner/templates/register.html:96
+#: eventplanner/templates/register_manager.html:115
+msgid "Already signed up?"
+msgstr ""
+
+#: eventplanner/templates/register.html:103
+msgid "Are you an event provider?"
+msgstr ""
+
+#: eventplanner/templates/register.html:105
+msgid "Sign up here"
+msgstr ""
+
+#: eventplanner/templates/register_manager.html:10
+msgid "provider sign up form"
+msgstr ""
+
+#: eventplanner/templates/register_manager.html:89
+msgid "By signing up you declare to be an event provider."
+msgstr ""
+
+#: eventplanner/templates/register_manager.html:91
+msgid ""
+"Verifications on your account will be performed by the platform "
+"administrators, if inconsistencies are found your account will be closed,"
+" your events will be deleted and your tickets will be refound."
+msgstr ""
+
+#: eventplanner/templates/register_manager.html:117
+msgid "log in"
+msgstr ""
+
+#: eventplanner/templates/update_event.html:10
+msgid "update event"
+msgstr ""
+
+#: eventplanner/templates/update_event.html:213
+msgid "Update event"
+msgstr ""
+
+#: eventplanner/templates/user_events.html:48
+msgid "This provider has created no events at the moment"
+msgstr ""
+
+#: eventplanner/templates/errors/404.html:4
+msgid "Oops. Page not found"
+msgstr ""
+
+#: eventplanner/templates/errors/404.html:5
+msgid "That page does not exist"
+msgstr ""
+
+#: eventplanner/templates/errors/500.html:4
+msgid "Something went wrong"
+msgstr ""
+
+#: eventplanner/templates/errors/500.html:5
+msgid ""
+"We are experiencing some trouble on our end, please try again in the near"
+" future"
+msgstr ""
+
+#: eventplanner/templates/payments/after-payment.html:9
+msgid "Thanks"
+msgstr ""
+
+#: eventplanner/templates/payments/payment.html:75
+msgid "Pay"
+msgstr ""
+
+#: eventplanner/templates/payments/payment.html:79
+msgid "Payment completed"
+msgstr ""
+
+#: eventplanner/users/routes.py:30 eventplanner/users/routes.py:54
+msgid "Your account has been created, you can now log in"
+msgstr ""
+
+#: eventplanner/users/routes.py:82
+msgid "login failed, check email and password"
+msgstr ""
+
+#: eventplanner/users/routes.py:105
+msgid "Your account has been updated"
+msgstr ""
+
+#: eventplanner/users/routes.py:156
+msgid "An email has been sent with instructions to reset your password"
+msgstr ""
+
+#: eventplanner/users/routes.py:167
+msgid "That is an invalid or exiperd token"
+msgstr ""
+
+#: eventplanner/users/routes.py:177
+msgid "Your password has been updated, you can now log in"
 msgstr ""
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:40
@@ -187,12 +582,6 @@ msgstr ""
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:256
 msgid "Token"
-msgstr ""
-
-#: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:258
-#: webappvenv/lib/python3.8/site-packages/flask_user/templates/flask_user/login_or_register.html:41
-#: webappvenv/lib/python3.8/site-packages/flask_user/templates/flask_user/register.html:5
-msgid "Register"
 msgstr ""
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:293

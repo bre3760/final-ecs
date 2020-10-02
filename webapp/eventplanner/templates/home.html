@@ -28,49 +28,25 @@
 								</p>
 
 								<p style="font-size:1.2em; margin-bottom:0%;color:#ca5116">
-									<strong>Ticket starting from {{ "{:.2f}".format(ns.price) }}&euro;</strong>
+									<strong>{{_('Ticket starting from')}} {{ "{:.2f}".format(ns.price) }}&euro;</strong>
 								</p>
 							</div>
 						</div>
 					</div>
 				</div>
+			{% else %}
+				<h3> {{_('No events are present in the database')}} </h3>
 			{% endfor %}
+			
 			{% for page_num in events.iter_pages(left_edge=1,right_edge=1, left_current=1, right_current=2) %} <!-- right current includes current -->
-				{% if page_num %}
-					{% if page_num is gt 1 %}
-						{% if events.page==page_num %}
-							<a class="btn btn-orange mb-4" href="{{ url_for('main.home',page=page_num ) }}" style="backgorund-color:#ca5116">{{ page_num }}</a>
-						{% else %}
-							<a class="btn btn-outline-orange mb-4" href="{{ url_for('main.home',page=page_num ) }}">{{ page_num }}</a>
-						{% endif %}
-					{% endif %}
+				{% if events.page==page_num %}
+					<a class="btn btn-orange mb-4" href="{{ url_for('main.home',page=page_num ) }}" style="backgorund-color:#ca5116">{{ page_num }}</a>
+				{% else %}
+					<a class="btn btn-outline-orange mb-4" href="{{ url_for('main.home',page=page_num ) }}">{{ page_num }}</a>
 				{% endif %}
-
+				
 			{% endfor %}
 		</div>
-		<div class="col-md-3">
-                <div class="content-section text-center">
-                        <div class="card">
-                                <div class="card-body">
-                                        <div class="btn-group">
-                                                <button type="button" class="btn btn-danger">Action</button>
-                                                <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup=>
-                                                        <span class="sr-only">Toggle Dropdown</span>
-                                                </button>
-                                                <div class="dropdown-menu">
-	                                                <a class="dropdown-item" onclick="selectByType(0)" style="cursor:pointer">Music</a>
-	                                                <a class="dropdown-item" href="#">Theatre</a>
-	                                                <a class="dropdown-item" href="#">Sports</a>
-	                                                <a class="dropdown-item" href="#">Movies</a>
-	                                                <a class="dropdown-item" href="#">Culture</a>
-	                                                <a class="dropdown-item" href="#">Others</a>
-                                                </div>
-                                        </div>
-                                </div>
-                        </div>
-                </div>
-        </div>
-
 	</div>
 
 

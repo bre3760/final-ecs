@@ -5,6 +5,7 @@ from eventplanner.models import User, Event, Role, UserRoles, UserBookings
 from eventplanner.users.forms import (
     RegistrationForm, LoginForm, UpdateAccountForm, RequestResetForm, ResetPasswordForm, ManagerRegistrationForm)
 from eventplanner.users.utils import save_picture, send_reset_email
+from eventplanner import gettext
 
 
 users = Blueprint('users', __name__)
@@ -27,7 +28,7 @@ def register():
         user.roles.append(Role(name='SimpleUser'))
         db.session.add(user)
         db.session.commit()
-        flash(f'Your account has been created, you can now log in', 'success')
+        flash(gettext('Your account has been created, you can now log in'), 'success')
         return redirect(url_for('main.home'))  # name of the function
 
     return render_template('register.html', title='Register', form=form)
@@ -51,7 +52,7 @@ def register_manager():
         user.roles.append(Role(name='Manager'))
         db.session.add(user)
         db.session.commit()
-        flash(f'Your account has been created, you can now log in', 'success')
+        flash(gettext('Your account has been created, you can now log in'), 'success')
         return redirect(url_for('users.login'))  # name of the function
 
     return render_template('register_manager.html', title='Register', form=form)
@@ -70,7 +71,7 @@ def login():
             login_user(user, remember=form.remember.data)
             # args is a dictionary, don't access using key would give error, use get
             next_page = request.args.get('next')
-            print("next page is: ",next_page)
+            # print("next page is: ",next_page)
             if next_page == '/start-payment-flow':
                 return redirect(url_for('main.home'))
             if next_page == '/generate-booking/':
@@ -79,7 +80,7 @@ def login():
 
             return redirect(next_page) if next_page else redirect(url_for('main.home'))
         else:
-            flash('login failed, check email and password', 'danger')
+            flash(gettext('login failed, check email and password'), 'danger')
             return redirect(url_for('main.home'))
     return render_template('login.html', title='Login', form=form)
 
@@ -102,7 +103,7 @@ def account():
         current_user.username = form.username.data
         current_user.email = form.email.data
         db.session.commit()
-        flash('Your account has been updated', 'success')
+        flash(gettext('Your account has been updated'), 'success')
         return redirect(url_for('main.home'))
     elif request.method == 'GET':
         form.username.data = current_user.username
@@ -153,7 +154,7 @@ def reset_request():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         send_reset_email(user)
-        flash('An email has been sent with instructions to reset your password', 'info')
+        flash(gettext('An email has been sent with instructions to reset your password'), 'info')
         return redirect(url_for('users.login'))
     return render_template('reset_request.html', title='Reset Password', form=form)
 
@@ -164,7 +165,7 @@ def reset_token(token):
         return redirect(url_for('main.home'))
     user = User.verify_reset_token(token)
     if user is None:
-        flash('That is an invalid or exiperd token', 'warning')
+        flash(gettext('That is an invalid or exiperd token'), 'warning')
         return redirect(url_for('users.reset_request'))
     form = ResetPasswordForm()
     if form.validate_on_submit():
@@ -174,7 +175,7 @@ def reset_token(token):
             form.password.data).decode('utf-8')
         user.password = hashed_password
         db.session.commit()
-        flash(f'Your password has been updated, you can now log in', 'success')
+        flash(gettext('Your password has been updated, you can now log in'), 'success')
         return redirect(url_for('users.login'))  # name of the function
     return render_template('reset_token.html', title='Reset Password', form=form)
 

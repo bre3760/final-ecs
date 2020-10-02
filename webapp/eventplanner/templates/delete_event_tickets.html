@@ -8,7 +8,7 @@
 		<div class="col-md-6">
 			<div class="card sharp-border" style="margin-bottom:10px">
 				<div class="card-header text-center" style="background-color:white">
-					<h3 class="text-uppercase orange">delete tickets</h3>
+					<h3 class="text-uppercase orange">{{_('delete tickets')}}</h3>
 				</div>
 				<div class="card-body text-center">
 					<form method="POST" action="" enctype = "multipart/form-data">
@@ -21,9 +21,9 @@
 									<thead>
 										<tr class="orange">
 											<th scope="col"></th>
-											<th scope="col">Ticket type</th>
-											<th scope="col">Number </th>
-											<th scope="col">Price</th>
+											<th scope="col">{{_('Ticket type')}}</th>
+											<th scope="col">{{_('Number')}} </th>
+											<th scope="col">{{_('Price')}}</th>
 										</tr>
 									</thead>
 									{% for ticket in event.tickets %}
@@ -46,11 +46,11 @@
 						</fieldset>
 						<div class="row">
 							<div class="col-md-6">
-								<button class="btn btn-outline-orange" onclick="window.history.back();">Cancel</button>
+								<button class="btn btn-outline-orange" onclick="window.history.back();">{{_('Cancel')}}</button>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									{{ form.submit(class="btn btn-outline-orange",value="Delete tickets")}}
+									{{ form.submit(class="btn btn-outline-orange",value=_('Delete tickets'))}}
 								</div>
 							</div>
 						</div>

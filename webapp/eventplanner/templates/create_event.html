@@ -8,7 +8,7 @@
 		<div class="col-md-6">
 			<div class="card sharp-border" style="margin-bottom:10px">
 				<div class="card-header text-center" style="background-color:white">
-					<h3 class="text-uppercase orange">new event</h3>
+					<h3 class="text-uppercase orange">{{_('new event')}}</h3>
 				</div>
 				<div class="card-body text-center">
 					<form method="POST" action="" enctype = "multipart/form-data">
@@ -23,7 +23,7 @@
 								<div class="col-md-8">
 									<div class="input-group mb-3">
 										<div class="input-group-prepend">
-											<span class="input-group-text" id="inputGroupFileAddon01">Thumbnail file</span>
+											<span class="input-group-text" id="inputGroupFileAddon01">{{_('Thumbnail file')}}</span>
 										</div>
 										<div class="custom-file">
 											{{ form.picture(class = "custom-file-input",onchange="createEventThumbnail()",id="new_thumbnail",autocomplete="off",accept="image/png,image/jpeg,image/jpg,image/gif")}}
@@ -54,7 +54,7 @@
 											{%endfor%}
 										</div>
 									{% else %}
-										{{ form.title(class="form-control form-control-lg",placeholder="Title")}}
+										{{ form.title(class="form-control form-control-lg",placeholder=_('Title'))}}
 									{% endif %}
 								</div>
 							</div>
@@ -72,7 +72,7 @@
 											{% endfor %}
 										</div>
 									{% else %}
-										{{ form.content(class="form-control form-control-lg",placeholder="Description",rows="6")}}  <!-- lg stands for large -->
+										{{ form.content(class="form-control form-control-lg",placeholder=_('Description'),rows="6")}}  <!-- lg stands for large -->
 									{% endif %}
 								</div>
 							</div>
@@ -90,7 +90,7 @@
 											{% endfor %}
 										</div>
 									{% else %}
-										{{ form.event_type(class="form-control form-control-lg",placeholder="Type")}}
+										{{ form.event_type(class="form-control form-control-lg",placeholder=_('Type'))}}
 									{% endif %}
 								</div>
 							</div>
@@ -108,7 +108,7 @@
 											{% endfor %}
 										</div>
 									{% else %}
-										{{ form.event_date(class="form-control form-control-lg",placeholder="Date")}}  <!-- lg stands for large -->
+										{{ form.event_date(class="form-control form-control-lg",placeholder=_('Date'))}}  <!-- lg stands for large -->
 									{% endif %}
 								</div>
 							</div>
@@ -126,7 +126,7 @@
 											{% endfor %}
 										</div>
 									{% else %}
-										{{ form.time_from(class="form-control form-control-lg",placeholder="Start time")}}  <!-- lg stands for large -->
+										{{ form.time_from(class="form-control form-control-lg",placeholder=_('Start time'))}}  <!-- lg stands for large -->
 									{% endif %}
 								</div>
 							</div>
@@ -144,7 +144,7 @@
 											{% endfor %}
 										</div>
 									{% else %}
-										{{ form.time_to(class="form-control form-control-lg",placeholder="End time")}}  <!-- lg stands for large -->
+										{{ form.time_to(class="form-control form-control-lg",placeholder=_('End time'))}}  <!-- lg stands for large -->
 									{% endif %}
 								</div>
 							</div>
@@ -162,7 +162,7 @@
 											{% endfor %}
 										</div>
 									{% else %}
-										{{ form.location(class="form-control form-control-lg",placeholder="Location")}}  <!-- lg stands for large -->
+										{{ form.location(class="form-control form-control-lg",placeholder=_('Location'))}}  <!-- lg stands for large -->
 									{% endif %}
 								</div>
 							</div>
@@ -180,7 +180,7 @@
 											{% endfor %}
 										</div>
 									{% else %}
-										{{ form.address(class="form-control form-control-lg",placeholder="Address")}}  <!-- lg stands for large -->
+										{{ form.address(class="form-control form-control-lg",placeholder=_('Address'))}}  <!-- lg stands for large -->
 									{% endif %}
 								</div>
 							</div>
@@ -198,7 +198,7 @@
 											{% endfor %}
 										</div>
 									{% else %}
-										{{ form.city(class="form-control form-control-lg",placeholder="City")}}  <!-- lg stands for large -->
+										{{ form.city(class="form-control form-control-lg",placeholder=_('City'))}}  <!-- lg stands for large -->
 									{% endif %}
 								</div>
 							</div>
@@ -212,7 +212,7 @@
 								<table>
 									{% for ticket in form.tickets %}
 										<tr data-toggle="fieldset-entry">
-											<td style="width:45%">{{ ticket.ticket_type(class="form-control",placeholder="Ticket name",autocomplete="off") }}</td>
+											<td style="width:45%">{{ ticket.ticket_type(class="form-control",placeholder=_('Ticket name'),autocomplete="off") }}</td>
 											<td style="width:15%">{{ ticket.num_tickets(class="form-control",placeholder="n°",type="number",min="0",autocomplete="off") }}</td>
 											<td style="width:20%">{{ ticket.price(class="form-control",placeholder="€",type="number",min="0",autocomplete="off",step="0.01") }}</td>
 											<td>
@@ -230,11 +230,11 @@
 
 						<div class="row">
 							<div class="col-md-6">
-								<button class="btn btn-outline-orange" onclick="window.history.back();">Cancel</button>
+								<button class="btn btn-outline-orange" onclick="window.history.back();">{{_('Cancel')}}</button>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									{{ form.submit(class="btn btn-outline-orange",value="Create event")}}
+									{{ form.submit(class="btn btn-outline-orange",value=_('Create event'))}}
 								</div>
 							</div>
 						</div>

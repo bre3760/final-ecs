@@ -2,9 +2,10 @@ from flask import (render_template, url_for, flash,
                    redirect, request, abort, Blueprint, jsonify)
 from flask_login import current_user, login_required
 from eventplanner import db, csrf
-from eventplanner.models import User, Role, UserRoles, Event, EventStaff, Ticket, event_schema, events_schema
+from eventplanner.models import User, Role, UserRoles, Event, EventStaff, Ticket, event_schema, events_schema, UserBookings
 from eventplanner.events.forms import EventForm, TicketForm, StaffForm, UpdateEventTicketsForm, AddTicketsForm
 from eventplanner.events.utils_events import save_picture
+from eventplanner import gettext
 
 # for payments
 
@@ -33,7 +34,7 @@ def new_event():
 
         db.session.add(event)
         db.session.commit()
-        flash('Your event has been created', 'success')
+        flash(gettext('Your event has been created'), 'success')
         return redirect(url_for('main.home'))
     return render_template('create_event.html', title='New Event', form=form, legend='New Event')
 
@@ -71,7 +72,7 @@ def update_event(event_id):
             event.image_file = picture_file
 
         db.session.commit()
-        flash('Your event has been updated', 'success')
+        flash(gettext('Your event has been updated'), 'success')
         return redirect(url_for('events.event', event_id=event.id))
     elif request.method == 'GET':
         form.title.data = event.title
@@ -114,7 +115,7 @@ def update_event_tickets(event_id):
             event.tickets.append(new_ticket)
         db.session.commit()
 
-        flash('Your event tickets have been updated', 'success')
+        flash(gettext('Your event tickets have been updated'), 'success')
         return redirect(url_for('events.event', event_id=event.id))
 
     return render_template('update_event_tickets.html', title='Updated event tickets', form=form, legend='Update event tickets', event=event)
@@ -144,7 +145,7 @@ def delete_event_tickets(event_id):
             db.session.delete(ticket_to_delete)
             db.session.commit()
 
-        flash('Your event tickets have been deleted', 'success')
+        flash(gettext('Your event tickets have been deleted'), 'success')
         return redirect(url_for('events.event', event_id=event.id))
 
     return render_template('delete_event_tickets.html', title='Delete event tickets', legend='Delete event tickets', event=event, form=form)
@@ -165,7 +166,7 @@ def add_tickets(event_id):
             # Add to event
             event.tickets.append(new_ticket)
         db.session.commit()
-        flash('Your tickets have been created', 'success')
+        flash(gettext('Your tickets have been created'), 'success')
         return redirect(url_for('events.event', event_id=event.id))
     return render_template('add_tickets.html', title='Add Tickets', form=form, legend='Add Tickets', event=event)
 
@@ -179,11 +180,14 @@ def delete_event(event_id):
     event = Event.query.get_or_404(event_id)
     if event.manager != current_user:
         abort(403)  # forbidden route
+    all_bokings = UserBookings.query.all()
+    for booking in all_bokings:
+        if booking.event_id == event_id:
+            db.session.delete(booking)
     db.session.delete(event)
     db.session.commit()
-    flash('Your event has been deleted', 'success')
+    flash(gettext('Your event has been deleted'), 'success')
     return redirect(url_for('main.home'))
-
 
 @events.route("/<int:user_id>/events/", methods=['GET'])
 @login_required
@@ -229,13 +233,13 @@ def add_staff(event_id):
                 if already_staffer == False:
                     event_to_staff.staffers.append(user_to_add_as_staff)
                 else:
-                    flash('User already in staff', 'error')
+                    flash(gettext('User already in staff'), 'error')
                     return redirect(url_for('events.event', event_id=event_id))
                 db.session.commit()
-                flash('Your staff has been added', 'success')
+                flash(gettext('Your staff has been added'), 'success')
                 return redirect(url_for('events.event', event_id=event_id))
         else:
-            flash('User not found', 'error')
+            flash(gettext('User not found'), 'error')
 
     return render_template('add_staff.html', form=form, title='Add Staff')
 
@@ -253,3 +257,4 @@ def filter_events_by_type():
     # we want to paginate them
     # return render_template('home.html', events=events_by_type)
     return redirect(url_for('main.home',events=events_by_type), code=302)
+

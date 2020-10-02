@@ -4,7 +4,7 @@
 <div class="row w-100">
 	<div class="col-md-1"></div>
 	<div class="col-md-7">
-		<h3 class="orange"> Your tickets</h3>
+		<h3 class="orange">{{_('Your tickets')}}</h3>
 		{% for booking in all_bookings %}
 			<div class="card mb-3" style="max-width: 100%">
 				<a data-toggle="modal" data-target="#qrModal" onclick="showQR('{{ url_for('static', filename ='booking_qr_codes/' + booking.image_file ) }}')" style="cursor:pointer;">
@@ -26,22 +26,22 @@
 									</strong>
 								</h3>
 								<p class="card-text">
-									<span><strong>Ticket type:</strong> {{ booking.ticket_type }}</span>
+									<span><strong>{{_('Ticket type')}}:</strong> {{ booking.ticket_type }}</span>
 									<br>
-									<span><strong>This QR code is valid for:</strong> {{ booking.number_booked }} tickets</span>
+									<span><strong>{{_('This QR code is valid for')}}:</strong> {{ booking.number_booked }} {{_('tickets')}}</span>
 									<br>
-									<span><strong>Status:</strong> {{ booking.payment_status }} tickets</span>
+									<span><strong>{{_('Status')}}:</strong> {{ booking.payment_status }} {{_('tickets')}}</span>
 								</p>
 							</div>
 						</div>
 					</div>
 				</a>
 				<div class="card-footer text-right">
-					<small class="text-muted">Download your ticket: <a class="brown-link" href="{{ url_for('bookings.download', bid = booking.id ) }}">Download</a></small>
+					<small class="text-muted">{{_('Download your ticket:')}} <a class="brown-link" href="{{ url_for('bookings.download', bid = booking.id ) }}">{{_('Download')}}</a></small>
 				</div>
 			</div>
 		{% else %}
-			<h3>No tickets have been booked yet</h3>
+			<h3>{{_('No tickets have been booked yet')}}</h3>
 		{% endfor %}
 	</div>
 	<div class="col-md-3">
@@ -54,7 +54,7 @@
 <div class="modal fade bd-example-modal-lg" id="qrModal" tabindex="-1" role="dialog">
 	<div class="modal-dialog modal-lg" style="background-color:white">
 		<div class="modal-header">
-			<h5 class="modal-title" id="exampleModalLabel">Ticket QR code</h5>
+			<h5 class="modal-title" id="exampleModalLabel">{{_('Ticket QR code')}}</h5>
 			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 				<span aria-hidden="true">&times;</span>
 			</button>

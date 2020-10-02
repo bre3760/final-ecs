@@ -17,47 +17,47 @@
 				</div>
 				
 				<div class="card-body text-center">
-					<p class="card-text brown" style="vertical-align:middle"><strong>Event description</strong> </p>
+					<p class="card-text brown" style="vertical-align:middle"><strong>{{_('Event description')}}</strong> </p>
 					<p class="card-text">{{ event.content }}</p>
 					
-					<p class="card-text brown" style="vertical-align:middle"><strong>Date and time information</strong> </p>
+					<p class="card-text brown" style="vertical-align:middle"><strong>{{_('Date and time information')}}</strong> </p>
 					<p class="card-text">{{ event.event_date.strftime('%A %d %B %Y') }}</p>
-					<p class="card-text">From {{ event.time_from.strftime('%H:%M') }} to {{ event.time_to.strftime('%H:%M')}}</p>
+					<p class="card-text">{{_('From')}} {{ event.time_from.strftime('%H:%M') }} {{_('to')}} {{ event.time_to.strftime('%H:%M')}}</p>
 					
-					<p class="card-text brown" style="vertical-align:middle"><strong>Location information</strong> </p>
+					<p class="card-text brown" style="vertical-align:middle"><strong>{{_('Location information')}}</strong> </p>
 					<p class="card-text">{{ event.location }}, {{ event.address }}</p>
 					<p class="card-text">{{ event.city }}</p>
 					<iframe class="iframe-location" scrolling="no" marginheight="0" marginwidth="0" frameborder="0" src="https://maps.google.com/maps?key=AIzaSyB8ctkK7iOEBNS870uLCpXQwezRfW9dXeM&width=100%25&amp;height=600&amp;hl=en&amp;q={{event.location}}%20{{event.address}}%20{{event.city}}&amp;t=&amp;z=14&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"></iframe>
 				</div>
 				<div class="card-footer">
-					<small class="text-muted">Provided by: <a class="brown-link" href="{{url_for('users.user_events',username=event.manager.username)}}">{{ event.manager.username }}</a></small>
+					<small class="text-muted">{{_('Provided by')}}: <a class="brown-link" href="{{url_for('users.user_events',username=event.manager.username)}}">{{ event.manager.username }}</a></small>
 				</div>
 			</div>
 			
 		</div>
 		<div class="col-md-4">
 			{% if event.manager == current_user %}
-			<div class="card" style="margin-bottom:20px;">
-				<div class="card-body">
-					<h3 class="orange">Provider Toolbar</h3>
-					<div class="row text-right">
-						<div class="col-md-12">
-							<a class="btn btn-orange" href="{{url_for('events.update_event', event_id = event.id)}}">Edit event</a>
+				<div class="card" style="margin-bottom:20px;">
+					<div class="card-body">
+						<h3 class="orange">{{_('Provider Toolbar')}}</h3>
+						<div class="row text-right">
+							<div class="col-md-12">
+								<a class="btn btn-orange" href="{{url_for('events.update_event', event_id = event.id)}}">{{_('Edit event')}}</a>
+							</div>
 						</div>
+						<div class="row text-right">
+							<div class="col-md-12">
+								<button type="button" class="btn btn-danger mt-1" data-toggle="modal" data-target="#deleteModal">{{_('Delete Event')}}</button>
+							</div>
+						</div>						
 					</div>
-					<div class="row text-right">
-						<div class="col-md-12">
-							<button type="button" class="btn btn-danger mt-1" data-toggle="modal" data-target="#deleteModal">Delete Event</button>
-						</div>
-					</div>						
 				</div>
-			</div>
 			{%endif%}
 			
 			<div class="card" style="margin-bottom:20px;">
 				<div class="card-body">
 					<div class="content-section">
-						<h3 class="orange">Tickets</h3>
+						<h3 class="orange">{{_('Tickets')}}</h3>
 						<ul class="list-group list-group-flush">
 							{%for ticket in event.tickets%}
 								<li class="list-group-item">
@@ -65,9 +65,9 @@
 										<p class="article-content">
 											<strong class="orange"> <span class="ticket_type" id="{{ticket.id}}">{{ ticket.ticket_type }}</span> </strong>
 											<br>
-											Price: <span class="ticket-price">{{ "{:.2f}".format(ticket.price) }}</span> &euro;
+											{{_('Price')}}: <span class="ticket-price">{{ "{:.2f}".format(ticket.price) }}</span> &euro;
 											<br>
-											Available: <span class="ticket-num">{{ ticket.num_tickets - ticket.num_bought }}</span>
+											{{_('Available')}}: <span class="ticket-num">{{ ticket.num_tickets - ticket.num_bought }}</span>
 										</p>
 									</div>
 									{% if event.manager != current_user %}
@@ -102,17 +102,17 @@
 										<div class="col-md-12">
 											<div class="row">
 												<div class="col-md-12">
-													<a class="btn btn-orange" href="{{url_for('events.update_event_tickets', event_id = event.id)}}">Update tickets</a>
+													<a class="btn btn-orange" href="{{url_for('events.update_event_tickets', event_id = event.id)}}">{{_('Update tickets')}}</a>
 												</div>
 											</div>
 											<div class="row mt-1">
 												<div class="col-md-12">
-													<a class="btn btn-orange" href="{{url_for('events.add_tickets', event_id = event.id)}}">Add tickets</a>
+													<a class="btn btn-orange" href="{{url_for('events.add_tickets', event_id = event.id)}}">{{_('Add tickets')}}</a>
 												</div>
 											</div>
 											<div class="row mt-1">
 												<div class="col-md-12">
-													<a class="btn btn-orange" href="{{url_for('events.delete_event_tickets', event_id = event.id)}}">Delete tickets</a>
+													<a class="btn btn-orange" href="{{url_for('events.delete_event_tickets', event_id = event.id)}}">{{_('Delete tickets')}}</a>
 												</div>
 											</div>
 										</div>
@@ -120,12 +120,17 @@
 								{%else%}
 									<div class="row">
 										<div class="col-md-12 text-right">
-											<button class="btn btn-orange" type="button" id="purchase_button" autocomplete="off" onclick="booking(this)" disabled>Purchase <span id="purchase-num">0</span> tickets, <span id="purchase-price">0.00&euro;</span></button>
+											<button class="btn btn-orange" type="button" id="purchase_button" autocomplete="off" onclick="booking(this)" disabled>{{_('Purchase')}} <span id="purchase-num">0</span> {{_('tickets')}}, <span id="purchase-price">0.00&euro;</span></button>
 										</div>
 									</div>
 									<div class="row" style="margin-top:2px;">
 										<div class="col-md-12 text-right">
-											<button class="btn btn-orange" type="button" id="book_button" autocomplete="off" onclick="booking(this)" disabled>Book <span id="book-num">0</span> tickets, pay at the event</button>
+											<button class="btn btn-orange" type="button" id="book_button" autocomplete="off" onclick="booking(this)" disabled>
+												{{_('Book')}} <span id="book-num">0</span> {{_('tickets, pay at the event')}}
+												<!-- <div class="spinner-border" role="status">
+													<span class="sr-only">Loading...</span>
+												</div> -->
+											</button>
 										</div>
 									</div>
 								{%endif%}
@@ -135,6 +140,7 @@
 					</div>
 				</div>
 			</div>
+			
 			{% if event.manager == current_user %}
 			<div class="card">
 				<div class="card-body">
@@ -147,14 +153,14 @@
 								</li>
 							{%else%}
 								<li class="list-group-item staffer-li">
-									<p class="article-content">No staff has been inserted for this event</p>
+									<p class="article-content">{{_('No staff has been inserted for this event')}}</p>
 								</li>
 							{%endfor%}
 						</ul>
 						<div class="float-right" style="margin-top:10px;">
 							<div class="row">
 								<div class="col-md-12 text-right">
-									<a class="btn btn-orange" href="{{url_for('events.add_staff', event_id = event.id)}}">Add Staff</a>
+									<a class="btn btn-orange" href="{{url_for('events.add_staff', event_id = event.id)}}">{{_('Add Staff')}}</a>
 								</div>
 							</div>
 						</div>
@@ -165,19 +171,6 @@
 		</div>
 	</div>
 	
-	
-	<!-- VECCHIO CODICE 
-		{% if event.manager == current_user %}
-						<div>
-							<a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{url_for('events.update_event', event_id = event.id)}}">Update</a>
-							<a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{url_for('events.add_staff', event_id = event.id)}}">Add Staff</a>
-							<a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{url_for('events.update_event_tickets', event_id = event.id)}}">Change Tickets</a>
-							<a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{url_for('events.add_tickets', event_id = event.id)}}">Add Tickets</a>
-							<a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{url_for('events.delete_event_tickets', event_id = event.id)}}">Delete Tickets</a>
-							<button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Delete Event</button>
-						</div>
-						{%endif%} -->
-	
   <!-- Modal -->
 	<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
 		<div class="modal-dialog" role="document">
@@ -185,7 +178,7 @@
 				<div class="modal-body">
 					<div class="row mb-4">
 						<div class="col-md-9">
-							<h5 class="modal-title" id="deleteModalLabel"> Do you want to delete the selected event? </h5>
+							<h5 class="modal-title" id="deleteModalLabel"> {{_('Do you want to delete the selected event?')}} </h5>
 						</div>
 						<div class="col-md-3 text-right">
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -197,7 +190,7 @@
 						<div class="container-fluid text-right">
 							<form action="{{url_for('events.delete_event', event_id=event.id)}}" method="POST">
 								<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-								<button type="button" class="btn btn-secondary d-inline" data-dismiss="modal">Cancel</button>
+								<button type="button" class="btn btn-secondary d-inline" data-dismiss="modal">{{_('Cancel')}}</button>
 								<input class="btn btn-danger d-inline" type="submit" value="Delete">
 							</form>
 						</div>

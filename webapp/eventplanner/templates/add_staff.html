@@ -6,11 +6,20 @@
 		<div class="col-md-6">
 			<div class="card sharp-border">
 				<div class="card-header text-center" style="background-color:white">
-					<h3 class="text-uppercase orange">edit staff</h3>
+					<h3 class="text-uppercase orange">{{_('edit staff')}}</h3>
 				</div>
 				<div class="card-body text-center">
+					{% with messages = get_flashed_messages() %}
+						{% if messages %}
+							{% for message in messages %}
+								<div class="alert alert-secondary text-left" role="alert">
+									{{ message }}
+								</div>
+							{% endfor %}
+						{% endif %}
+					{% endwith %}
 					<div class="container-fluid text-left">
-						<h3 class="text-uppercase">add staff</h3>
+						<h3 class="text-uppercase">{{_('add staff')}}</h3>
 					</div>
 					<form method="POST" action="" enctype = "multipart/form-data">
 						{{ form.hidden_tag()}} <!-- we pass in the form instance to this template -->
@@ -36,7 +45,7 @@
 						</fieldset>
 						<div class="row">
 							<div class="col-md-6">
-								<button class="btn btn-outline-orange" onclick="window.history.back();">Cancel</button>
+								<button class="btn btn-outline-orange" onclick="window.history.back();">{{_('Cancel')}}</button>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">

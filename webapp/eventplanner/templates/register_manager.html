@@ -7,7 +7,7 @@
 		<div class="col-md-6">
 			<div class="card sharp-border">
 				<div class="card-header text-center" style="background-color:white">
-					<h3 class="text-uppercase orange">provider sign up form</h3>
+					<h3 class="text-uppercase orange">{{_('provider sign up form')}}</h3>
 				</div>
 				<div class="card-body text-center">
 					<form method="POST" action="">
@@ -78,7 +78,7 @@
 											{% endfor %}
 										</div>
 									{% else %}
-										{{ form.confirm_password(class="form-control form-control-lg",placeholder="Confirm password")}}
+										{{ form.confirm_password(class="form-control form-control-lg",placeholder=_('Confirm password'))}}
 									{% endif %}
 								</div>
 							</div>
@@ -86,9 +86,9 @@
 							<div class="form-group">
 								<!-- here we use the fields of the form we passed in -->
 								<p class="text-center">
-									By signing up you declare to be an event provider. 
+									{{_('By signing up you declare to be an event provider.')}}
 									<br>
-									Verifications on your account will be performed by the platform administrators, if inconsistencies are found your account will be closed, your events will be deleted and your tickets will be refound.
+									{{_('Verifications on your account will be performed by the platform administrators, if inconsistencies are found your account will be closed, your events will be deleted and your tickets will be refound.')}}
 								</p>
 								{% if form.wannabe_manager.errors %}
 									{{ form.wannabe_manager(class="form-control form-control-lg is-invalid")}}
@@ -104,7 +104,7 @@
 						</fieldset>
 
 						<div class="form-group">
-							{{ form.submit(class="btn btn-outline-orange",value="Sign up")}}
+							{{ form.submit(class="btn btn-outline-orange",value=_('Sign up'))}}
 						</div>
 					</form>
 				</div>
@@ -112,9 +112,9 @@
 					<div class="container-fluid">
 						<div class="float-left">
 							<small class="text-muted">
-								Already signed up?
+								{{_('Already signed up?')}}
 								<br>
-								<a class="brown-link text-uppercase" data-toggle="modal" data-target="#myModal" onclick="modalLayout({{ url_for('users.login')}})" href="">log in</a>
+								<a class="brown-link text-uppercase" data-toggle="modal" data-target="#myModal" onclick="modalLayout({{ url_for('users.login')}})" href="">{{_('log in')}}</a>
 							</small>
 						</div>
 					</div>

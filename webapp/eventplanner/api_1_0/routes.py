@@ -250,7 +250,6 @@ def api_new_event(current_user_api):
             time_to = data['time_to']
             time_to_obj = datetime.strptime(time_to, '%H:%M').time()
             content = data['content']
-            content_eng = data['content_eng']
             address = data['address']
             city = data['city']
             location = data['location']
@@ -258,7 +257,7 @@ def api_new_event(current_user_api):
 
             event = Event(title=title, event_type=event_type,
                           event_date=date_object, time_from=time_from_obj, time_to=time_to_obj,
-                          content=content,content_eng=content_eng, address=address, city=city, location=location,
+                          content=content, address=address, city=city, location=location,
                           manager=manager)
 
             for ticket in tickets:
@@ -365,7 +364,6 @@ def api_update_event(current_user_api, id):
     time_to = data['time_to']
     time_to_obj = datetime.strptime(time_to, '%H:%M').time()
     content = data['content']
-    content_eng = data['content_eng']
     address = data['address']
     city = data['city']
     location = data['location']
@@ -376,7 +374,6 @@ def api_update_event(current_user_api, id):
     event.time_from = time_from_obj
     event.time_to = time_to_obj
     event.content = content
-    event.content_eng = content_eng
     event.address = address
     event.city = city
     event.location = location

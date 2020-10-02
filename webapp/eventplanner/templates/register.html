@@ -7,7 +7,7 @@
 		<div class="col-md-6">
 			<div class="card sharp-border">
 				<div class="card-header text-center" style="background-color:white">
-					<h3 class="text-uppercase orange">sign up form</h3>
+					<h3 class="text-uppercase orange">{{_('sign up form')}}</h3>
 				</div>
 				<div class="card-body text-center">
 					<form method="POST" action="">
@@ -78,14 +78,14 @@
 											{% endfor %}
 										</div>
 									{% else %}
-										{{ form.confirm_password(class="form-control form-control-lg",placeholder="Confirm password")}}
+										{{ form.confirm_password(class="form-control form-control-lg",placeholder=_('Confirm password'))}}
 									{% endif %}
 								</div>
 							</div>
 						</fieldset>
 
 						<div class="form-group">
-							{{ form.submit(class="btn btn-outline-orange",value="Sign up")}}
+							{{ form.submit(class="btn btn-outline-orange",value=_('Sign up'))}}
 						</div>
 					</form>
 				</div>
@@ -93,16 +93,16 @@
 					<div class="container-fluid">
 						<div class="float-left">
 							<small class="text-muted">
-								Already signed up?
+								{{_('Already signed up?')}}
 								<br>
 								<a class="brown-link text-uppercase" data-toggle="modal" data-target="#myModal" onclick="modalLayout({{ url_for('users.login')}})" href="">log in</a>
 							</small>
 						</div>
 						<div class="float-right text-right">
 							<small class="text-muted">
-								Are you an event provider?
+								{{_('Are you an event provider?')}}
 								<br>
-								<a class="brown-link text-uppercase" href="{{url_for('users.register_manager')}}">Sign up here</a><!--  we passs in the name of the route function -->
+								<a class="brown-link text-uppercase" href="{{url_for('users.register_manager')}}">{{_('Sign up here')}}</a><!--  we passs in the name of the route function -->
 							</small>
 						</div>
 					</div>

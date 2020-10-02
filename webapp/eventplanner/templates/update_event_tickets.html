@@ -9,7 +9,7 @@
 		<div class="col-md-6">
 			<div class="card sharp-border" style="margin-bottom:10px">
 				<div class="card-header text-center" style="background-color:white">
-					<h3 class="text-uppercase orange">Add ticket</h3>
+					<h3 class="text-uppercase orange">{{_('Add ticket')}}</h3>
 				</div>
 				<div class="card-body text-center">
 					<form method="POST" action="" enctype = "multipart/form-data">
@@ -26,7 +26,7 @@
 									</tr>
 									{% for ticket in form.tickets %}
 										<tr data-toggle="fieldset-entry">
-											<td style="width:45%">{{ ticket.ticket_type(class="form-control",placeholder="Ticket name",autocomplete="off") }}</td>
+											<td style="width:45%">{{ ticket.ticket_type(class="form-control",placeholder=_('Ticket name'),autocomplete="off") }}</td>
 											<td style="width:15%">{{ ticket.num_tickets(class="form-control",placeholder="n°",type="number",min="0",autocomplete="off") }}</td>
 											<td style="width:20%">{{ ticket.price(class="form-control",placeholder="€",type="number",min="0",autocomplete="off",step="0.01") }}</td>
 										</tr>
@@ -37,11 +37,11 @@
 						
 						<div class="row">
 							<div class="col-md-6">
-								<button class="btn btn-outline-orange" onclick="window.history.back();">Cancel</button>
+								<button class="btn btn-outline-orange" onclick="window.history.back();">{{_('Cancel')}</button>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									{{ form.submit(class="btn btn-outline-orange",value="Update tickets")}}
+									{{ form.submit(class="btn btn-outline-orange",value=_('Update tickets'))}}
 								</div>
 							</div>
 						</div>

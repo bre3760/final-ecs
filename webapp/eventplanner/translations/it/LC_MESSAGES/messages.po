@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-10-01 20:54+0200\n"
-"PO-Revision-Date: 2020-10-01 20:55+0200\n"
+"POT-Creation-Date: 2020-10-02 11:07+0200\n"
+"PO-Revision-Date: 2020-10-02 11:08+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: it\n"
 "Language-Team: it <LL@li.org>\n"
@@ -18,17 +18,417 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.8.0\n"
 
-#: eventplanner/templates/multi_lang.html:8
-msgid "Computer"
-msgstr "Calcolatore Elettronico"
+#: eventplanner/events/routes.py:37
+msgid "Your event has been created"
+msgstr "Il tuo evento è stato creato"
+
+#: eventplanner/events/routes.py:75
+msgid "Your event has been updated"
+msgstr "Il tuo evento è stato modificato"
+
+#: eventplanner/events/routes.py:118
+msgid "Your event tickets have been updated"
+msgstr "I biglietti per il tuo evento sono stati modificati"
+
+#: eventplanner/events/routes.py:148
+msgid "Your event tickets have been deleted"
+msgstr "I biglietti per il tuo evento sono stati cancellati"
+
+#: eventplanner/events/routes.py:169
+msgid "Your tickets have been created"
+msgstr "I tuoi biglietti sono stati creati"
+
+#: eventplanner/events/routes.py:185
+msgid "Your event has been deleted"
+msgstr "Il tuo evento è stato eliminato"
+
+#: eventplanner/events/routes.py:233
+msgid "User already in staff"
+msgstr "L'utente fa già parte dello staff"
+
+#: eventplanner/events/routes.py:236
+msgid "Your staff has been added"
+msgstr "L'utente è stato aggiunto come staff"
+
+#: eventplanner/events/routes.py:239
+msgid "User not found"
+msgstr "Utente non trovato"
+
+#: eventplanner/templates/account.html:44
+#: eventplanner/templates/add_staff.html:48
+#: eventplanner/templates/add_tickets.html:42
+#: eventplanner/templates/create_event.html:233
+#: eventplanner/templates/delete_event_tickets.html:49
+#: eventplanner/templates/event.html:193
+#: eventplanner/templates/update_event.html:209
+msgid "Cancel"
+msgstr "Annulla"
+
+#: eventplanner/templates/add_staff.html:9
+msgid "edit staff"
+msgstr "Modifica staff"
+
+#: eventplanner/templates/add_staff.html:22
+msgid "add staff"
+msgstr "Aggiungi staff"
+
+#: eventplanner/templates/add_tickets.html:11
+msgid "Add ticket"
+msgstr "Aggiungi biglietto"
+
+#: eventplanner/templates/add_tickets.html:24
+#: eventplanner/templates/create_event.html:215
+msgid "Ticket name"
+msgstr "Nome biglietto"
+
+#: eventplanner/templates/create_event.html:11
+msgid "new event"
+msgstr "Nuovo evento"
+
+#: eventplanner/templates/create_event.html:26
+#: eventplanner/templates/update_event.html:25
+msgid "Thumbnail file"
+msgstr "Immagine di copertina"
+
+#: eventplanner/templates/create_event.html:57
+#: eventplanner/templates/update_event.html:56
+msgid "Title"
+msgstr "Titolo"
+
+#: eventplanner/templates/create_event.html:75
+#: eventplanner/templates/update_event.html:74
+msgid "Description"
+msgstr "Descrizione"
+
+#: eventplanner/templates/create_event.html:93
+#: eventplanner/templates/update_event.html:92
+msgid "Type"
+msgstr "Tipo"
+
+#: eventplanner/templates/create_event.html:111
+#: eventplanner/templates/update_event.html:110
+msgid "Date"
+msgstr "Data"
+
+#: eventplanner/templates/create_event.html:129
+#: eventplanner/templates/update_event.html:128
+msgid "Start time"
+msgstr "Ora di inizio"
+
+#: eventplanner/templates/create_event.html:147
+#: eventplanner/templates/update_event.html:146
+msgid "End time"
+msgstr "Ora di fine"
+
+#: eventplanner/templates/create_event.html:165
+#: eventplanner/templates/update_event.html:164
+msgid "Location"
+msgstr "Location"
+
+#: eventplanner/templates/create_event.html:183
+#: eventplanner/templates/update_event.html:182
+msgid "Address"
+msgstr "Indirizzo"
+
+#: eventplanner/templates/create_event.html:201
+#: eventplanner/templates/update_event.html:200
+msgid "City"
+msgstr "Città"
+
+#: eventplanner/templates/create_event.html:237
+msgid "Create event"
+msgstr "Crea evento"
+
+#: eventplanner/templates/delete_event_tickets.html:11
+msgid "delete tickets"
+msgstr "cancella biglietti"
+
+#: eventplanner/templates/delete_event_tickets.html:24
+msgid "Ticket type"
+msgstr "Tipo biglietto"
+
+#: eventplanner/templates/delete_event_tickets.html:25
+msgid "Number"
+msgstr "Numero"
+
+#: eventplanner/templates/delete_event_tickets.html:26
+#: eventplanner/templates/event.html:68
+msgid "Price"
+msgstr "Prezzo"
+
+#: eventplanner/templates/delete_event_tickets.html:53
+#: eventplanner/templates/event.html:115
+msgid "Delete tickets"
+msgstr "Cancella biglietti"
+
+#: eventplanner/templates/event.html:20
+msgid "Event description"
+msgstr "Descrizione evento"
+
+#: eventplanner/templates/event.html:23
+msgid "Date and time information"
+msgstr "Informazioni su orario e data"
+
+#: eventplanner/templates/event.html:25
+msgid "From"
+msgstr "Dalle"
+
+#: eventplanner/templates/event.html:25
+msgid "to"
+msgstr "alle"
+
+#: eventplanner/templates/event.html:27
+msgid "Location information"
+msgstr "Informazioni location"
+
+#: eventplanner/templates/event.html:33
+msgid "Provided by"
+msgstr "Offerto da"
+
+#: eventplanner/templates/event.html:42
+msgid "Provider Toolbar"
+msgstr "Toolbar organizzatore"
+
+#: eventplanner/templates/event.html:45
+msgid "Edit event"
+msgstr "Modifica evento"
+
+#: eventplanner/templates/event.html:50
+msgid "Delete Event"
+msgstr "Cancella evento"
+
+#: eventplanner/templates/event.html:60
+msgid "Tickets"
+msgstr "Biglietti"
+
+#: eventplanner/templates/event.html:70
+msgid "Available"
+msgstr "Disponibili"
+
+#: eventplanner/templates/event.html:105
+msgid "Update tickets"
+msgstr "Modifica biglietti"
+
+#: eventplanner/templates/event.html:110
+msgid "Add tickets"
+msgstr "Aggiungi biglietti"
+
+#: eventplanner/templates/event.html:123
+msgid "Purchase"
+msgstr "Compra"
+
+#: eventplanner/templates/event.html:123
+msgid "tickets"
+msgstr "biglietti"
+
+#: eventplanner/templates/event.html:129
+msgid "Book"
+msgstr "Prenota"
+
+#: eventplanner/templates/event.html:129
+msgid "tickets, pay at the event"
+msgstr "biglietti, paga all'evento"
+
+#: eventplanner/templates/event.html:156
+msgid "No staff has been inserted for this event"
+msgstr "Nessuno staff è stato inserito per questo evento"
+
+#: eventplanner/templates/event.html:163
+msgid "Add Staff"
+msgstr "Aggiungi staff"
+
+#: eventplanner/templates/event.html:181
+msgid "Do you want to delete the selected event?"
+msgstr "Vuoi cancellare l'evento selezionato?"
+
+#: eventplanner/templates/home.html:31 eventplanner/templates/my_events.html:31
+#: eventplanner/templates/user_events.html:41
+msgid "Ticket starting from"
+msgstr "Biglietti a partire da"
+
+#: eventplanner/templates/home.html:38
+msgid "No events are present in the database"
+msgstr "Nessun evento presente nel database"
+
+#: eventplanner/templates/layout.html:222
+#: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:258
+#: webappvenv/lib/python3.8/site-packages/flask_user/templates/flask_user/login_or_register.html:41
+#: webappvenv/lib/python3.8/site-packages/flask_user/templates/flask_user/register.html:5
+msgid "Register"
+msgstr "Registrati"
+
+#: eventplanner/templates/layout.html:268
+msgid "Edit your profile"
+msgstr "Modifica il tuo profilo"
+
+#: eventplanner/templates/layout.html:275
+msgid "Create a new event"
+msgstr "Crea un nuovo evento"
+
+#: eventplanner/templates/layout.html:280
+msgid "Show my events"
+msgstr "Mostra i miei eventi"
+
+#: eventplanner/templates/layout.html:287
+msgid "Show my bookings"
+msgstr "Mostra le mie prenotazioni"
+
+#: eventplanner/templates/login.html:14
+msgid "login form"
+msgstr "form di login"
+
+#: eventplanner/templates/login.html:66
+msgid "Keep me signed in"
+msgstr "Mantieni l'accesso"
+
+#: eventplanner/templates/login.html:80
+msgid "Forgot your password?"
+msgstr "Password dimenticata?"
+
+#: eventplanner/templates/login.html:82
+msgid "Recover it"
+msgstr "Recuperala"
+
+#: eventplanner/templates/login.html:82
+msgid "here"
+msgstr "qui"
+
+#: eventplanner/templates/login.html:87
+msgid "Need an account?"
+msgstr "Hai bisogno di un account?"
+
+#: eventplanner/templates/login.html:89 eventplanner/templates/register.html:88
+#: eventplanner/templates/register_manager.html:107
+msgid "Sign up"
+msgstr "Registrati"
+
+#: eventplanner/templates/my_events.html:7
+msgid "Your events"
+msgstr "I tuoi eventi"
+
+#: eventplanner/templates/my_events.html:38
+msgid "You have created no events at the moment"
+msgstr "Non hai creato alcun evento al momento"
+
+#: eventplanner/templates/register.html:10
+msgid "sign up form"
+msgstr "Form di registrazione"
+
+#: eventplanner/templates/register.html:81
+#: eventplanner/templates/register_manager.html:81
+msgid "Confirm password"
+msgstr "Conferma password"
+
+#: eventplanner/templates/register.html:96
+#: eventplanner/templates/register_manager.html:115
+msgid "Already signed up?"
+msgstr "Già registrato?"
+
+#: eventplanner/templates/register.html:103
+msgid "Are you an event provider?"
+msgstr "Sei un organizzatore di eventi?"
+
+#: eventplanner/templates/register.html:105
+msgid "Sign up here"
+msgstr "Registrati qui"
+
+#: eventplanner/templates/register_manager.html:10
+msgid "provider sign up form"
+msgstr "Form di registrazione organizzatori"
+
+#: eventplanner/templates/register_manager.html:89
+msgid "By signing up you declare to be an event provider."
+msgstr "Registrandoti dichiari di essere un organizzatore di eventi"
+
+#: eventplanner/templates/register_manager.html:91
+msgid ""
+"Verifications on your account will be performed by the platform "
+"administrators, if inconsistencies are found your account will be closed,"
+" your events will be deleted and your tickets will be refound."
+msgstr ""
+"Delle verifiche sul tuo account verranno eseguite dagli amministratori"
+"della piattaforma, se delle anormalità verranno trovate il tuo account sarà chiuso,"
+"i tuoi eventi cancellati e i tuoi biglietti rimborsati"
+
+#: eventplanner/templates/register_manager.html:117
+msgid "log in"
+msgstr "Log in"
+
+#: eventplanner/templates/update_event.html:10
+msgid "update event"
+msgstr "Modifica evento"
+
+#: eventplanner/templates/update_event.html:213
+msgid "Update event"
+msgstr "Modifica evento"
+
+#: eventplanner/templates/user_events.html:48
+msgid "This provider has created no events at the moment"
+msgstr "Questo organizzatore non ha creato eventi al momento"
+
+#: eventplanner/templates/errors/404.html:4
+msgid "Oops. Page not found"
+msgstr "Oops. Pagina non trovata"
+
+#: eventplanner/templates/errors/404.html:5
+msgid "That page does not exist"
+msgstr "Questa pagina non esiste"
+
+#: eventplanner/templates/errors/500.html:4
+msgid "Something went wrong"
+msgstr "Qualcosa è andato storto"
+
+#: eventplanner/templates/errors/500.html:5
+msgid ""
+"We are experiencing some trouble on our end, please try again in the near"
+" future"
+msgstr ""
+"Stiamo riscontrando dei problemi, riprova tra qualche istante"
+""
+
+#: eventplanner/templates/payments/after-payment.html:9
+msgid "Thanks"
+msgstr "Grazie"
+
+#: eventplanner/templates/payments/payment.html:75
+msgid "Pay"
+msgstr "Paga"
+
+#: eventplanner/templates/payments/payment.html:79
+msgid "Payment completed"
+msgstr "Pagamento completo"
+
+#: eventplanner/users/routes.py:30 eventplanner/users/routes.py:54
+msgid "Your account has been created, you can now log in"
+msgstr "Il tuo account è stato creato, puoi ora accedere"
+
+#: eventplanner/users/routes.py:82
+msgid "login failed, check email and password"
+msgstr "Accesso fallito, controlla mail e password"
+
+#: eventplanner/users/routes.py:105
+msgid "Your account has been updated"
+msgstr "Il tuo account è stato aggiornato"
+
+#: eventplanner/users/routes.py:156
+msgid "An email has been sent with instructions to reset your password"
+msgstr "Una email contenente le istruzioni per resettare la password è stata inviata"
+
+#: eventplanner/users/routes.py:167
+msgid "That is an invalid or exiperd token"
+msgstr "Token invalido o scaduto"
+
+#: eventplanner/users/routes.py:177
+msgid "Your password has been updated, you can now log in"
+msgstr "La tua password è stata modificata, puoi ora loggarti"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:40
 msgid "This Username is already in use. Please try another one."
-msgstr ""
+msgstr "Questo username è già in uso. Provane una nuova"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:47
 msgid "This Email is already in use. Please try another one."
-msgstr ""
+msgstr "Questa email è già in uso. Provane una nuova"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:56
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:155
@@ -37,115 +437,115 @@ msgstr ""
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:304
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:347
 msgid "Email"
-msgstr ""
+msgstr "Email"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:57
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:156
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:248
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:348
 msgid "Email is required"
-msgstr ""
+msgstr "L'email è richiesta"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:58
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:157
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:249
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:349
 msgid "Invalid Email"
-msgstr ""
+msgstr "Email non valida"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:60
 msgid "Add Email"
-msgstr ""
+msgstr "Aggiungi email"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:65
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:110
 msgid "Old Password"
-msgstr ""
+msgstr "Vecchia password"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:66
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:111
 msgid "Old Password is required"
-msgstr ""
+msgstr "La vecchia password è richiesta"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:68
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:318
 msgid "New Password"
-msgstr ""
+msgstr "Nuova password"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:69
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:319
 msgid "New Password is required"
-msgstr ""
+msgstr "La nuova password è richiesta"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:72
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:322
 msgid "Retype New Password"
-msgstr ""
+msgstr "Riscrivi la nuova password"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:73
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:323
 msgid "New Password and Retype Password did not match"
-msgstr ""
+msgstr "La nuova password e la quella reinserita non combaciano"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:75
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:325
 #: webappvenv/lib/python3.8/site-packages/flask_user/templates/flask_user/change_password.html:5
 #: webappvenv/lib/python3.8/site-packages/flask_user/templates/flask_user/edit_user_profile.html:26
 msgid "Change password"
-msgstr ""
+msgstr "Cambia password"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:96
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:131
 msgid "Old Password is incorrect"
-msgstr ""
+msgstr "La vecchia password non è corretta"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:105
 msgid "New Username"
-msgstr ""
+msgstr "Nuovo username"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:106
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:153
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:244
 msgid "Username is required"
-msgstr ""
+msgstr "L'username è richiesto"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:113
 #: webappvenv/lib/python3.8/site-packages/flask_user/templates/flask_user/change_username.html:5
 #: webappvenv/lib/python3.8/site-packages/flask_user/templates/flask_user/edit_user_profile.html:23
 msgid "Change username"
-msgstr ""
+msgstr "Cambia username"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:141
 msgid "First name"
-msgstr ""
+msgstr "Nome"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:142
 msgid "Last name"
-msgstr ""
+msgstr "Cognome"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:144
 msgid "Update"
-msgstr ""
+msgstr "Aggiorna"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:152
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:212
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:243
 msgid "Username"
-msgstr ""
+msgstr "Username"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:159
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:251
 msgid "Password"
-msgstr ""
+msgstr "Password"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:160
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:252
 msgid "Password is required"
-msgstr ""
+msgstr "La password è richiesta"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:162
 msgid "Remember me"
-msgstr ""
+msgstr "Ricordami"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:164
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:355
@@ -153,80 +553,74 @@ msgstr ""
 #: webappvenv/lib/python3.8/site-packages/flask_user/templates/flask_user/login_or_register.html:9
 #: webappvenv/lib/python3.8/site-packages/flask_user/templates/flask_user_layout.html:42
 msgid "Sign in"
-msgstr ""
+msgstr "Accedi"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:171
 msgid "Username or Email"
-msgstr ""
+msgstr "Username o email"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:208
 msgid "Username/Email"
-msgstr ""
+msgstr "Username/email"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:222
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:304
 #, python-format
 msgid "%(username_or_email)s does not exist"
-msgstr ""
+msgstr "%(username_or_email) non esiste"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:225
 msgid "Incorrect Password"
-msgstr ""
+msgstr "Password non corretta"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:229
 #, python-format
 msgid "Incorrect %(username_or_email)s and/or Password"
-msgstr ""
+msgstr "Password e/o %(username_or_email)s incorrette"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:254
 msgid "Retype Password"
-msgstr ""
+msgstr "Riscrivi la password"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:255
 msgid "Password and Retype Password did not match"
-msgstr ""
+msgstr "La password e quella reinserita non combaciano"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:256
 msgid "Token"
-msgstr ""
-
-#: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:258
-#: webappvenv/lib/python3.8/site-packages/flask_user/templates/flask_user/login_or_register.html:41
-#: webappvenv/lib/python3.8/site-packages/flask_user/templates/flask_user/register.html:5
-msgid "Register"
-msgstr ""
+msgstr "Token"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:293
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:309
 msgid "Your email address"
-msgstr ""
+msgstr "Il tuo indirizzo email"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:294
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:310
 msgid "Email address is required"
-msgstr ""
+msgstr "L'email è richiesta"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:295
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:311
 msgid "Invalid Email address"
-msgstr ""
+msgstr "Email non valida"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:297
 msgid "Send reset password email"
-msgstr ""
+msgstr "Manda email per il reset della password"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:313
 msgid "Resend email confirmation email"
-msgstr ""
+msgstr "Rimanda l'email per la conferma"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:351
 msgid "Invite!"
-msgstr ""
+msgstr "Invita!"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:356
 #: webappvenv/lib/python3.8/site-packages/flask_user/templates/flask_user_layout.html:40
 msgid "Sign out"
-msgstr ""
+msgstr "Esci"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:357
 msgid "Home Page"
@@ -235,25 +629,27 @@ msgstr ""
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:358
 #: webappvenv/lib/python3.8/site-packages/flask_user/templates/flask_user/edit_user_profile.html:5
 msgid "User profile"
-msgstr ""
+msgstr "Profilo Utente"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:359
 msgid "Member Page"
-msgstr ""
+msgstr "Pagina membro"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/forms.py:360
 msgid "Admin Page"
-msgstr ""
+msgstr "Pagina admin"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/user_manager.py:250
 msgid ""
 "Password must have at least 6 characters with one lowercase letter, one "
 "uppercase letter and one number"
 msgstr ""
+"La password deve avere almeno 6 caratteri con almeno:"
+"una minuscola, una maiuscola e un numero"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/user_manager.py:266
 msgid "Username must be at least 3 characters long"
-msgstr ""
+msgstr "L'username deve essere di almeno 3 caratteri"
 
 #: webappvenv/lib/python3.8/site-packages/flask_user/user_manager.py:272
 msgid "Username may only contain letters, numbers, '-', '.' and '_'"
